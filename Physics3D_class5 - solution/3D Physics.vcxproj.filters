@@ -21,100 +21,38 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Module.h">
-      <Filter>Sources\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleAudio.h">
-      <Filter>Sources\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleCamera3D.h">
-      <Filter>Sources\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleInput.h">
-      <Filter>Sources\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleRenderer3D.h">
-      <Filter>Sources\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleWindow.h">
-      <Filter>Sources\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="p2DynArray.h">
-      <Filter>Sources\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="p2List.h">
-      <Filter>Sources\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="p2Point.h">
-      <Filter>Sources\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="glmath.h">
-      <Filter>Sources\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="Globals.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="Primitive.h">
-      <Filter>Sources\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="Color.h">
-      <Filter>Sources\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>Sources\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleSceneIntro.h">
-      <Filter>Sources\Modules\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>Sources\Tools</Filter>
-    </ClInclude>
+    <ClInclude Include="Source/Application.h" />
+    <ClInclude Include="Source/Color.h" />
+    <ClInclude Include="Source/glmath.h" />
+    <ClInclude Include="Source/Globals.h" />
+    <ClInclude Include="Source/Light.h" />
+    <ClInclude Include="Source/ModuleCamera3D.h" />
+    <ClInclude Include="Source/ModuleRenderer3D.h" />
+    <ClInclude Include="Source/p2List.h" />
+    <ClInclude Include="Source/Module.h" />
+    <ClInclude Include="Source/ModuleAudio.h" />
+    <ClInclude Include="Source/ModuleInput.h" />
+    <ClInclude Include="Source/ModuleSceneIntro.h" />
+    <ClInclude Include="Source/ModuleWindow.h" />
+    <ClInclude Include="Source/p2DynArray.h" />
+    <ClInclude Include="Source/p2Point.h" />
+    <ClInclude Include="Source/Primitive.h" />
+    <ClInclude Include="Source/Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ModuleAudio.cpp">
-      <Filter>Sources\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleCamera3D.cpp">
-      <Filter>Sources\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleInput.cpp">
-      <Filter>Sources\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleRenderer3D.cpp">
-      <Filter>Sources\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleWindow.cpp">
-      <Filter>Sources\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="log.cpp">
-      <Filter>Sources\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>Sources\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="glmath.cpp">
-      <Filter>Sources\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="Primitive.cpp">
-      <Filter>Sources\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="Color.cpp">
-      <Filter>Sources\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="Light.cpp">
-      <Filter>Sources\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleSceneIntro.cpp">
-      <Filter>Sources\Modules\Game</Filter>
-    </ClCompile>
+    <ClCompile Include="Source/Application.cpp" />
+    <ClCompile Include="Source/Color.cpp" />
+    <ClCompile Include="Source/glmath.cpp" />
+    <ClCompile Include="Source/Light.cpp" />
+    <ClCompile Include="Source/log.cpp" />
+    <ClCompile Include="Source/Main.cpp" />
+    <ClCompile Include="Source/ModuleAudio.cpp" />
+    <ClCompile Include="Source/ModuleCamera3D.cpp" />
+    <ClCompile Include="Source/ModuleInput.cpp" />
+    <ClCompile Include="Source/ModuleRenderer3D.cpp" />
+    <ClCompile Include="Source/ModuleSceneIntro.cpp" />
+    <ClCompile Include="Source/ModuleWindow.cpp" />
+    <ClCompile Include="Source/Primitive.cpp" />
+    <ClCompile Include="Source/Timer.cpp" />
   </ItemGroup>
 </Project>
