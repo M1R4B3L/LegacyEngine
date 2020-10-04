@@ -19,6 +19,12 @@
     <Filter Include="Sources\Modules\Game">
       <UniqueIdentifier>{83f46af7-e02f-40c0-9e56-41d76082527b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Deps">
+      <UniqueIdentifier>{ee01b75b-d622-4779-b7ea-6e0c5a191aed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deps\imGui">
+      <UniqueIdentifier>{8101dfa4-7efe-4801-8bd2-79d1cf080711}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source/Application.h" />
@@ -38,6 +44,30 @@
     <ClInclude Include="Source/p2Point.h" />
     <ClInclude Include="Source/Primitive.h" />
     <ClInclude Include="Source/Timer.h" />
+    <ClInclude Include="Source\Dependencies\imgui\imconfig.h">
+      <Filter>Deps\imGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\imgui.h">
+      <Filter>Deps\imGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\imgui_internal.h">
+      <Filter>Deps\imGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\imstb_rectpack.h">
+      <Filter>Deps\imGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\imstb_textedit.h">
+      <Filter>Deps\imGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\imstb_truetype.h">
+      <Filter>Deps\imGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\examples\imgui_impl_opengl3.h">
+      <Filter>Deps\imGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\examples\imgui_impl_sdl.h">
+      <Filter>Deps\imGui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source/Application.cpp" />
@@ -54,5 +84,23 @@
     <ClCompile Include="Source/ModuleWindow.cpp" />
     <ClCompile Include="Source/Primitive.cpp" />
     <ClCompile Include="Source/Timer.cpp" />
+    <ClCompile Include="Source\Dependencies\imgui\imgui.cpp">
+      <Filter>Deps\imGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\imgui\imgui_demo.cpp">
+      <Filter>Deps\imGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\imgui\imgui_draw.cpp">
+      <Filter>Deps\imGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\imgui\imgui_widgets.cpp">
+      <Filter>Deps\imGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\imgui\examples\imgui_impl_opengl3.cpp">
+      <Filter>Deps\imGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\imgui\examples\imgui_impl_sdl.cpp">
+      <Filter>Deps\imGui</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
