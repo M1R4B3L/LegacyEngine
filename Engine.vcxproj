@@ -86,7 +86,6 @@
     <ClInclude Include="Source/ModuleInput.h" />
     <ClInclude Include="Source/ModuleSceneIntro.h" />
     <ClInclude Include="Source/ModuleWindow.h" />
-    <ClInclude Include="Source/p2Point.h" />
     <ClInclude Include="Source/Primitive.h" />
     <ClInclude Include="Source/Timer.h" />
     <ClInclude Include="Source\Dependencies\imgui\examples\imgui_impl_opengl3.h" />
