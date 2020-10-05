@@ -1,11 +1,9 @@
 
 #include "Globals.h"
+#include "GL/glew.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include "Primitive.h"
-#include "glut.h"
-
-#pragma comment (lib, "Source/Dependencies/glut/glut32.lib")
 
 // ------------------------------------------------------------
 Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point)
