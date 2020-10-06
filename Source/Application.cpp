@@ -1,6 +1,8 @@
 #include "Application.h"
 
 #include <list>
+#include "imgui.h"
+#include "examples/imgui_impl_sdl.h"
 
 
 Application::Application()
@@ -48,7 +50,7 @@ Application::~Application()
 bool Application::Init()
 {
 	bool ret = true;
-
+	
 	// Call Init() in all modules
 	std::list<Module*>::iterator it = list_modules.begin();
 
