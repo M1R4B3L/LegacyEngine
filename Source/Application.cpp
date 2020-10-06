@@ -1,8 +1,6 @@
 #include "Application.h"
 
 #include <list>
-#include "imgui.h"
-#include "examples/imgui_impl_sdl.h"
 
 
 Application::Application()

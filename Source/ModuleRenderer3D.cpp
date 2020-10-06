@@ -1,11 +1,9 @@
 #include "Globals.h"
+#include "GL/glew.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
 #include "SDL_opengl.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
 
-#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -44,7 +42,7 @@ bool ModuleRenderer3D::Init()
 		GLenum error = glGetError();
 		if(error != GL_NO_ERROR)
 		{
-			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
+			LOG("Error initializing OpenGL! %s\n", glewGetErrorString(error));
 			ret = false;
 		}
 
@@ -56,7 +54,7 @@ bool ModuleRenderer3D::Init()
 		error = glGetError();
 		if(error != GL_NO_ERROR)
 		{
-			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
+			LOG("Error initializing OpenGL! %s\n", glewGetErrorString(error));
 			ret = false;
 		}
 		
@@ -70,7 +68,7 @@ bool ModuleRenderer3D::Init()
 		error = glGetError();
 		if(error != GL_NO_ERROR)
 		{
-			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
+			LOG("Error initializing OpenGL! %s\n", glewGetErrorString(error));
 			ret = false;
 		}
 		
