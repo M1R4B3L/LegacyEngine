@@ -37,6 +37,10 @@ bool ModuleSceneIntro::CleanUp()
 // Update
 update_status ModuleSceneIntro::Update(float dt)
 {
+	Plane p(0, 1, 0, 0);
+	p.axis = true;
+	p.Render();
+
 	//IMGUI!!!!
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
@@ -62,10 +66,6 @@ update_status ModuleSceneIntro::Update(float dt)
 		ImGui::RenderPlatformWindowsDefault();
 		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
 	}
-	
-	Plane p(0, 1, 0, 0);
-	p.axis = true;
-	p.Render();
 
 	return UPDATE_CONTINUE;
 }
