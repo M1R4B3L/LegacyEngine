@@ -40,4 +40,11 @@ public:
 
 	PhysMotor3D* left_wheel;
 	PhysMotor3D* right_wheel;
+
+	//IMGUI!!!!
+	bool about_window;
+	bool config_window;
+	bool options_bool;
+	char name[128];
+	char org[128];
 };

@@ -7,7 +7,7 @@
 #include "examples\imgui_impl_sdl.h"
 #include "examples\imgui_impl_opengl3.h"
 
-ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
+ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled), about_window(false), config_window(false),options_bool(false),name("Legacy Engine"),org("CITM")
 {
 }
 
@@ -22,7 +22,6 @@ bool ModuleSceneIntro::Start()
 
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
-
 	return ret;
 }
 
@@ -42,14 +41,95 @@ update_status ModuleSceneIntro::Update(float dt)
 	p.Render();
 
 	//IMGUI!!!!
+	/*if (ImGui::IsKeyPressed(SDL_SCANCODE_1)) {
+		return UPDATE_STOP;
+	}*/
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
-	bool showdemowindow = true;
-	ImGui::ShowDemoWindow(&showdemowindow);
+
+	//our state (depenent de si el bool que pasem a la window es true o false s'ensenya la window i si la tanquem imgui posa el bool directament a false)
+	bool show_demo_window = true;
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+	ImGui::ShowDemoWindow(&show_demo_window);
+
+	if (ImGui::BeginMainMenuBar()) {
+		if (ImGui::BeginMenu("File")) {
+			if (ImGui::Button("Exit")) {
+				return UPDATE_STOP;
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("View")) {
+			if (ImGui::Button("Console")) {
+				
+			}
+			if (ImGui::Button("Configuration")) {
+				config_window = !config_window;
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Help")) {
+			if (ImGui::Button("Documentation")) {
+				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine", NULL, NULL, 3);
+			}
+			if (ImGui::Button("Donloawd Latest")) {
+				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/releases", NULL, NULL, 3);
+			}
+			if (ImGui::Button("Report a bug")) {
+				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/issues", NULL, NULL, 3);
+			}
+			if (ImGui::Button("About")) {
+				about_window = !about_window;
+			}
+			ImGui::EndMenu();
+		}
+	}
+	ImGui::EndMainMenuBar();
+
+	if (about_window) {
+		//ImGuiCond_Once;
+		//ImGui::SetNextWindowPos()
+		ImGui::Begin("About", &about_window);
+		ImGui::Text("Legacy engine is developed by 2 students from CITM Barcelon \nwithin the context of the game engine subject");
+		ImGui::End();
+	}
+
+	if (config_window) {
+		//ImGuiCond_Once;
+		//ImGui::SetNextWindowPos()
+		ImGui::Begin("Configuration", &config_window);
+		if (ImGui::BeginMenu("Options",&options_bool)) {
+			ImGui::MenuItem("Set Defaults");
+			ImGui::MenuItem("Load");
+			ImGui::MenuItem("Save");
+			ImGui::EndMenu();
+		}
+		if (ImGui::CollapsingHeader("Application")) {
+			ImGui::InputText("App Name",name,128);
+			ImGui::InputText("Organization", org, 128);
+			//ImGui::SliderInt("Max FPS",&App->cap,0,144);
+			/*ImGui::Text("Limit Framerate: 0");
+			ImGui::GetFrameCount();
+			static int n = 0;
+			static char title[25];
+			if (n > 24)
+				n = 0;
+			else
+				n++;
+			title[n]= ImGui::GetFrameCount();
+			sprintf_s(title, 25, "Framerate %.1f", fps_log[fps_log.size() - 1]);
+			ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
+			*/
+		}
+		ImGui::End();
+	}
+
+
+
 	ImGui::Render();
 	ImGuiIO& io = ImGui::GetIO();
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
 	//glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 	//glClear(GL_COLOR_BUFFER_BIT);

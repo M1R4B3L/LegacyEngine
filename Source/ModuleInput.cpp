@@ -90,6 +90,16 @@ update_status ModuleInput::PreUpdate(float dt)
 	while(SDL_PollEvent(&e))
 	{
 		//IMGUI!!!!
+		/*if (ImGui::GetIO().WantCaptureMouse) {
+			LOG("true");
+		}
+		else
+			LOG("false");
+		if (ImGui::GetIO().WantCaptureKeyboard) {
+			LOG("KeyTrue");
+		}
+		else
+			LOG("KeyFalse");*/
 		ImGui_ImplSDL2_ProcessEvent(&e);
 		switch(e.type)
 		{
