@@ -48,7 +48,7 @@ Application::~Application()
 bool Application::Init()
 {
 	bool ret = true;
-	
+
 	// Call Init() in all modules
 	std::list<Module*>::iterator it = list_modules.begin();
 
@@ -66,14 +66,22 @@ bool Application::Init()
 		ret = (*it)->Start();
 		
 	}
-	
+
 	ms_timer.Start();
 	return ret;
+}
+
+void Application::CapFramerate(int fps) {
+	if (fps > 0)
+	{
+		capped_ms = 1000 / fps;
+	}
 }
 
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
+	lastSecFrameCount++;
 	dt = (float)ms_timer.Read() / 1000.0f;
 	ms_timer.Start();
 }
@@ -81,6 +89,23 @@ void Application::PrepareUpdate()
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
+	if (lastSecFrameTime.Read() > 1000)
+	{
+		lastSecFrameTime.Start();
+		fps_log[fps_log.size() - 1] = lastSecFrameCount;
+		lastSecFrameCount = 0;
+
+		for (int i = fps_log.size() - 2; i >= 0; --i) {
+			fps_log[i] = fps_log[i + 1];
+		}
+	}
+
+	unsigned __int32 last_frame_ms = ms_timer.Read();
+
+	if (capped_ms > 0 && last_frame_ms < capped_ms)
+	{
+		SDL_Delay(capped_ms - last_frame_ms);
+	}
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules

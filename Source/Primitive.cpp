@@ -381,6 +381,7 @@ void DefaultCube::RenderArrayBuffer()
 
 void DefaultCube::RenderIndexBuffer()
 {
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
 	glDisableClientState(GL_VERTEX_ARRAY);
