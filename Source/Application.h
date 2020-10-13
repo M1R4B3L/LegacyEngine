@@ -21,7 +21,7 @@ public:
 	ModuleSceneIntro* scene_intro;
 	ModuleRenderer3D* renderer3D;
 	ModuleCamera3D* camera;
-	std::array<float,25>fps_log;
+	std::array<float,50>fps_log;
 
 private:
 

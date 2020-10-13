@@ -92,7 +92,7 @@ void Application::FinishUpdate()
 	if (lastSecFrameTime.Read() > 1000)
 	{
 		lastSecFrameTime.Start();
-		fps_log[fps_log.size() - 1] = lastSecFrameCount -1;
+		fps_log[fps_log.size() - 1] = lastSecFrameCount - 1;
 		lastSecFrameCount = 0;
 
 		for (int i = fps_log.size() - 2; i >= 0; --i) {
