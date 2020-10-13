@@ -2,7 +2,6 @@
 #include "Module.h"
 #include "Globals.h"
 #include "Primitive.h"
-#include <array>
 
 #define MAX_SNAKE 2
 
@@ -48,7 +47,4 @@ public:
 	bool options_bool;
 	char name[128];
 	char org[128];
-	uint my_id = 0;
-	std::array<float, 36 * 3> vertex;
-
 };
