@@ -120,6 +120,9 @@ update_status ModuleSceneIntro::Update(float dt)
 		if (ImGui::CollapsingHeader("Application")) {
 			ImGui::InputText("App Name",name,128);
 			ImGui::InputText("Organization", org, 128);
+			char title[25];
+			sprintf_s(title, 25, "Framerate %.1f", App->fps_log[App->fps_log.size() - 1]);
+			ImGui::PlotHistogram("##framerate", &App->fps_log[0], App->fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
 			//ImGui::SliderInt("Max FPS",&App->cap,0,144);
 			/*ImGui::Text("Limit Framerate: 0");
 			ImGui::GetFrameCount();
