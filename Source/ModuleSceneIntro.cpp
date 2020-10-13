@@ -6,6 +6,8 @@
 #include "imgui.h"
 #include "examples\imgui_impl_sdl.h"
 #include "examples\imgui_impl_opengl3.h"
+#include "SDL_opengl.h"
+
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled), about_window(false), config_window(false),options_bool(false),name("Legacy Engine"),org("CITM")
 {
@@ -22,6 +24,57 @@ bool ModuleSceneIntro::Start()
 
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
+
+	
+	vertex = {
+		//Front
+		-1.f, 0.f, 2.f,
+		1.f, 0.f, 2.f,
+		1.f, 2.f, 2.f,
+		-1.f, 0.f, 2.f,
+		1.f, 2.f, 2.f,
+		-1.f, 2.f, 2.f,
+		//Back
+		-1.f, 0.f, 0.f,
+		-1.f, 2.f, 0.f,
+		1.f, 0.f, 0.f,
+		1.f, 0.f, 0.f,
+		-1.f, 2.f, 0.f,
+		1.f, 2.f, 0.f,
+		//Right
+		1.f, 0.f, 2.f,
+		1.f, 2.f, 0.f,
+		1.f, 2.f, 2.f,
+		1.f, 0.f, 2.f,
+		1.f, 0.f, 0.f,
+		1.f, 2.f, 0.f,
+		//Left
+		- 1.f, 0.f, 2.f,
+		-1.f, 2.f, 0.f,
+		-1.f, 0.f, 0.f,
+		-1.f, 0.f, 2.f,
+		-1.f, 2.f, 2.f,
+		-1.f, 2.f, 0.f,
+		//Top
+		-1.f, 2.f, 2.f,
+		1.f, 2.f, 0.f,
+		-1.f, 2.f, 0.f,
+		-1.f, 2.f, 2.f,
+		1.f, 2.f, 2.f,
+		1.f, 2.f, 0.f,
+		//Bottom
+		1.f, 0.f, 2.f,
+		-1.f, 0.f, 2.f,
+		-1.f, 0.f, 0.f,
+		1.f, 0.f, 2.f,
+		-1.f, 0.f, 0.f,
+		1.f, 0.f, 0.f
+	};
+
+	glGenBuffers(1, (GLuint*)&(my_id));
+	glBindBuffer(GL_ARRAY_BUFFER, my_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, &vertex, GL_STATIC_DRAW);
+
 	return ret;
 }
 
@@ -146,6 +199,66 @@ update_status ModuleSceneIntro::Update(float dt)
 		ImGui::RenderPlatformWindowsDefault();
 		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
 	}
+
+	
+	/*glBegin(GL_TRIANGLES);
+	//Front
+	glVertex3f(-1.f, 0.f, 2.f);
+	glVertex3f(1.f, 0.f, 2.f);
+	glVertex3f(1.f, 2.f, 2.f);
+	glVertex3f(-1.f, 0.f, 2.f);
+	glVertex3f(1.f, 2.f, 2.f);
+	glVertex3f(-1.f, 2.f, 2.f);
+
+	//Back
+	glVertex3f(-1.f, 0.f, 0.f);
+	glVertex3f(-1.f, 2.f, 0.f);
+	glVertex3f(1.f, 0.f, 0.f);
+	glVertex3f(1.f, 0.f, 0.f);
+	glVertex3f(-1.f, 2.f, 0.f);
+	glVertex3f(1.f, 2.f, 0.f);
+	
+	//Right
+	glVertex3f(1.f, 0.f, 2.f);
+	glVertex3f(1.f, 2.f, 0.f);
+	glVertex3f(1.f, 2.f, 2.f);
+	glVertex3f(1.f, 0.f, 2.f);
+	glVertex3f(1.f, 0.f, 0.f);
+	glVertex3f(1.f, 2.f, 0.f);
+
+	//Left
+	glVertex3f(-1.f, 0.f, 2.f);
+	glVertex3f(-1.f, 2.f, 0.f);
+	glVertex3f(-1.f, 0.f, 0.f);
+	glVertex3f(-1.f, 0.f, 2.f);
+	glVertex3f(-1.f, 2.f, 2.f);
+	glVertex3f(-1.f, 2.f, 0.f);
+
+	//Top
+	glVertex3f(-1.f, 2.f, 2.f);
+	glVertex3f(1.f, 2.f, 0.f);
+	glVertex3f(-1.f, 2.f, 0.f);
+	glVertex3f(-1.f, 2.f, 2.f);
+	glVertex3f(1.f, 2.f, 2.f);
+	glVertex3f(1.f, 2.f, 0.f);
+	
+	//Bottom
+	glVertex3f(1.f, 0.f, 2.f);
+	glVertex3f(-1.f, 0.f, 2.f); 
+	glVertex3f(-1.f, 0.f, 0.f);
+	glVertex3f(1.f, 0.f, 2.f);
+	glVertex3f(-1.f, 0.f, 0.f);
+	glVertex3f(1.f, 0.f, 0.f);
+
+	glEnd();*/
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, my_id);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	// … bind and use other buffers
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
 
 	return UPDATE_CONTINUE;
 }
