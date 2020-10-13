@@ -41,6 +41,8 @@ public:
 	PhysMotor3D* left_wheel;
 	PhysMotor3D* right_wheel;
 
+	//DefaultCube c;
+
 	//IMGUI!!!!
 	bool about_window;
 	bool config_window;

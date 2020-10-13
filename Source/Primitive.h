@@ -93,3 +93,16 @@ public:
 	vec3 normal;
 	float constant;
 };
+
+class DefaultCube {
+public:
+	DefaultCube();
+	~DefaultCube();
+	void RenderDirect();
+	void RenderArrayBuffer();
+	void RenderIndexBuffer();
+private:
+	uint my_array_id;
+	uint my_index_array_id;
+	uint index_buffer;
+};

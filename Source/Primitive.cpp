@@ -271,3 +271,117 @@ void Plane::InnerRender() const
 
 	glEnd();
 }
+
+
+DefaultCube::DefaultCube(): my_array_id(0), my_index_array_id(1), index_buffer(2)
+{
+	float array[36 * 3] = { 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, 1.f, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 1.f, 0.f, 0.f, 1.f, 0.f, -1.f, 1.f, 1.f, 0.f, 1.f, 0.f, -1.f, 1.f, 1.f, -1.f, 1.f, 1.f, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, -1.f, 0.f, 1.f, 0.f, 0.f, 1.f, -1.f, 0.f, 0.f, -1.f, 0.f, 1.f, -1.f, 1.f, 1.f, -1.f, 1.f, 1.f, -1.f, 1.f, 0.f, -1.f, 0.f, 0.f, -1.f, 1.f, 1.f, 0.f, 0.f, 1.f, -1.f, 0.f, 1.f, 0.f, 1.f, 1.f, 0.f, 1.f, 1.f, -1.f, 0.f, 1.f, -1.f, 1.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, -1.f, 1.f, 0.f, 0.f, 0.f, 0.f, -1.f, 1.f, 0.f, -1.f };
+	glGenBuffers(1, &my_array_id);
+	glBindBuffer(GL_ARRAY_BUFFER, my_array_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, array, GL_STATIC_DRAW);
+
+	float iarray[8 * 3] = {
+	0.f,0.f,0.f, //a 0
+	1.f,0.f,0.f, //b 1
+	0.f,1.f,0.f, //c 2
+	1.f,1.f,0.f, //d 3
+	0.f,0.f,-1.f, //e 4
+	1.f,0.f,-1.f, //f 5
+	0.f,1.f,-1.f, //g 6
+	1.f,1.f,-1.f, //h 7
+	};
+
+	unsigned int indices[36] = {
+		0, 1, 2,
+		1, 3, 2,
+		1, 5, 3,
+		5, 7, 3,
+		4, 0, 2,
+		4, 2, 6,
+		4, 6, 7,
+		7, 5, 4,
+		3, 6, 2,
+		3, 7, 6,
+		1, 0, 4,
+		1, 4, 5
+	};
+
+	glGenBuffers(1, &my_index_array_id);
+	glBindBuffer(GL_ARRAY_BUFFER, my_index_array_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 8 * 3, iarray, GL_STATIC_DRAW);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	glGenBuffers(1, &index_buffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 12 * 3, indices, GL_STATIC_DRAW);
+}
+
+DefaultCube::~DefaultCube()
+{
+}
+
+void DefaultCube::RenderDirect()
+{
+	//Drawing the cube direct method
+	glBegin(GL_TRIANGLES);
+	//front
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(1.f, 0.f, 0.f);
+	glVertex3f(0.f, 1.f, 0.f);
+	glVertex3f(1.f, 0.f, 0.f);
+	glVertex3f(1.f, 1.f, 0.f);
+	glVertex3f(0.f, 1.f, 0.f);
+	//right
+	glVertex3f(1.f, 0.f, 0.f);
+	glVertex3f(1.f, 0.f, -1.f);
+	glVertex3f(1.f, 1.f, 0.f);
+	glVertex3f(1.f, 0.f, -1.f);
+	glVertex3f(1.f, 1.f, -1.f);
+	glVertex3f(1.f, 1.f, 0.f);
+	//left
+	glVertex3f(0.f, 0.f, -1.f);
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(0.f, 1.f, 0.f);
+	glVertex3f(0.f, 0.f, -1.f);
+	glVertex3f(0.f, 1.f, 0.f);
+	glVertex3f(0.f, 1.f, -1.f);
+	//back
+	glVertex3f(0.f, 0.f, -1.f);
+	glVertex3f(0.f, 1.f, -1.f);
+	glVertex3f(1.f, 1.f, -1.f);
+	glVertex3f(1.f, 1.f, -1.f);
+	glVertex3f(1.f, 0.f, -1.f);
+	glVertex3f(0.f, 0.f, -1.f);
+	//top
+	glVertex3f(1.f, 1.f, 0.f);
+	glVertex3f(0.f, 1.f, -1.f);
+	glVertex3f(0.f, 1.f, 0.f);
+	glVertex3f(1.f, 1.f, 0.f);
+	glVertex3f(1.f, 1.f, -1.f);
+	glVertex3f(0.f, 1.f, -1.f);
+	//bottom
+	glVertex3f(1.f, 0.f, 0.f);
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(0.f, 0.f, -1.f);
+	glVertex3f(1.f, 0.f, 0.f);
+	glVertex3f(0.f, 0.f, -1.f);
+	glVertex3f(1.f, 0.f, -1.f);
+	glEnd();
+}
+
+void DefaultCube::RenderArrayBuffer()
+{
+	//cube using the vertex array
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, my_array_id);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void DefaultCube::RenderIndexBuffer()
+{
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
+	glDisableClientState(GL_VERTEX_ARRAY);
+}

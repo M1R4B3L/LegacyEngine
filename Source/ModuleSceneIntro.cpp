@@ -40,6 +40,12 @@ update_status ModuleSceneIntro::Update(float dt)
 	p.axis = true;
 	p.Render();
 
+	//PROBA RENDER 1X1 CUBE OPENGL
+	static DefaultCube c;
+	//c.RenderDirect();
+	//c.RenderArrayBuffer();
+	c.RenderIndexBuffer();
+
 	//IMGUI!!!!
 	/*if (ImGui::IsKeyPressed(SDL_SCANCODE_1)) {
 		return UPDATE_STOP;
@@ -52,7 +58,7 @@ update_status ModuleSceneIntro::Update(float dt)
 	bool show_demo_window = true;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	ImGui::ShowDemoWindow(&show_demo_window);
+	//ImGui::ShowDemoWindow(&show_demo_window);
 
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
