@@ -140,7 +140,7 @@ update_status ModuleSceneIntro::Update(float dt)
 		ImGui::End();
 	}
 
-	if (console_window)
+	/*if (console_window)
 	{
 		ImGui::Begin("Console", &console_window);
 	
@@ -151,7 +151,7 @@ update_status ModuleSceneIntro::Update(float dt)
 		}
 		
 		ImGui::End();
-	}
+	}*/
 
 
 	ImGui::Render();
