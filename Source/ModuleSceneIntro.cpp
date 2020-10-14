@@ -7,7 +7,12 @@
 #include "examples\imgui_impl_sdl.h"
 #include "examples\imgui_impl_opengl3.h"
 
-ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled), about_window(false), config_window(false),options_bool(false),name("Legacy Engine"),org("CITM")
+
+
+ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled), 
+about_window(false), 
+config_window(false),options_bool(false),name("Legacy Engine"),org("CITM"),
+console_window(true)
 {
 }
 
@@ -58,35 +63,35 @@ update_status ModuleSceneIntro::Update(float dt)
 	bool show_demo_window = true;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	//ImGui::ShowDemoWindow(&show_demo_window);
+	ImGui::ShowDemoWindow(&show_demo_window);
 
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
-			if (ImGui::Button("Exit")) {
+			if (ImGui::MenuItem("Exit", "ESC")) {
 				return UPDATE_STOP;
 			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("View")) {
-			if (ImGui::Button("Console")) {
-				
+			if (ImGui::MenuItem("Console")) {
+				console_window = !console_window;
 			}
-			if (ImGui::Button("Configuration")) {
+			if (ImGui::MenuItem("Configuration")) {
 				config_window = !config_window;
 			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Help")) {
-			if (ImGui::Button("Documentation")) {
+			if (ImGui::MenuItem("Documentation")) {
 				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine", NULL, NULL, 3);
 			}
-			if (ImGui::Button("Donloawd Latest")) {
+			if (ImGui::MenuItem("Donloawd Latest")) {
 				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/releases", NULL, NULL, 3);
 			}
-			if (ImGui::Button("Report a bug")) {
+			if (ImGui::MenuItem("Report a bug")) {
 				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/issues", NULL, NULL, 3);
 			}
-			if (ImGui::Button("About")) {
+			if (ImGui::MenuItem("About")) {
 				about_window = !about_window;
 			}
 			ImGui::EndMenu();
@@ -135,6 +140,18 @@ update_status ModuleSceneIntro::Update(float dt)
 		ImGui::End();
 	}
 
+	/*if (console_window)
+	{
+		ImGui::Begin("Console", &console_window);
+	
+		for (int i = 0; i < 5; i++) 
+		{
+			
+			ImGui::TextUnformatted("Hi, monkey");
+		}
+		
+		ImGui::End();
+	}*/
 
 
 	ImGui::Render();
@@ -162,4 +179,3 @@ update_status ModuleSceneIntro::Update(float dt)
 void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 {
 }
-
