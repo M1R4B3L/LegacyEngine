@@ -44,6 +44,7 @@ public:
 	//DefaultCube c;
 
 	//IMGUI!!!!
+	bool console_window;
 	bool about_window;
 	bool config_window;
 	bool options_bool;

@@ -11,8 +11,7 @@
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled), 
 about_window(false), 
-config_window(false),options_bool(false),name("Legacy Engine"),org("CITM"),
-console_window(true)
+config_window(true),options_bool(false),name("Legacy Engine"),org("CITM"),console_window(true)
 {
 }
 
