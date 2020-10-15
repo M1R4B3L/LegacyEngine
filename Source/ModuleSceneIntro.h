@@ -50,4 +50,7 @@ public:
 	bool options_bool;
 	char name[128];
 	char org[128];
+
+	//Config Window
+	bool active_window;
 };

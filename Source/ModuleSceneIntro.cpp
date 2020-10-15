@@ -9,9 +9,10 @@
 
 
 
-ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled), 
-about_window(false), 
-config_window(true),options_bool(false),name("Legacy Engine"),org("CITM"),console_window(true)
+ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled),
+about_window(false),
+config_window(true), options_bool(false), name("Legacy Engine"), org("CITM"), console_window(true),
+active_window(true)
 {
 }
 
@@ -72,10 +73,10 @@ update_status ModuleSceneIntro::Update(float dt)
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("View")) {
-			if (ImGui::MenuItem("Console")) {
+			if (ImGui::MenuItem("Console", NULL, console_window)) {
 				console_window = !console_window;
 			}
-			if (ImGui::MenuItem("Configuration")) {
+			if (ImGui::MenuItem("Configuration", NULL, config_window)) {
 				config_window = !config_window;
 			}
 			ImGui::EndMenu();
@@ -102,7 +103,7 @@ update_status ModuleSceneIntro::Update(float dt)
 		//ImGuiCond_Once;
 		//ImGui::SetNextWindowPos()
 		ImGui::Begin("About", &about_window);
-		ImGui::Text("Legacy engine is developed by 2 students from CITM Barcelon \nwithin the context of the game engine subject");
+		ImGui::Text("Legacy engine is developed by 2 students from CITM Barcelona \nwithin the context of the game engine subject");
 		ImGui::End();
 	}
 
@@ -135,6 +136,30 @@ update_status ModuleSceneIntro::Update(float dt)
 			sprintf_s(title, 25, "Framerate %.1f", fps_log[fps_log.size() - 1]);
 			ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
 			*/
+		}
+		else if (ImGui::CollapsingHeader("Window"))
+		{
+			ImGui::Checkbox("Active",&active_window);
+			if (active_window == false)
+			{
+				return UPDATE_STOP;
+			}
+
+			//ImGui::SliderInt("Width", &App->window->GetWidth(),);
+			App->window->GetWidth();
+		
+		}
+		if (ImGui::CollapsingHeader("File System"))
+		{
+
+		}
+		if (ImGui::CollapsingHeader("Input"))
+		{
+
+		}
+		if (ImGui::CollapsingHeader("Hardware"))
+		{
+
 		}
 		ImGui::End();
 	}
