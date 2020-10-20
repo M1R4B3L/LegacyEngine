@@ -137,7 +137,7 @@ update_status ModuleSceneIntro::Update(float dt)
 			ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
 			*/
 		}
-		else if (ImGui::CollapsingHeader("Window"))
+		if (ImGui::CollapsingHeader("Window"))
 		{
 			ImGui::Checkbox("Active",&active_window);
 			if (active_window == false)
@@ -161,6 +161,12 @@ update_status ModuleSceneIntro::Update(float dt)
 		{
 
 		}
+		if (ImGui::CollapsingHeader("OpenGL"))
+		{
+
+		}
+
+
 		ImGui::End();
 	}
 
