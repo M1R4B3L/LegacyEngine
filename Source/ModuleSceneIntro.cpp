@@ -1,6 +1,9 @@
 #include "Globals.h"
 #include "GL/glew.h"
 #include "Application.h"
+#include "ModuleWindow.h"
+#include "ModuleRenderer3D.h"
+#include "ModuleCamera3D.h"
 #include "ModuleSceneIntro.h"
 #include "Primitive.h"
 #include "imgui.h"
@@ -9,7 +12,7 @@
 
 
 
-ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled),
+ModuleSceneIntro::ModuleSceneIntro(bool start_enabled) : Module(start_enabled),
 about_window(false),
 config_window(true), options_bool(false), name("Legacy Engine"), org("CITM"), console_window(true),
 active_window(true)

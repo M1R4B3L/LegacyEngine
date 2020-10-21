@@ -1,26 +1,26 @@
 #pragma once
-
-#include <list>
-#include <array>
 #include "Globals.h"
 #include "Timer.h"
 #include "Module.h"
-#include "ModuleWindow.h"
-#include "ModuleInput.h"
-//#include "ModuleAudio.h"
-#include "ModuleSceneIntro.h"
-#include "ModuleRenderer3D.h"
-#include "ModuleCamera3D.h"
+
+#include <vector>
+#include <array>
+
+class ModuleWindow;
+class ModuleInput;
+class ModuleSceneIntro;
+class ModuleRenderer3D;
+class ModuleCamera3D;
 
 class Application
 {
 public:
-	ModuleWindow* window;
-	ModuleInput* input;
-	//ModuleAudio* audio;
-	ModuleSceneIntro* scene_intro;
-	ModuleRenderer3D* renderer3D;
-	ModuleCamera3D* camera;
+
+	ModuleWindow* window = nullptr;
+	ModuleInput* input = nullptr;
+	ModuleSceneIntro* scene_intro = nullptr;
+	ModuleRenderer3D* renderer3D = nullptr;
+	ModuleCamera3D* camera = nullptr;
 	std::array<float,50>fps_log;
 
 private:
@@ -30,7 +30,8 @@ private:
 	unsigned __int32 lastSecFrameCount = 0;
 	float	dt;
 	int capped_ms = -1;
-	std::list<Module*> list_modules;
+
+	std::vector<Module*> modules;
 
 public:
 
@@ -48,3 +49,5 @@ private:
 	void PrepareUpdate();
 	void FinishUpdate();
 };
+
+extern Application* App;

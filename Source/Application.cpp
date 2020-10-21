@@ -1,13 +1,17 @@
 #include "Application.h"
 
-#include <list>
+#include "ModuleWindow.h"
+#include "ModuleInput.h"
+#include "ModuleRenderer3D.h"
+#include "ModuleCamera3D.h"
+#include "ModuleSceneIntro.h"
 
+#include <list>
 
 Application::Application()
 {
 	window = new ModuleWindow(this);
 	input = new ModuleInput(this);
-	//audio = new ModuleAudio(this, true);
 	scene_intro = new ModuleSceneIntro(this);
 	renderer3D = new ModuleRenderer3D(this);
 	camera = new ModuleCamera3D(this);
@@ -20,7 +24,6 @@ Application::Application()
 	AddModule(window);
 	AddModule(camera);
 	AddModule(input);
-	//AddModule(audio);
 	
 	// Scenes
 	AddModule(scene_intro);
@@ -31,9 +34,9 @@ Application::Application()
 
 Application::~Application()
 {
-	std::list <Module*>::reverse_iterator it = list_modules.rbegin();
+	std::vector<Module*>::reverse_iterator it = modules.rbegin();
 
-	for (it; it != list_modules.rend(); it++)
+	for (it; it != modules.rend(); it++)
 	{
 		if (*it != NULL)
 		{
@@ -42,7 +45,7 @@ Application::~Application()
 		}
 	}
 
-	list_modules.clear();
+	modules.clear();
 }
 
 bool Application::Init()
@@ -50,18 +53,18 @@ bool Application::Init()
 	bool ret = true;
 
 	// Call Init() in all modules
-	std::list<Module*>::iterator it = list_modules.begin();
+	std::vector<Module*>::iterator it = modules.begin();
 
-	for(it; it != list_modules.end() && ret == true; it++)
+	for(it; it != modules.end() && ret == true; it++)
 	{
 		ret = (*it)->Init();
 	}
 
 	// After all Init calls we call Start() in all modules
 	LOG("Application Start --------------");
-	it = list_modules.begin();
+	it = modules.begin();
 
-	for(it; it != list_modules.end() && ret == true; it++)
+	for(it; it != modules.end() && ret == true; it++)
 	{
 		ret = (*it)->Start();
 		
@@ -114,20 +117,20 @@ update_status Application::Update()
 	update_status ret = UPDATE_CONTINUE;
 	PrepareUpdate();
 	
-	std::list<Module*>::iterator it = list_modules.begin();	
-	for (it; it != list_modules.end() && ret == UPDATE_CONTINUE; it++)
+	std::vector<Module*>::iterator it = modules.begin();
+	for (it; it != modules.end() && ret == UPDATE_CONTINUE; it++)
 	{
 		ret = (*it)->PreUpdate(dt);
 	}
 
-	it = list_modules.begin();
-	for (it; it != list_modules.end() && ret == UPDATE_CONTINUE; it++)
+	it = modules.begin();
+	for (it; it != modules.end() && ret == UPDATE_CONTINUE; it++)
 	{
 		ret = (*it)->Update(dt);
 	}
 
-	it = list_modules.begin();
-	for (it; it != list_modules.end() && ret == UPDATE_CONTINUE; it++)
+	it = modules.begin();
+	for (it; it != modules.end() && ret == UPDATE_CONTINUE; it++)
 	{
 		ret = (*it)->PostUpdate(dt);
 	}
@@ -140,8 +143,8 @@ bool Application::CleanUp()
 {
 	bool ret = true;
 
-	std::list <Module*>::reverse_iterator it = list_modules.rbegin();
-	for (it; it != list_modules.rend() && ret == true; it++)
+	std::vector <Module*>::reverse_iterator it = modules.rbegin();
+	for (it; it != modules.rend() && ret == true; it++)
 	{
 		ret = (*it)->CleanUp();
 	}
@@ -150,5 +153,5 @@ bool Application::CleanUp()
 
 void Application::AddModule(Module* mod)
 {
-	list_modules.push_back(mod);
+	modules.push_back(mod);
 }
