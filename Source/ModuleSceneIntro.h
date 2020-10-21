@@ -48,9 +48,10 @@ public:
 	bool about_window;
 	bool config_window;
 	bool options_bool;
-	char name[128];
+
 	char org[128];
 
 	//Config Window
+	bool WindowConfig();
 	bool active_window;
 };

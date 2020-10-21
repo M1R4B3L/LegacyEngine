@@ -14,7 +14,7 @@
 
 ModuleSceneIntro::ModuleSceneIntro(bool start_enabled) : Module(start_enabled),
 about_window(false),
-config_window(true), options_bool(false), name("Legacy Engine"), org("CITM"), console_window(true),
+config_window(true), options_bool(false), org("CITM"), console_window(true),
 active_window(true)
 {
 }
@@ -110,68 +110,7 @@ update_status ModuleSceneIntro::Update(float dt)
 		ImGui::End();
 	}
 
-	if (config_window) {
-		//ImGuiCond_Once;
-		//ImGui::SetNextWindowPos()
-		ImGui::Begin("Configuration", &config_window);
-		if (ImGui::BeginMenu("Options",&options_bool)) {
-			ImGui::MenuItem("Set Defaults");
-			ImGui::MenuItem("Load");
-			ImGui::MenuItem("Save");
-			ImGui::EndMenu();
-		}
-		if (ImGui::CollapsingHeader("Application")) {
-			ImGui::InputText("App Name",name,128);
-			ImGui::InputText("Organization", org, 128);
-			char title[25];
-			sprintf_s(title, 25, "Framerate %.1f", App->fps_log[App->fps_log.size() - 1]);
-			ImGui::PlotHistogram("##framerate", &App->fps_log[0], App->fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
-			//ImGui::SliderInt("Max FPS",&App->cap,0,144);
-			/*ImGui::Text("Limit Framerate: 0");
-			ImGui::GetFrameCount();
-			static int n = 0;
-			static char title[25];
-			if (n > 24)
-				n = 0;
-			else
-				n++;
-			title[n]= ImGui::GetFrameCount();
-			sprintf_s(title, 25, "Framerate %.1f", fps_log[fps_log.size() - 1]);
-			ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
-			*/
-		}
-		if (ImGui::CollapsingHeader("Window"))
-		{
-			ImGui::Checkbox("Active",&active_window);
-			if (active_window == false)
-			{
-				return UPDATE_STOP;
-			}
-
-			//ImGui::SliderInt("Width", &App->window->GetWidth(),);
-			App->window->GetWidth();
-		
-		}
-		if (ImGui::CollapsingHeader("File System"))
-		{
-
-		}
-		if (ImGui::CollapsingHeader("Input"))
-		{
-
-		}
-		if (ImGui::CollapsingHeader("Hardware"))
-		{
-
-		}
-		if (ImGui::CollapsingHeader("OpenGL"))
-		{
-
-		}
-
-
-		ImGui::End();
-	}
+	WindowConfig();
 
 	/*if (console_window)
 	{
@@ -211,4 +150,69 @@ update_status ModuleSceneIntro::Update(float dt)
 
 void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 {
+}
+
+bool ModuleSceneIntro::WindowConfig()
+{
+	if (config_window) {
+		//ImGuiCond_Once;
+		//ImGui::SetNextWindowPos()
+		ImGui::Begin("Configuration", &config_window);
+		if (ImGui::BeginMenu("Options", &options_bool)) {
+			ImGui::MenuItem("Set Defaults");
+			ImGui::MenuItem("Load");
+			ImGui::MenuItem("Save");
+			ImGui::EndMenu();
+		}
+		if (ImGui::CollapsingHeader("Application")) {
+			
+			static char name[128];
+			strcpy_s(name, 128, App->GetEngineTitle());
+			if(ImGui::InputText("App Name", name, 128, ImGuiInputTextFlags_EnterReturnsTrue))  //We can use ImGuiInputTextFlags_EnterReturnsTrue only if we want to change the name if enter is pressed
+				App->SetEngineTitle(name);
+
+			ImGui::InputText("Organization", org, 128);
+
+			ImGui::Text("Limit Framerate:");
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(0,255,255,255), "Aki van unos framesitos");
+
+			char title[25];
+			sprintf_s(title, 25, "Framerate %.1f", App->fps_log[App->fps_log.size() - 1]);
+			ImGui::PlotHistogram("##framerate", &App->fps_log[0], App->fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
+		
+		}
+		if (ImGui::CollapsingHeader("Window"))
+		{
+			ImGui::Checkbox("Active", &active_window);
+			if (active_window == false)
+			{
+				
+			}
+
+			//ImGui::SliderInt("Width", &App->window->GetWidth(),);
+			App->window->GetWidth();
+
+		}
+		if (ImGui::CollapsingHeader("File System"))
+		{
+
+		}
+		if (ImGui::CollapsingHeader("Input"))
+		{
+
+		}
+		if (ImGui::CollapsingHeader("Hardware"))
+		{
+
+		}
+		if (ImGui::CollapsingHeader("OpenGL"))
+		{
+
+		}
+
+		ImGui::End();
+	}
+
+	return config_window;
 }

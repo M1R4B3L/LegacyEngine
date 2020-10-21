@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <array>
+#include <string>
 
 class ModuleWindow;
 class ModuleInput;
@@ -21,7 +22,11 @@ public:
 	ModuleSceneIntro* scene_intro = nullptr;
 	ModuleRenderer3D* renderer3D = nullptr;
 	ModuleCamera3D* camera = nullptr;
+
 	std::array<float,50>fps_log;
+
+	const char* GetEngineTitle() const;
+	void SetEngineTitle(const char* title);
 
 private:
 
@@ -30,6 +35,9 @@ private:
 	unsigned __int32 lastSecFrameCount = 0;
 	float	dt;
 	int capped_ms = -1;
+
+	//Windows
+	std::string title;
 
 	std::vector<Module*> modules;
 

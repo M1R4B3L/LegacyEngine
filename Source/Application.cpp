@@ -8,7 +8,7 @@
 
 #include <list>
 
-Application::Application()
+Application::Application() : title("Legacy Engine")
 {
 	window = new ModuleWindow(this);
 	input = new ModuleInput(this);
@@ -154,4 +154,15 @@ bool Application::CleanUp()
 void Application::AddModule(Module* mod)
 {
 	modules.push_back(mod);
+}
+
+const char* Application::GetEngineTitle() const
+{
+	return title.c_str();
+}
+
+void Application::SetEngineTitle(const char* title)
+{
+	this->title = title;
+	App->window->SetTitle(title);
 }
