@@ -8,26 +8,6 @@
 struct PhysBody3D;
 struct PhysMotor3D;
 
-struct Hardware {
-
-	SDL_version H_SDLVersion;
-	int H_CPU;
-	int H_CPUCache;
-	float H_SystemRAM;
-	bool H_rdtsc;
-	bool H_3dnow;
-	bool H_altivec;
-	bool H_avx;
-	bool H_avx2;
-	bool H_mmx;
-	bool H_sse;
-	bool H_sse2;
-	bool H_sse3;
-	bool H_sse41;
-	bool H_sse42;
-
-};
-
 class ModuleSceneIntro : public Module
 {
 public:

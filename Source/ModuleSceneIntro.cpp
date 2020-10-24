@@ -107,9 +107,6 @@ update_status ModuleSceneIntro::Update(float dt)
 		//ImGui::SetNextWindowPos()
 		ImGui::Begin("About", &about_window);
 		ImGui::Text("Legacy engine is developed by 2 students from CITM Barcelona \nwithin the context of the game engine subject");
-
-		//engine, description, libraries, license
-
 		ImGui::End();
 	}
 
@@ -176,9 +173,6 @@ bool ModuleSceneIntro::WindowConfig()
 
 			ImGui::InputText("Organization", org, 128);
 
-			ImGui::Separator();
-			ImGui::Spacing();
-
 			ImGui::Text("Limit Framerate:");
 			ImGui::SameLine();
 			ImGui::TextColored(ImVec4(0,255,255,255), "Aki van unos framesitos");
@@ -196,38 +190,9 @@ bool ModuleSceneIntro::WindowConfig()
 				
 			}
 
-			// NEED TO MAKE EVERYTHING WORK
-
 			//ImGui::SliderInt("Width", &App->window->GetWidth(),);
 			App->window->GetWidth();
 
-			ImGui::Text("Refresh date");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(255, 0, 255, 255), "Hz of the window");
-		
-			bool fullscreen = true;
-			bool resizable = true;
-			bool bordeless = true;
-			bool fulldesktop = true;
-
-			if (ImGui::Checkbox("Fullscreen", &fullscreen))
-			{
-			}
-			ImGui::SameLine();
-			if (ImGui::Checkbox("Resizable", &resizable))
-			{
-
-			}
-
-			if (ImGui::Checkbox("Borderless", &bordeless))
-			{
-
-			}
-			ImGui::SameLine();
-			if (ImGui::Checkbox("Full Desktop", &fulldesktop))
-			{
-
-			}
 		}
 		if (ImGui::CollapsingHeader("File System"))
 		{
@@ -239,72 +204,6 @@ bool ModuleSceneIntro::WindowConfig()
 		}
 		if (ImGui::CollapsingHeader("Hardware"))
 		{
-
-			static Hardware stats;
-			SDL_GetVersion(&stats.H_SDLVersion);
-			stats.H_CPU = SDL_GetCPUCount();
-			stats.H_CPUCache = SDL_GetCPUCacheLineSize();
-			stats.H_SystemRAM = (float) SDL_GetSystemRAM() / 1024.f; //This is returned in Mb thats why we divide
-			stats.H_rdtsc = SDL_HasRDTSC() == SDL_TRUE;
-			stats.H_3dnow = SDL_Has3DNow() == SDL_TRUE;
-			stats.H_altivec = SDL_HasAltiVec() == SDL_TRUE;
-			stats.H_avx = SDL_HasAVX() == SDL_TRUE;
-			stats.H_avx2 = SDL_HasAVX2() == SDL_TRUE;
-			stats.H_mmx = SDL_HasMMX() == SDL_TRUE;
-			stats.H_sse = SDL_HasSSE() == SDL_TRUE;
-			stats.H_sse2 = SDL_HasSSE2() == SDL_TRUE;
-			stats.H_sse3 = SDL_HasSSE3() == SDL_TRUE;
-			stats.H_sse41 = SDL_HasSSE41() == SDL_TRUE;
-			stats.H_sse42 = SDL_HasSSE42() == SDL_TRUE;
-		
-			ImGui::Text("SDL Version:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "%d.%d.%d", stats.H_SDLVersion.major, stats.H_SDLVersion.minor, stats.H_SDLVersion.patch);
-			ImGui::Separator();
-			ImGui::Spacing();
-			ImGui::Text("CPUs:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u (Cache: %ukb)", stats.H_CPU, stats.H_CPUCache );
-			ImGui::Text("System RAM:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "%.2fGb", stats.H_SystemRAM);
-			ImGui::Text("Features:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "%s%s%s%s%s",
-				stats.H_rdtsc ? "RDTSC " : "",
-				stats.H_3dnow ? "3DNOW " : "",
-				stats.H_altivec ? "ALTIVEC " : "",
-				stats.H_avx ? "AVX " : "",
-				stats.H_avx2 ? "AVX2 " : ""
-			);
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "%s%s%s%s%s%s",
-				stats.H_mmx ? "MMX " : "",
-				stats.H_sse ? "SSE " : "",
-				stats.H_sse2 ? "SSE2 " : "",
-				stats.H_sse3 ? "SSE3 " : "",
-				stats.H_sse41 ? "SSE41 " : "",
-				stats.H_sse42 ? "SSE42 " : ""
-			);
-			ImGui::Separator();
-			ImGui::Spacing();
-			ImGui::Text("GPU:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
-			ImGui::Text("Brand:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
-			ImGui::Text("VRAM Budget:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
-			ImGui::Text("VRAM Usage:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
-			ImGui::Text("VRAM Available:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
-			ImGui::Text("VRAM Reserved:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
 
 		}
 		if (ImGui::CollapsingHeader("OpenGL"))
