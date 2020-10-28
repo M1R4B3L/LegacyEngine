@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __ModuleSceneIntro_H__
+#define __ModuleSceneIntro_H__
+
 #include "Module.h"
 #include "Globals.h"
 #include "Primitive.h"
@@ -11,10 +13,30 @@ struct PhysMotor3D;
 class Model;
 class Mesh;
 
+struct Hardware {
+
+	SDL_version H_SDLVersion;
+	int H_CPU;
+	int H_CPUCache;
+	float H_SystemRAM;
+	bool H_rdtsc;
+	bool H_3dnow;
+	bool H_altivec;
+	bool H_avx;
+	bool H_avx2;
+	bool H_mmx;
+	bool H_sse;
+	bool H_sse2;
+	bool H_sse3;
+	bool H_sse41;
+	bool H_sse42;
+
+};
+
 class ModuleSceneIntro : public Module
 {
 public:
-	ModuleSceneIntro(Application* app, bool start_enabled = true);
+	ModuleSceneIntro(bool start_enabled = true);
 	~ModuleSceneIntro();
 
 	bool Start();
@@ -47,11 +69,14 @@ public:
 	//DefaultCube c;
 
 	//IMGUI!!!!
-	bool console_window;
+	//bool docking_window;
 	bool about_window;
 	bool config_window;
-	bool options_bool;
-	char name[128];
+	bool console_window;
+	bool inspector_window;
+	bool hierarchy_window;
+	bool demo_window;
+
 	char org[128];
 
 	Model* warrior = nullptr;
@@ -59,5 +84,13 @@ public:
 
 	std::vector<Mesh> CurrentMeshes;
 	//Config Window
-	bool active_window;
+	//void WindowDocking();
+	void MenuBar();
+	void WindowAbout();
+	void WindowConfig();
+	void WindowConsole();
+	void WindowInspector();
+	void WindowHierarchy();
+	void WindowDemo();
 };
+#endif // __ModuleSceneIntro_H__

@@ -2,10 +2,15 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 
-ModuleWindow::ModuleWindow(Application* app, bool start_enabled) : Module(app, start_enabled)
+ModuleWindow::ModuleWindow(bool start_enabled) : Module(start_enabled)
 {
 	window = NULL;
 	screen_surface = NULL;
+
+	w_config.fullscreen = WIN_FULLSCREEN;
+	w_config.resizable = WIN_RESIZABLE;
+	w_config.border = WIN_BORDERLESS;
+	w_config.full_desktop = WIN_FULLSCREEN_DESKTOP;
 }
 
 // Destructor
@@ -27,8 +32,8 @@ bool ModuleWindow::Init()
 	else
 	{
 		//Create window
-		screen_width = SCREEN_WIDTH * SCREEN_SIZE;
-		screen_height = SCREEN_HEIGHT * SCREEN_SIZE;
+		w_config.screen_width = SCREEN_WIDTH * SCREEN_SIZE;
+		w_config.screen_height = SCREEN_HEIGHT * SCREEN_SIZE;
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
 		//Use OpenGL 2.1
@@ -55,7 +60,7 @@ bool ModuleWindow::Init()
 			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
 
-		window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, flags);
+		window = SDL_CreateWindow(App->GetEngineTitle(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w_config.screen_width, w_config.screen_height, flags);
 
 		if(window == NULL)
 		{
@@ -93,12 +98,144 @@ void ModuleWindow::SetTitle(const char* title)
 	SDL_SetWindowTitle(window, title);
 }
 
-int const ModuleWindow::GetWidth()
+int ModuleWindow::GetWidth()
 {
-	return screen_width;
+	return w_config.screen_width;
 }
 
-int const ModuleWindow::GetHeight()
+int ModuleWindow::GetHeight()
 {
-	return screen_height;
+	return w_config.screen_height;
+}
+
+void ModuleWindow::SetSize(int width, int height)
+{
+	w_config.screen_width = width;
+	w_config.screen_height = height;
+
+	SDL_SetWindowSize(window, w_config.screen_width, w_config.screen_height);
+}
+
+const int ModuleWindow::GetRefreshRate() const
+{
+	SDL_DisplayMode current;
+
+	if (SDL_GetCurrentDisplayMode(0, &current) != 0)
+	{
+		LOG("[WINDOWS] Could not get display mode for video display %s", SDL_GetError());
+	}
+	else
+	{
+		return current.refresh_rate;
+	}
+}
+
+bool ModuleWindow::GetFullscreen()
+{
+	return w_config.fullscreen;
+}
+
+void ModuleWindow::SetFullscreen(bool activate)
+{
+	if (activate != w_config.fullscreen)
+	{
+		if (activate == true)
+		{
+			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+			LOG("[WINDOWS] Set Fullscreen Mode");
+			w_config.fullscreen = activate;
+		}
+		else
+		{
+			SDL_SetWindowFullscreen(window, 0);
+			LOG("[WINDOWS] Set Windows Mode");
+			w_config.fullscreen = activate;
+			w_config.full_desktop = activate;
+		}
+	}
+}
+
+bool ModuleWindow::GetResizable()
+{
+	return w_config.resizable;
+}
+
+void ModuleWindow::SetResizable(bool activate)
+{
+
+	if (activate != w_config.resizable)
+	{
+		if (activate == true)
+		{
+			SDL_SetWindowResizable(window, SDL_TRUE);
+			LOG("[WINDOWS] Resizable");
+			w_config.resizable = activate;
+		}
+		else
+		{
+			SDL_SetWindowResizable(window, SDL_FALSE);
+			LOG("[WINDOWS] Not Resizable");
+			w_config.resizable = activate;
+		}
+	}
+}
+
+bool ModuleWindow::GetBorderless()
+{
+	return w_config.border;
+}
+
+void ModuleWindow::SetBorderless(bool activate)
+{
+
+	if (activate != w_config.border && w_config.fullscreen == false && w_config.full_desktop == false)
+	{
+		if (activate == true)
+		{
+			SDL_SetWindowBordered(window, SDL_FALSE);
+			LOG("[WINDOWS] Borderless");
+			w_config.border = activate;
+		}
+		else
+		{
+			SDL_SetWindowBordered(window, SDL_TRUE);
+			LOG("[WINDOWS] Bordered");
+			w_config.border = activate;
+		}
+	}
+}
+
+bool ModuleWindow::GetFullscreenDesktop()
+{
+	return w_config.full_desktop;
+}
+
+void ModuleWindow::SetFullscreenDesktop(bool activate)
+{
+	if (activate != w_config.full_desktop)
+	{
+		if (activate == true)
+		{
+			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+			LOG("[WINDOWS] Set Fullscreen Desktop Mode");
+			w_config.full_desktop = activate;
+		}
+		else
+		{
+			SDL_SetWindowFullscreen(window, 0);
+			LOG("[WINDOWS] Set Windows Mode");
+			w_config.fullscreen = activate;
+			w_config.full_desktop = activate;
+		}
+	}
+}
+
+bool ModuleWindow::GetBrightness()
+{
+	return SDL_GetWindowBrightness(window);
+}
+
+void ModuleWindow::SetBrightness(float brightness)
+{
+	SDL_SetWindowBrightness(window, brightness);	
 }

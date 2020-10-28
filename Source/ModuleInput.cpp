@@ -2,11 +2,12 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleInput.h"
+#include "ModuleRenderer3D.h"
 #include "examples/imgui_impl_sdl.h"
 
 #define MAX_KEYS 300
 
-ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, start_enabled)
+ModuleInput::ModuleInput(bool start_enabled) : Module(start_enabled)
 {
 	keyboard = new KEY_STATE[MAX_KEYS];
 	memset(keyboard, KEY_IDLE, sizeof(KEY_STATE) * MAX_KEYS);

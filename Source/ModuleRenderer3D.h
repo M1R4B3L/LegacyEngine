@@ -10,7 +10,7 @@
 class ModuleRenderer3D : public Module
 {
 public:
-	ModuleRenderer3D(Application* app, bool start_enabled = true);
+	ModuleRenderer3D(bool start_enabled = true);
 	~ModuleRenderer3D();
 
 	bool Init();
@@ -21,6 +21,10 @@ public:
 	void Draw(Mesh &mesh);
 
 	void OnResize(int width, int height);
+
+	bool wireframes;
+	const bool GetWireframes();
+	void SetWireframes(bool activate);
 
 public:
 
