@@ -19,6 +19,10 @@ public:
 
 	void OnResize(int width, int height);
 
+	bool wireframes;
+	const bool GetWireframes();
+	void SetWireframes(bool activate);
+
 public:
 
 	Light lights[MAX_LIGHTS];

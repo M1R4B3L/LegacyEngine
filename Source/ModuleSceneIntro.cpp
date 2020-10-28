@@ -13,9 +13,8 @@
 
 
 ModuleSceneIntro::ModuleSceneIntro(bool start_enabled) : Module(start_enabled),
-about_window(false),
-config_window(true), options_bool(false), org("CITM"), console_window(true),
-active_window(true)
+about_window(false), config_window(false), console_window(false), inspector_window(false), hierarchy_window(false), demo_window(false),//docking_window(true), 
+org("CITM")
 {
 }
 
@@ -62,72 +61,14 @@ update_status ModuleSceneIntro::Update(float dt)
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
-	//our state (depenent de si el bool que pasem a la window es true o false s'ensenya la window i si la tanquem imgui posa el bool directament a false)
-	bool show_demo_window = true;
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-	ImGui::ShowDemoWindow(&show_demo_window);
-
-	if (ImGui::BeginMainMenuBar()) {
-		if (ImGui::BeginMenu("File")) {
-			if (ImGui::MenuItem("Exit", "ESC")) {
-				return UPDATE_STOP;
-			}
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("View")) {
-			if (ImGui::MenuItem("Console", NULL, console_window)) {
-				console_window = !console_window;
-			}
-			if (ImGui::MenuItem("Configuration", NULL, config_window)) {
-				config_window = !config_window;
-			}
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Help")) {
-			if (ImGui::MenuItem("Documentation")) {
-				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine", NULL, NULL, 3);
-			}
-			if (ImGui::MenuItem("Donloawd Latest")) {
-				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/releases", NULL, NULL, 3);
-			}
-			if (ImGui::MenuItem("Report a bug")) {
-				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/issues", NULL, NULL, 3);
-			}
-			if (ImGui::MenuItem("About")) {
-				about_window = !about_window;
-			}
-			ImGui::EndMenu();
-		}
-	}
-	ImGui::EndMainMenuBar();
-
-	if (about_window) {
-		//ImGuiCond_Once;
-		//ImGui::SetNextWindowPos()
-		ImGui::Begin("About", &about_window);
-		ImGui::Text("Legacy engine is developed by 2 students from CITM Barcelona \nwithin the context of the game engine subject");
-
-		//engine, description, libraries, license
-
-		ImGui::End();
-	}
-
+	//WindowDocking();
+	MenuBar();
+	WindowAbout();
 	WindowConfig();
-
-	/*if (console_window)
-	{
-		ImGui::Begin("Console", &console_window);
-	
-		for (int i = 0; i < 5; i++) 
-		{
-			
-			ImGui::TextUnformatted("Hi, monkey");
-		}
-		
-		ImGui::End();
-	}*/
-
+	WindowConsole();
+	WindowInspector();
+	WindowHierarchy();
+	WindowDemo();
 
 	ImGui::Render();
 	ImGuiIO& io = ImGui::GetIO();
@@ -139,6 +80,7 @@ update_status ModuleSceneIntro::Update(float dt)
 	// Update and Render additional Platform Windows
 	// (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
 	//  For this specific demo app we could also call SDL_GL_MakeCurrent(window, gl_context) directly)
+
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 		SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
@@ -155,165 +97,463 @@ void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 {
 }
 
-bool ModuleSceneIntro::WindowConfig()
+/*void ModuleSceneIntro::WindowDocking()
+{
+	//ImGuiCond_Once;
+	//ImGui::SetNextWindowPos()
+	if (docking_window)
+	{
+		ImVec2 size = { (float)App->window->GetWidth(), (float)App->window->GetHeight() };
+		ImGui::SetWindowPos(size);
+		ImGui::Begin("Docking Window", &docking_window, ImGuiWindowFlags_NoResize);
+		ImGui::End();
+	}
+}*/
+
+void ModuleSceneIntro::MenuBar()
+{
+	if (ImGui::BeginMainMenuBar()) {
+		if (ImGui::BeginMenu("File")) {
+			if (ImGui::MenuItem("New Scene", "")) {
+			}
+			if (ImGui::MenuItem("Load Scene", "")) {
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Save Scene", "")) {
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			if (ImGui::MenuItem("New Project", "")) {
+			}
+			if (ImGui::MenuItem("Open Project", "")) {
+			}
+			if (ImGui::MenuItem("Save Project", "")) {
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Exit", "ESC")) {
+				App->close_app = true;
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Edit")) {
+			if (ImGui::MenuItem("Project Settings...", NULL, config_window)) {
+				config_window = !config_window;
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Create")) {
+			if (ImGui::BeginMenu("Primitives")) {
+
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Window"))
+		{
+			if (ImGui::BeginMenu("Layouts", NULL)) {
+
+				ImGui::EndMenu();
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			if (ImGui::BeginMenu("General")) {
+				if (ImGui::MenuItem("Scene")) {
+					
+				}
+				if (ImGui::MenuItem("Insperctor", NULL, inspector_window)) {
+					inspector_window = !inspector_window;
+				}
+				if (ImGui::MenuItem("Hierarchy", NULL, hierarchy_window)) {
+					hierarchy_window = !hierarchy_window;
+				}
+				if (ImGui::MenuItem("Console", NULL, console_window)) {
+					console_window = !console_window;
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Demo", NULL, demo_window)) {
+				demo_window = !demo_window;
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Help")) {
+			if (ImGui::MenuItem("About Legacy Engine")) {
+				about_window = !about_window;
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Download Latest")) {
+				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/releases", NULL, NULL, 3);
+			}
+			if (ImGui::MenuItem("Report a bug")) {
+				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/issues", NULL, NULL, 3);
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Documentation")) {
+				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine", NULL, NULL, 3);
+			}
+
+			ImGui::EndMenu();
+		}
+	}
+	ImGui::EndMainMenuBar();
+
+}
+
+void ModuleSceneIntro::WindowAbout()
+{
+	if (about_window) {
+		if (ImGui::Begin("About", &about_window))
+		{
+			ImGui::BulletText("Legacy Engine:");
+			ImGui::Separator();
+			ImGui::Text("Developed by Jordi Bach & Adrian Mirabel,\nfor engine subject in CITM Barcelona.");
+			ImGui::Separator();
+			ImGui::Spacing();
+			ImGui::BulletText("Libraries:");
+			ImGui::Separator();
+			ImGui::Text("SDL version");
+			ImGui::SameLine();
+			if (ImGui::Button("SDL")) {
+				ShellExecuteA(NULL, "open", "https://www.libsdl.org/download-2.0.php", NULL, NULL, 3);
+			}
+			if (ImGui::CollapsingHeader("License"))
+			{
+				ImGui::Text("MIT License\n"
+					"Copyright(c) 2020 Legacy Engine\n"
+					"Permission is hereby granted, free of charge, to any person obtaining a copy\n"
+					"of this softwareand associated documentation files(the ""Software""), to deal\n"
+					"in the Software without restriction, including without limitation the rights\n"
+					"to use, copy, modify, merge, publish, distribute, sublicense, and /or sell\n"
+					"copies of the Software, and to permit persons to whom the Software is\n"
+					"furnished to do so, subject to the following conditions :\n"
+					"The above copyright noticeand this permission notice shall be included in all\n"
+					"copies or substantial portions of the Software.\n"
+					"THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n"
+					"IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n"
+					"FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE\n"
+					"AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n"
+					"LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n"
+					"OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n"
+					"SOFTWARE.");
+			}
+			//libraries, 
+		}
+		ImGui::End();
+	}
+}
+
+void ModuleSceneIntro::WindowConfig()
 {
 	if (config_window) {
 		//ImGuiCond_Once;
 		//ImGui::SetNextWindowPos()
-		ImGui::Begin("Configuration", &config_window);
-		if (ImGui::BeginMenu("Options", &options_bool)) {
-			ImGui::MenuItem("Set Defaults");
-			ImGui::MenuItem("Load");
-			ImGui::MenuItem("Save");
-			ImGui::EndMenu();
-		}
-		if (ImGui::CollapsingHeader("Application")) {
-			
-			static char name[128];
-			strcpy_s(name, 128, App->GetEngineTitle());
-			if(ImGui::InputText("App Name", name, 128, ImGuiInputTextFlags_EnterReturnsTrue))  //We can use ImGuiInputTextFlags_EnterReturnsTrue only if we want to change the name if enter is pressed
-				App->SetEngineTitle(name);
+		if (ImGui::Begin("Configuration", &config_window, ImGuiWindowFlags_MenuBar)) {
 
-			ImGui::InputText("Organization", org, 128);
-
-			ImGui::Separator();
-			ImGui::Spacing();
-
-			ImGui::Text("Limit Framerate:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0,255,255,255), "Aki van unos framesitos");
-
-			char title[25];
-			sprintf_s(title, 25, "Framerate %.1f", App->fps_log[App->fps_log.size() - 1]);
-			ImGui::PlotHistogram("##framerate", &App->fps_log[0], App->fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
-		
-		}
-		if (ImGui::CollapsingHeader("Window"))
-		{
-			ImGui::Checkbox("Active", &active_window);
-			if (active_window == false)
+			ImGui::BeginMenuBar();
+			if (ImGui::MenuItem("Save"))
 			{
+
+			}
+			if (ImGui::MenuItem("Reset"))
+			{
+
+			}
+			if (ImGui::MenuItem("SetAsDefault"))
+			{
+
+			}
+			ImGui::EndMenuBar();
+
+			ImGui::Spacing();
+			if (ImGui::BeginTabBar(""))
+			{
+				if (ImGui::BeginTabItem("Display")) {
+					if (ImGui::CollapsingHeader("Window"))
+					{
+
+						static float brightness = App->window->GetBrightness();
+						ImGui::Text("Brightness: ");
+						ImGui::SameLine();
+						ImGui::TextColored(ImVec4(255, 0, 255, 255), "%.3f", brightness);
+						ImGui::SliderFloat("Brightness", &brightness, 0, 1, "%.3f");
+						App->window->SetBrightness(brightness);
+
+						//static float gamma = App->window->GetGamma();
+
+						static int width = App->window->GetWidth();
+						static int height = App->window->GetHeight();
+						ImGui::Separator();
+						ImGui::Text("Windows Size: ");
+						ImGui::Text("Width ");
+						ImGui::SameLine();
+						ImGui::TextColored(ImVec4(255,0,255,255),"%d ", width);
+						ImGui::Text("Height ");
+						ImGui::SameLine();
+						ImGui::TextColored(ImVec4(255, 0, 255, 255), "%d ", height);
+						ImGui::SliderInt("Width", &width, 640, 3840);
+						ImGui::SliderInt("Height", &height, 480, 2160);
+						App->window->SetSize(width,height);
+						ImGui::Separator();
+						ImGui::Text("Refresh date");
+						ImGui::SameLine();
+						ImGui::TextColored(ImVec4(255, 0, 255, 255), "%d", App->window->GetRefreshRate());
+
+						static bool fullscreen = App->window->GetFullscreen();
+						static bool resizable = App->window->GetResizable();
+						static bool bordeless = App->window->GetBorderless();
+						static bool fulldesktop = App->window->GetFullscreenDesktop();
+
+						if (ImGui::Checkbox("Fullscreen", &fullscreen))
+						{
+							App->window->SetFullscreen(fullscreen);
+						}
+						ImGui::SameLine();
+						if (ImGui::Checkbox("Resizable", &resizable))
+						{
+							App->window->SetResizable(resizable);
+						}
+
+						if (ImGui::Checkbox("Borderless", &bordeless))
+						{
+							App->window->SetBorderless(bordeless);
+						}
+						ImGui::SameLine();
+						if (ImGui::Checkbox("Full Desktop", &fulldesktop))
+						{
+							App->window->SetFullscreenDesktop(fulldesktop);
+						}
+					}
+					if (ImGui::CollapsingHeader("Application"))
+					{
+						static char name[128];
+						strcpy_s(name, 128, App->GetEngineTitle());
+						if (ImGui::InputText("App Name", name, 128, ImGuiInputTextFlags_EnterReturnsTrue))  //We can use ImGuiInputTextFlags_EnterReturnsTrue only if we want to change the name if enter is pressed
+							App->SetEngineTitle(name);
+
+						ImGui::InputText("Organization", org, 128);
+
+						ImGui::Separator();
+						ImGui::Spacing();
+
+						int max_fps = App->GetFramerate();
+						if (ImGui::SliderInt("Max FPS", &max_fps, 0, 144))
+							App->CapFramerate(max_fps);
+
+						ImGui::Text("Limit Framerate:");
+						ImGui::SameLine();
+						ImGui::TextColored(ImVec4(0, 255, 255, 255), "%u", App->GetFramerate());
+
+						char title[25];
+						sprintf_s(title, 25, "Framerate %.1f", App->fps_log[App->fps_log.size() - 1]);
+						ImGui::PlotHistogram("##framerate", &App->fps_log[0], App->fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
+						sprintf_s(title, 25, "Milliseconds %.1f", App->ms_log[App->ms_log.size() - 1]);
+						ImGui::PlotHistogram("##milliseconds", &App->ms_log[0], App->ms_log.size(), 0, title, 0.0f, 50.0f, ImVec2(310, 100));
+
+						//Falta memory pero hem de possar la llibreria del Ric
+					}
+					ImGui::EndTabItem();
+
+				}
+
+				if (ImGui::BeginTabItem("Render"))
+				{
+					if (ImGui::CollapsingHeader("Renderer"))
+					{
+						ImGui::Text("Change all the render views");
+						ImGui::Separator();
+						ImGui::Spacing();
+
+						bool depth_test = true;
+						bool cull_face = true;
+						bool lightning = true;
+						bool color_material = true;
+						bool texture2D = true;
+						if (ImGui::Checkbox("Depth", &depth_test))
+						{
+							//
+						}
+						ImGui::SameLine();
+						if (ImGui::Checkbox("Cull Face", &cull_face))
+						{
+							//
+						}
+						if (ImGui::Checkbox("Lightning", &lightning))
+						{
+							//
+						}
+						ImGui::SameLine();
+						if (ImGui::Checkbox("Color Material", &color_material))
+						{
+							//
+						}
+						if (ImGui::Checkbox("Texture 2D", &texture2D))
+						{
+							//
+						}
+
+						bool show_wireframes = App->renderer3D->GetWireframes();
+						bool show_normals = true;	//De donde saco las normales????
+						if (ImGui::Checkbox("Wireframes", &show_wireframes))
+						{
+							App->renderer3D->SetWireframes(show_wireframes);
+						}
+						ImGui::SameLine();
+						if (ImGui::Checkbox("Normals", &show_normals))
+						{
+							//App->renderer3D->SetWireframes(show_normals);
+						}
+
+					}
+					ImGui::EndTabItem();
+				}
 				
+				if (ImGui::BeginTabItem("Inputs"))
+				{
+					if (ImGui::CollapsingHeader("Input"))
+					{
+					}
+					ImGui::EndTabItem();
+				}
+				
+				if (ImGui::BeginTabItem("Software"))
+				{
+					static Hardware stats;
+					SDL_GetVersion(&stats.H_SDLVersion);
+					stats.H_CPU = SDL_GetCPUCount();
+					stats.H_CPUCache = SDL_GetCPUCacheLineSize();
+					stats.H_SystemRAM = (float)SDL_GetSystemRAM() / 1024.f; //This is returned in Mb thats why we divide
+					stats.H_rdtsc = SDL_HasRDTSC() == SDL_TRUE;
+					stats.H_3dnow = SDL_Has3DNow() == SDL_TRUE;
+					stats.H_altivec = SDL_HasAltiVec() == SDL_TRUE;
+					stats.H_avx = SDL_HasAVX() == SDL_TRUE;
+					stats.H_avx2 = SDL_HasAVX2() == SDL_TRUE;
+					stats.H_mmx = SDL_HasMMX() == SDL_TRUE;
+					stats.H_sse = SDL_HasSSE() == SDL_TRUE;
+					stats.H_sse2 = SDL_HasSSE2() == SDL_TRUE;
+					stats.H_sse3 = SDL_HasSSE3() == SDL_TRUE;
+					stats.H_sse41 = SDL_HasSSE41() == SDL_TRUE;
+					stats.H_sse42 = SDL_HasSSE42() == SDL_TRUE;
+
+					ImGui::Text("SDL Version:");
+					ImGui::SameLine();
+					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%d.%d.%d", stats.H_SDLVersion.major, stats.H_SDLVersion.minor, stats.H_SDLVersion.patch);
+					ImGui::Separator();
+					ImGui::Spacing();
+					ImGui::Text("CPUs:");
+					ImGui::SameLine();
+					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u (Cache: %ukb)", stats.H_CPU, stats.H_CPUCache);
+					ImGui::Text("System RAM:");
+					ImGui::SameLine();
+					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%.2fGb", stats.H_SystemRAM);
+					ImGui::Text("Features:");
+					ImGui::SameLine();
+					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%s%s%s%s%s",
+						stats.H_rdtsc ? "RDTSC " : "",
+						stats.H_3dnow ? "3DNOW " : "",
+						stats.H_altivec ? "ALTIVEC " : "",
+						stats.H_avx ? "AVX " : "",
+						stats.H_avx2 ? "AVX2 " : ""
+					);
+					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%s%s%s%s%s%s",
+						stats.H_mmx ? "MMX " : "",
+						stats.H_sse ? "SSE " : "",
+						stats.H_sse2 ? "SSE2 " : "",
+						stats.H_sse3 ? "SSE3 " : "",
+						stats.H_sse41 ? "SSE41 " : "",
+						stats.H_sse42 ? "SSE42 " : ""
+					);
+					ImGui::Separator();
+					ImGui::Spacing();
+					ImGui::Text("GPU:");
+					ImGui::SameLine();
+					ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
+					ImGui::Text("Brand:");
+					ImGui::SameLine();
+					ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
+					ImGui::Text("VRAM Budget:");
+					ImGui::SameLine();
+					ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
+					ImGui::Text("VRAM Usage:");
+					ImGui::SameLine();
+					ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
+					ImGui::Text("VRAM Available:");
+					ImGui::SameLine();
+					ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
+					ImGui::Text("VRAM Reserved:");
+					ImGui::SameLine();
+					ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
+
+					ImGui::EndTabItem();
+				}
+				ImGui::EndTabBar();
 			}
-
-			// NEED TO MAKE EVERYTHING WORK
-
-			//ImGui::SliderInt("Width", &App->window->GetWidth(),);
-			App->window->GetWidth();
-
-			ImGui::Text("Refresh date");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(255, 0, 255, 255), "Hz of the window");
-		
-			bool fullscreen = true;
-			bool resizable = true;
-			bool bordeless = true;
-			bool fulldesktop = true;
-
-			if (ImGui::Checkbox("Fullscreen", &fullscreen))
-			{
-			}
-			ImGui::SameLine();
-			if (ImGui::Checkbox("Resizable", &resizable))
-			{
-
-			}
-
-			if (ImGui::Checkbox("Borderless", &bordeless))
-			{
-
-			}
-			ImGui::SameLine();
-			if (ImGui::Checkbox("Full Desktop", &fulldesktop))
-			{
-
-			}
+			ImGui::End();
 		}
-		if (ImGui::CollapsingHeader("File System"))
-		{
-
-		}
-		if (ImGui::CollapsingHeader("Input"))
-		{
-
-		}
-		if (ImGui::CollapsingHeader("Hardware"))
-		{
-
-			static Hardware stats;
-			SDL_GetVersion(&stats.H_SDLVersion);
-			stats.H_CPU = SDL_GetCPUCount();
-			stats.H_CPUCache = SDL_GetCPUCacheLineSize();
-			stats.H_SystemRAM = (float) SDL_GetSystemRAM() / 1024.f; //This is returned in Mb thats why we divide
-			stats.H_rdtsc = SDL_HasRDTSC() == SDL_TRUE;
-			stats.H_3dnow = SDL_Has3DNow() == SDL_TRUE;
-			stats.H_altivec = SDL_HasAltiVec() == SDL_TRUE;
-			stats.H_avx = SDL_HasAVX() == SDL_TRUE;
-			stats.H_avx2 = SDL_HasAVX2() == SDL_TRUE;
-			stats.H_mmx = SDL_HasMMX() == SDL_TRUE;
-			stats.H_sse = SDL_HasSSE() == SDL_TRUE;
-			stats.H_sse2 = SDL_HasSSE2() == SDL_TRUE;
-			stats.H_sse3 = SDL_HasSSE3() == SDL_TRUE;
-			stats.H_sse41 = SDL_HasSSE41() == SDL_TRUE;
-			stats.H_sse42 = SDL_HasSSE42() == SDL_TRUE;
-		
-			ImGui::Text("SDL Version:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "%d.%d.%d", stats.H_SDLVersion.major, stats.H_SDLVersion.minor, stats.H_SDLVersion.patch);
-			ImGui::Separator();
-			ImGui::Spacing();
-			ImGui::Text("CPUs:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u (Cache: %ukb)", stats.H_CPU, stats.H_CPUCache );
-			ImGui::Text("System RAM:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "%.2fGb", stats.H_SystemRAM);
-			ImGui::Text("Features:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "%s%s%s%s%s",
-				stats.H_rdtsc ? "RDTSC " : "",
-				stats.H_3dnow ? "3DNOW " : "",
-				stats.H_altivec ? "ALTIVEC " : "",
-				stats.H_avx ? "AVX " : "",
-				stats.H_avx2 ? "AVX2 " : ""
-			);
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "%s%s%s%s%s%s",
-				stats.H_mmx ? "MMX " : "",
-				stats.H_sse ? "SSE " : "",
-				stats.H_sse2 ? "SSE2 " : "",
-				stats.H_sse3 ? "SSE3 " : "",
-				stats.H_sse41 ? "SSE41 " : "",
-				stats.H_sse42 ? "SSE42 " : ""
-			);
-			ImGui::Separator();
-			ImGui::Spacing();
-			ImGui::Text("GPU:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
-			ImGui::Text("Brand:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
-			ImGui::Text("VRAM Budget:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
-			ImGui::Text("VRAM Usage:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
-			ImGui::Text("VRAM Available:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
-			ImGui::Text("VRAM Reserved:");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0, 255, 0, 255), "");
-
-		}
-		if (ImGui::CollapsingHeader("OpenGL"))
-		{
-
-		}
-
-		ImGui::End();
 	}
 
-	return config_window;
+}
+
+void ModuleSceneIntro::WindowConsole()
+{
+	if (console_window)
+	{
+	ImGui::Begin("Console", &console_window);
+
+	for (int i = 0; i < 5; i++)
+	{
+
+		ImGui::TextUnformatted("Hi, monkey");
+	}
+
+	ImGui::End();
+	}
+
+}
+
+void ModuleSceneIntro::WindowInspector()
+{
+	if (inspector_window)
+	{
+		if (ImGui::Begin("Inspector", &inspector_window))
+		{
+			ImGui::Text("HI");
+
+			ImGui::End();
+		}
+	}
+}
+
+void ModuleSceneIntro::WindowHierarchy()
+{
+	if (hierarchy_window)
+	{
+		if (ImGui::Begin("Hierarchy", &hierarchy_window))
+		{
+			ImGui::Text("HI");
+
+			ImGui::End();
+		}
+	}
+}
+
+void ModuleSceneIntro::WindowDemo()
+{
+	if (demo_window)
+	{
+		//our state (depenent de si el bool que pasem a la window es true o false s'ensenya la window i si la tanquem imgui posa el bool directament a false)
+		ImGui::ShowDemoWindow(&demo_window);
+	}
 }

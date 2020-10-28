@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __ModuleSceneIntro_H__
+#define __ModuleSceneIntro_H__
+
 #include "Module.h"
 #include "Globals.h"
 #include "Primitive.h"
@@ -64,14 +66,24 @@ public:
 	//DefaultCube c;
 
 	//IMGUI!!!!
-	bool console_window;
+	//bool docking_window;
 	bool about_window;
 	bool config_window;
-	bool options_bool;
+	bool console_window;
+	bool inspector_window;
+	bool hierarchy_window;
+	bool demo_window;
 
 	char org[128];
 
 	//Config Window
-	bool WindowConfig();
-	bool active_window;
+	//void WindowDocking();
+	void MenuBar();
+	void WindowAbout();
+	void WindowConfig();
+	void WindowConsole();
+	void WindowInspector();
+	void WindowHierarchy();
+	void WindowDemo();
 };
+#endif // __ModuleSceneIntro_H__

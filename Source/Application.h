@@ -24,17 +24,19 @@ public:
 	ModuleCamera3D* camera = nullptr;
 
 	std::array<float,50>fps_log;
+	std::array<float,50>ms_log;
 
 	const char* GetEngineTitle() const;
 	void SetEngineTitle(const char* title);
 
+	bool close_app;
 private:
 
 	Timer	ms_timer;
 	Timer   lastSecFrameTime;
 	unsigned __int32 lastSecFrameCount = 0;
 	float	dt;
-	int capped_ms = -1;
+	int capped_ms = 1000/60;
 
 	//Windows
 	std::string title;
@@ -50,6 +52,7 @@ public:
 	update_status Update();
 	bool CleanUp();
 	void CapFramerate(int fps);
+	uint GetFramerate();
 
 private:
 

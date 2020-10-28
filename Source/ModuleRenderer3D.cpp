@@ -10,7 +10,8 @@
 #include "examples\imgui_impl_sdl.h"
 #include "examples\imgui_impl_opengl3.h"
 
-ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled)
+ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled),
+wireframes(false)
 {
 }
 
@@ -81,10 +82,6 @@ bool ModuleRenderer3D::Init()
 	//IM_ASSERT(font != NULL);
 
 	// Our state
-	bool show_demo_window = true;
-	bool show_another_window = false;
-
-	
 	
 	if(ret == true)
 	{
@@ -193,7 +190,6 @@ bool ModuleRenderer3D::CleanUp()
 	return true;
 }
 
-
 void ModuleRenderer3D::OnResize(int width, int height)
 {
 	glViewport(0, 0, width, height);
@@ -205,4 +201,26 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+const bool ModuleRenderer3D::GetWireframes()
+{
+	return wireframes;
+}
+
+void ModuleRenderer3D::SetWireframes(bool activate)
+{
+	if (activate != wireframes)
+	{
+		wireframes = activate;
+
+		if (wireframes == true)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		else
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+	}
 }

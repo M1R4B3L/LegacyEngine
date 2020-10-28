@@ -8,7 +8,8 @@
 
 #include <list>
 
-Application::Application() : title("Legacy Engine")
+Application::Application() : title("Legacy Engine"),
+close_app(false)
 {
 	window = new ModuleWindow(this);
 	input = new ModuleInput(this);
@@ -81,6 +82,18 @@ void Application::CapFramerate(int fps) {
 	}
 }
 
+uint Application::GetFramerate()
+{
+	if (capped_ms > 0)
+	{
+		return (uint)((1.0f / (float)capped_ms) * 1000.0f);
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
@@ -95,7 +108,7 @@ void Application::FinishUpdate()
 	if (lastSecFrameTime.Read() > 1000)
 	{
 		lastSecFrameTime.Start();
-		fps_log[fps_log.size() - 1] = lastSecFrameCount - 1;
+		fps_log[fps_log.size() - 1] = lastSecFrameCount;
 		lastSecFrameCount = 0;
 
 		for (int i = fps_log.size() - 2; i >= 0; --i) {
@@ -104,6 +117,11 @@ void Application::FinishUpdate()
 	}
 
 	unsigned __int32 last_frame_ms = ms_timer.Read();
+	ms_log[ms_log.size() - 1] = last_frame_ms;
+	
+	for (int i = ms_log.size() - 2; i >= 0; --i) {
+		ms_log[i] = ms_log[i + 1];
+	}
 
 	if (capped_ms > 0 && last_frame_ms < capped_ms)
 	{
@@ -117,6 +135,11 @@ update_status Application::Update()
 	update_status ret = UPDATE_CONTINUE;
 	PrepareUpdate();
 	
+	if (close_app)
+	{
+		return UPDATE_STOP;
+	}
+
 	std::vector<Module*>::iterator it = modules.begin();
 	for (it; it != modules.end() && ret == UPDATE_CONTINUE; it++)
 	{
