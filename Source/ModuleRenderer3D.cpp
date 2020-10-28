@@ -86,7 +86,7 @@ bool ModuleRenderer3D::Init()
 	if(ret == true)
 	{
 		//Use Vsync
-		if(VSYNC && SDL_GL_SetSwapInterval(1) < 0)
+		if(SDL_GL_SetSwapInterval(VSYNC) < 0)
 			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
 
 		//Initialize Projection Matrix
@@ -190,7 +190,6 @@ bool ModuleRenderer3D::CleanUp()
 	return true;
 }
 
-//<<<<<<< HEAD
 void ModuleRenderer3D::Draw(Mesh &mesh)
 {
 	// draw mesh
@@ -201,9 +200,6 @@ void ModuleRenderer3D::Draw(Mesh &mesh)
 	glBindVertexArray(0);
 }
 
-
-//=======
-//>>>>>>> 74fbd99fcd39621d2ba49948676f49a9bfedf246
 void ModuleRenderer3D::OnResize(int width, int height)
 {
 	glViewport(0, 0, width, height);

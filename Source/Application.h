@@ -36,7 +36,7 @@ private:
 	Timer   lastSecFrameTime;
 	unsigned __int32 lastSecFrameCount = 0;
 	float	dt;
-	int capped_ms = 1000/60;
+	int capped_ms = 0;
 
 	//Windows
 	std::string title;

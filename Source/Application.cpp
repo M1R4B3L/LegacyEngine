@@ -80,6 +80,8 @@ void Application::CapFramerate(int fps) {
 	{
 		capped_ms = 1000 / fps;
 	}
+	else
+		capped_ms = 0;
 }
 
 uint Application::GetFramerate()
@@ -122,7 +124,7 @@ void Application::FinishUpdate()
 	for (int i = ms_log.size() - 2; i >= 0; --i) {
 		ms_log[i] = ms_log[i + 1];
 	}
-
+	
 	if (capped_ms > 0 && last_frame_ms < capped_ms)
 	{
 		SDL_Delay(capped_ms - last_frame_ms);
