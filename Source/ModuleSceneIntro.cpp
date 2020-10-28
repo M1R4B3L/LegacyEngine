@@ -6,6 +6,7 @@
 #include "imgui.h"
 #include "examples\imgui_impl_sdl.h"
 #include "examples\imgui_impl_opengl3.h"
+#include "Meshes.h"
 
 
 
@@ -27,6 +28,8 @@ bool ModuleSceneIntro::Start()
 
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
+	//warrior = new Model("C:/Users/User/Desktop/warrior/warrior.FBX");
+	//walk = new Model("C:/Users/User/Desktop/warrior/walk.FBX");
 	return ret;
 }
 
@@ -46,10 +49,17 @@ update_status ModuleSceneIntro::Update(float dt)
 	p.Render();
 
 	//PROBA RENDER 1X1 CUBE OPENGL
-	static DefaultCube c;
+	//static DefaultCube c;
 	//c.RenderDirect();
 	//c.RenderArrayBuffer();
-	c.RenderIndexBuffer();
+	//c.RenderIndexBuffer();
+
+	//warrior->Draw();
+	//walk->Draw();
+	std::vector<Mesh>::iterator it;
+	for (it = CurrentMeshes.begin(); it != CurrentMeshes.end(); it++) {
+		App->renderer3D->Draw((*it));
+	}
 
 	//IMGUI!!!!
 	/*if (ImGui::IsKeyPressed(SDL_SCANCODE_1)) {

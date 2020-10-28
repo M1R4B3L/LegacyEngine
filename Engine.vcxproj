@@ -47,15 +47,15 @@
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)Source\Dependencies\SDL2\include;$(ProjectDir)Source\Dependencies\glut;$(ProjectDir)Source\Dependencies\imgui;$(ProjectDir)Source\Dependencies\glew-2.1.0\include;$(ProjectDir)Source\Dependencies\MathGeoLib\include;$(ProjectDir)Source\Dependencies\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\Dependencies\SDL2\include;$(ProjectDir)Source\Dependencies\glut;$(ProjectDir)Source\Dependencies\imgui;$(ProjectDir)Source\Dependencies\glew-2.1.0\include;$(ProjectDir)Source\Dependencies\MathGeoLib\include;$(ProjectDir)Source\Dependencies\Assimp\include;$(ProjectDir)Source\Dependencies\Devil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>$(ProjectDir)Source\Dependencies\glew-2.1.0\lib\libWin32;$(ProjectDir)Source\Dependencies\MathGeoLib\libx86;$(ProjectDir)Source\Dependencies\SDL2\libx86;$(ProjectDir)Source\Dependencies\Assimp\libx86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp.lib;SDL2main.lib;SDL2.lib;opengl32.lib;glew32.lib;MathGeoLibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Source\Dependencies\glew-2.1.0\lib\libWin32;$(ProjectDir)Source\Dependencies\MathGeoLib\libx86;$(ProjectDir)Source\Dependencies\SDL2\libx86;$(ProjectDir)Source\Dependencies\Assimp\libx86;$(ProjectDir)Source\Dependencies\Devil\libx86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DevIL.lib;ILU.lib;ILUT.lib;assimp.lib;SDL2main.lib;SDL2.lib;opengl32.lib;glew32.lib;MathGeoLibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -67,7 +67,7 @@
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)Source\Dependencies\SDL2\include;$(ProjectDir)Source\Dependencies\glut;$(ProjectDir)Source\Dependencies\imgui;$(ProjectDir)Source\Dependencies\glew-2.1.0\include;$(ProjectDir)Source\Dependencies\MathGeoLib\include;$(ProjectDir)Source\Dependencies\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\Dependencies\SDL2\include;$(ProjectDir)Source\Dependencies\glut;$(ProjectDir)Source\Dependencies\imgui;$(ProjectDir)Source\Dependencies\glew-2.1.0\include;$(ProjectDir)Source\Dependencies\MathGeoLib\include;$(ProjectDir)Source\Dependencies\Assimp\include;$(ProjectDir)Source\Dependencies\Devil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -76,8 +76,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>$(ProjectDir)Source\Dependencies\glew-2.1.0\lib\libWin32;$(ProjectDir)Source\Dependencies\MathGeoLib\libx86;$(ProjectDir)Source\Dependencies\SDL2\libx86;$(ProjectDir)Source\Dependencies\Assimp\libx86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp.lib;SDL2main.lib;SDL2.lib;opengl32.lib;glew32.lib;MathGeoLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Source\Dependencies\glew-2.1.0\lib\libWin32;$(ProjectDir)Source\Dependencies\MathGeoLib\libx86;$(ProjectDir)Source\Dependencies\SDL2\libx86;$(ProjectDir)Source\Dependencies\Assimp\libx86;$(ProjectDir)Source\Dependencies\Devil\libx86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DevIL.lib;ILU.lib;ILUT.lib;assimp.lib;SDL2main.lib;SDL2.lib;opengl32.lib;glew32.lib;MathGeoLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -102,6 +102,7 @@
     <ClInclude Include="Source\Dependencies\imgui\imstb_rectpack.h" />
     <ClInclude Include="Source\Dependencies\imgui\imstb_textedit.h" />
     <ClInclude Include="Source\Dependencies\imgui\imstb_truetype.h" />
+    <ClInclude Include="Source\Meshes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source/Application.cpp" />
@@ -123,6 +124,7 @@
     <ClCompile Include="Source\Dependencies\imgui\imgui_demo.cpp" />
     <ClCompile Include="Source\Dependencies\imgui\imgui_draw.cpp" />
     <ClCompile Include="Source\Dependencies\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Source\Meshes.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

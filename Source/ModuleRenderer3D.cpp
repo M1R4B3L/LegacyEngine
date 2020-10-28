@@ -190,6 +190,16 @@ bool ModuleRenderer3D::CleanUp()
 	return true;
 }
 
+void ModuleRenderer3D::Draw(Mesh &mesh)
+{
+	// draw mesh
+	glBindVertexArray(mesh.VAO);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDrawElements(GL_TRIANGLES, mesh.num_indices, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+}
+
 
 void ModuleRenderer3D::OnResize(int width, int height)
 {

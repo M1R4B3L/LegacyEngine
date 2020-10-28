@@ -3,6 +3,7 @@
 #include "Globals.h"
 #include "glmath.h"
 #include "Light.h"
+#include "Meshes.h"
 
 #define MAX_LIGHTS 8
 
@@ -16,6 +17,8 @@ public:
 	update_status PreUpdate(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
+
+	void Draw(Mesh &mesh);
 
 	void OnResize(int width, int height);
 

@@ -2,11 +2,14 @@
 #include "Module.h"
 #include "Globals.h"
 #include "Primitive.h"
+#include <vector>
 
 #define MAX_SNAKE 2
 
 struct PhysBody3D;
 struct PhysMotor3D;
+class Model;
+class Mesh;
 
 class ModuleSceneIntro : public Module
 {
@@ -51,6 +54,10 @@ public:
 	char name[128];
 	char org[128];
 
+	Model* warrior = nullptr;
+	Model* walk = nullptr;
+
+	std::vector<Mesh> CurrentMeshes;
 	//Config Window
 	bool active_window;
 };
