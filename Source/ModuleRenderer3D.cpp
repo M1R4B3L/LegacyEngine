@@ -127,6 +127,7 @@ bool ModuleRenderer3D::Init()
 			ret = false;
 		}
 		
+		//Grid color
 		GLfloat LightModelAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
 		
@@ -136,9 +137,10 @@ bool ModuleRenderer3D::Init()
 		lights[0].SetPos(0.0f, 0.0f, 2.5f);
 		lights[0].Init();
 		
+		//Contains four integer or floating-point values that specify the ambient RGBA reflectance of the material
 		GLfloat MaterialAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
-
+		//Contains four integer or floating-point values that specify the diffuse RGBA reflectance of the material
 		GLfloat MaterialDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
 		
@@ -218,6 +220,11 @@ const bool ModuleRenderer3D::GetWireframes()
 	return wireframes;
 }
 
+const bool ModuleRenderer3D::GetglEnableFlags(GLenum flag)
+{
+	return glIsEnabled(flag);
+}
+
 void ModuleRenderer3D::SetWireframes(bool activate)
 {
 	if (activate != wireframes)
@@ -231,6 +238,21 @@ void ModuleRenderer3D::SetWireframes(bool activate)
 		else
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+	}
+}
+
+void ModuleRenderer3D::SetglEnbleFlags(GLenum flag, bool activate)
+{
+	if (activate != (bool)glIsEnabled(flag))
+	{
+		if (activate == true)
+		{
+			glEnable(flag);
+		}
+		else
+		{
+			glDisable(flag);
 		}
 	}
 }

@@ -69,7 +69,7 @@ public:
 	//DefaultCube c;
 
 	//IMGUI!!!!
-	//bool docking_window;
+	bool docking_window;
 	bool about_window;
 	bool config_window;
 	bool console_window;
@@ -84,7 +84,7 @@ public:
 
 	std::vector<Mesh> CurrentMeshes;
 	//Config Window
-	//void WindowDocking();
+
 	void MenuBar();
 	void WindowAbout();
 	void WindowConfig();

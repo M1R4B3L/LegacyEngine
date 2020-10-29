@@ -14,7 +14,7 @@
 
 
 ModuleSceneIntro::ModuleSceneIntro(bool start_enabled) : Module(start_enabled),
-about_window(false), config_window(false), console_window(false), inspector_window(false), hierarchy_window(false), demo_window(false),//docking_window(true), 
+about_window(false), config_window(false), console_window(true), inspector_window(true), hierarchy_window(true), demo_window(false),//docking_window(true), 
 org("CITM")
 {
 }
@@ -71,7 +71,6 @@ update_status ModuleSceneIntro::Update(float dt)
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
-	//WindowDocking();
 	MenuBar();
 	WindowAbout();
 	WindowConfig();
@@ -107,119 +106,120 @@ void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 {
 }
 
-/*void ModuleSceneIntro::WindowDocking()
-{
-	//ImGuiCond_Once;
-	//ImGui::SetNextWindowPos()
-	if (docking_window)
-	{
-		ImVec2 size = { (float)App->window->GetWidth(), (float)App->window->GetHeight() };
-		ImGui::SetWindowPos(size);
-		ImGui::Begin("Docking Window", &docking_window, ImGuiWindowFlags_NoResize);
-		ImGui::End();
-	}
-}*/
-
 void ModuleSceneIntro::MenuBar()
 {
-	if (ImGui::BeginMainMenuBar()) {
-		if (ImGui::BeginMenu("File")) {
-			if (ImGui::MenuItem("New Scene", "")) {
-			}
-			if (ImGui::MenuItem("Load Scene", "")) {
-			}
-			ImGui::Spacing();
-			ImGui::Separator();
-			ImGui::Spacing();
-			if (ImGui::MenuItem("Save Scene", "")) {
-			}
-			ImGui::Spacing();
-			ImGui::Separator();
-			ImGui::Spacing();
-			if (ImGui::MenuItem("New Project", "")) {
-			}
-			if (ImGui::MenuItem("Open Project", "")) {
-			}
-			if (ImGui::MenuItem("Save Project", "")) {
-			}
-			ImGui::Spacing();
-			ImGui::Separator();
-			ImGui::Spacing();
-			if (ImGui::MenuItem("Exit", "ESC")) {
-				App->close_app = true;
-			}
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Edit")) {
-			if (ImGui::MenuItem("Project Settings...", NULL, config_window)) {
-				config_window = !config_window;
-			}
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Create")) {
-			if (ImGui::BeginMenu("Primitives")) {
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar;
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(viewport->Pos);
+	ImGui::SetNextWindowSize(viewport->Size);
+	ImGui::SetNextWindowViewport(viewport->ID);
+	window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoBackground;
 
-				ImGui::EndMenu();
-			}
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Window"))
-		{
-			if (ImGui::BeginMenu("Layouts", NULL)) {
+	if (ImGui::Begin("DockSpace", &docking_window, window_flags)) {
+		// DockSpace
+		ImGuiID dockspace_id = ImGui::GetID("DockSpace");
+		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 
-				ImGui::EndMenu();
-			}
-			ImGui::Spacing();
-			ImGui::Separator();
-			ImGui::Spacing();
-			if (ImGui::BeginMenu("General")) {
-				if (ImGui::MenuItem("Scene")) {
-					
+		if (ImGui::BeginMainMenuBar()) {
+			if (ImGui::BeginMenu("File")) {
+				if (ImGui::MenuItem("New Scene", "")) {
 				}
-				if (ImGui::MenuItem("Insperctor", NULL, inspector_window)) {
-					inspector_window = !inspector_window;
+				if (ImGui::MenuItem("Load Scene", "")) {
 				}
-				if (ImGui::MenuItem("Hierarchy", NULL, hierarchy_window)) {
-					hierarchy_window = !hierarchy_window;
+				ImGui::Spacing();
+				ImGui::Separator();
+				ImGui::Spacing();
+				if (ImGui::MenuItem("Save Scene", "")) {
 				}
-				if (ImGui::MenuItem("Console", NULL, console_window)) {
-					console_window = !console_window;
+				ImGui::Spacing();
+				ImGui::Separator();
+				ImGui::Spacing();
+				if (ImGui::MenuItem("New Project", "")) {
+				}
+				if (ImGui::MenuItem("Open Project", "")) {
+				}
+				if (ImGui::MenuItem("Save Project", "")) {
+				}
+				ImGui::Spacing();
+				ImGui::Separator();
+				ImGui::Spacing();
+				if (ImGui::MenuItem("Exit", "ESC")) {
+					App->close_app = true;
 				}
 				ImGui::EndMenu();
 			}
-			ImGui::Spacing();
-			ImGui::Separator();
-			ImGui::Spacing();
-			if (ImGui::MenuItem("Demo", NULL, demo_window)) {
-				demo_window = !demo_window;
+			if (ImGui::BeginMenu("Edit")) {
+				if (ImGui::MenuItem("Project Settings...", NULL, config_window)) {
+					config_window = !config_window;
+				}
+				ImGui::EndMenu();
 			}
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Help")) {
-			if (ImGui::MenuItem("About Legacy Engine")) {
-				about_window = !about_window;
-			}
-			ImGui::Spacing();
-			ImGui::Separator();
-			ImGui::Spacing();
-			if (ImGui::MenuItem("Download Latest")) {
-				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/releases", NULL, NULL, 3);
-			}
-			if (ImGui::MenuItem("Report a bug")) {
-				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/issues", NULL, NULL, 3);
-			}
-			ImGui::Spacing();
-			ImGui::Separator();
-			ImGui::Spacing();
-			if (ImGui::MenuItem("Documentation")) {
-				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine", NULL, NULL, 3);
-			}
+			if (ImGui::BeginMenu("Create")) {
+				if (ImGui::BeginMenu("Primitives")) {
 
-			ImGui::EndMenu();
+					ImGui::EndMenu();
+				}
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Window"))
+			{
+				if (ImGui::BeginMenu("Layouts", NULL)) {
+
+					ImGui::EndMenu();
+				}
+				ImGui::Spacing();
+				ImGui::Separator();
+				ImGui::Spacing();
+				if (ImGui::BeginMenu("General")) {
+					if (ImGui::MenuItem("Scene")) {
+
+					}
+					if (ImGui::MenuItem("Insperctor", NULL, inspector_window)) {
+						inspector_window = !inspector_window;
+					}
+					if (ImGui::MenuItem("Hierarchy", NULL, hierarchy_window)) {
+						hierarchy_window = !hierarchy_window;
+					}
+					if (ImGui::MenuItem("Console", NULL, console_window)) {
+						console_window = !console_window;
+					}
+					ImGui::EndMenu();
+				}
+				ImGui::Spacing();
+				ImGui::Separator();
+				ImGui::Spacing();
+				if (ImGui::MenuItem("Demo", NULL, demo_window)) {
+					demo_window = !demo_window;
+				}
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Help")) {
+				if (ImGui::MenuItem("About Legacy Engine")) {
+					about_window = !about_window;
+				}
+				ImGui::Spacing();
+				ImGui::Separator();
+				ImGui::Spacing();
+				if (ImGui::MenuItem("Download Latest")) {
+					ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/releases", NULL, NULL, 3);
+				}
+				if (ImGui::MenuItem("Report a bug")) {
+					ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/issues", NULL, NULL, 3);
+				}
+				ImGui::Spacing();
+				ImGui::Separator();
+				ImGui::Spacing();
+				if (ImGui::MenuItem("Documentation")) {
+					ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine", NULL, NULL, 3);
+				}
+
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
 		}
+		ImGui::End();
 	}
-	ImGui::EndMainMenuBar();
-
 }
 
 void ModuleSceneIntro::WindowAbout()
@@ -380,60 +380,60 @@ void ModuleSceneIntro::WindowConfig()
 
 				if (ImGui::BeginTabItem("Render"))
 				{
-					if (ImGui::CollapsingHeader("Renderer"))
+				
+					ImGui::Text("Renderer Options");
+					ImGui::Separator();
+					ImGui::Spacing();
+					bool depth_test = App->renderer3D->GetglEnableFlags(GL_DEPTH_TEST);
+					bool cull_face = App->renderer3D->GetglEnableFlags(GL_CULL_FACE);
+					bool lightning = App->renderer3D->GetglEnableFlags(GL_LIGHTING);
+					bool color_material = App->renderer3D->GetglEnableFlags(GL_COLOR_MATERIAL);
+					bool texture2D = App->renderer3D->GetglEnableFlags(GL_TEXTURE_2D);
+					bool show_wireframes = App->renderer3D->GetWireframes();
+					ImGui::BulletText("General");
+					if (ImGui::Checkbox("Depth", &depth_test))
 					{
-						ImGui::Text("Change all the render views");
-						ImGui::Separator();
-						ImGui::Spacing();
-
-						bool depth_test = true;
-						bool cull_face = true;
-						bool lightning = true;
-						bool color_material = true;
-						bool texture2D = true;
-						if (ImGui::Checkbox("Depth", &depth_test))
-						{
-							//
-						}
-						ImGui::SameLine();
-						if (ImGui::Checkbox("Cull Face", &cull_face))
-						{
-							//
-						}
-						if (ImGui::Checkbox("Lightning", &lightning))
-						{
-							//
-						}
-						ImGui::SameLine();
-						if (ImGui::Checkbox("Color Material", &color_material))
-						{
-							//
-						}
-						if (ImGui::Checkbox("Texture 2D", &texture2D))
-						{
-							//
-						}
-
-						bool show_wireframes = App->renderer3D->GetWireframes();
-						bool show_normals = true;	//De donde saco las normales????
-						if (ImGui::Checkbox("Wireframes", &show_wireframes))
-						{
-							App->renderer3D->SetWireframes(show_wireframes);
-						}
-						ImGui::SameLine();
-						if (ImGui::Checkbox("Normals", &show_normals))
-						{
-							//App->renderer3D->SetWireframes(show_normals);
-						}
-
+						App->renderer3D->SetglEnbleFlags(GL_DEPTH_TEST, depth_test);
+					}
+					ImGui::SameLine();
+					if (ImGui::Checkbox("Cull Face", &cull_face))
+					{
+						App->renderer3D->SetglEnbleFlags(GL_CULL_FACE, cull_face);
+					}
+					ImGui::SameLine();
+					if (ImGui::Checkbox("Lightning", &lightning))
+					{
+						App->renderer3D->SetglEnbleFlags(GL_LIGHTING, lightning);
+					}
+					ImGui::BulletText("Polygon Mode");
+					if (ImGui::Checkbox("Wireframes", &show_wireframes))
+					{
+						App->renderer3D->SetWireframes(show_wireframes);
+					}
+					ImGui::BulletText("Material");
+					if (ImGui::Checkbox("Color Material", &color_material))
+					{
+						App->renderer3D->SetglEnbleFlags(GL_COLOR_MATERIAL, color_material);
+					}
+					ImGui::BulletText("Texture");
+					if (ImGui::Checkbox("Texture 2D", &texture2D))
+					{
+						App->renderer3D->SetglEnbleFlags(GL_TEXTURE_2D, texture2D);
+					}
+					//Deberia ir al inspector de cada material
+					bool show_normals = true;	//De donde saco las normales????
+					if (ImGui::Checkbox("Normals", &show_normals))
+					{
+						//App->renderer3D->SetWireframes(show_normals);
 					}
 					ImGui::EndTabItem();
 				}
 				
-				if (ImGui::BeginTabItem("Inputs"))
+				if (ImGui::BeginTabItem("Controls"))
 				{
 					if (ImGui::CollapsingHeader("Input"))
 					{
+
 					}
 					ImGui::EndTabItem();
 				}

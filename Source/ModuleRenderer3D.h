@@ -7,6 +7,8 @@
 
 #define MAX_LIGHTS 8
 
+typedef unsigned int GLenum;
+
 class ModuleRenderer3D : public Module
 {
 public:
@@ -24,7 +26,12 @@ public:
 
 	bool wireframes;
 	const bool GetWireframes();
+	const bool GetglEnableFlags(GLenum flag);
+
 	void SetWireframes(bool activate);
+	void SetglEnbleFlags(GLenum flag, bool activate);
+
+
 
 public:
 
