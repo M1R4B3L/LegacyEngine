@@ -85,6 +85,7 @@ public:
 	std::vector<Mesh> CurrentMeshes;
 	//Config Window
 
+	void WindowDocking();
 	void MenuBar();
 	void WindowAbout();
 	void WindowConfig();
@@ -92,5 +93,13 @@ public:
 	void WindowInspector();
 	void WindowHierarchy();
 	void WindowDemo();
+
+	void AddLog(const char*);
+	void ClearLog();
+
+private:
+
+	std::vector<char*> string_log;
+	bool scroll;
 };
 #endif // __ModuleSceneIntro_H__

@@ -54,11 +54,15 @@ public:
 	void CapFramerate(int fps);
 	uint GetFramerate();
 
+
+	void AddConsoleLog(const char* string);
+
 private:
 
 	void AddModule(Module* mod);
 	void PrepareUpdate();
 	void FinishUpdate();
+
 };
 
 extern Application* App;
