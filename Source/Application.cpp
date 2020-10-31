@@ -192,3 +192,25 @@ void Application::SetEngineTitle(const char* title)
 	this->title = title;
 	App->window->SetTitle(title);
 }
+
+
+void Application::AddConsoleLog(const char* string)
+{
+	if (App->close_app == false)
+	{
+		if (App->scene_intro != nullptr)
+		{
+			std::string tmp_log = string;
+			//Ty Angel
+			uint log_start_position = tmp_log.find_last_of("\\") + 1;
+			uint log_end_position = tmp_log.size();
+
+			std::string short_log = tmp_log.substr(log_start_position, log_end_position);
+
+			scene_intro->AddLog(short_log.c_str());
+
+			tmp_log.clear();
+			short_log.clear();
+		}
+	}
+}

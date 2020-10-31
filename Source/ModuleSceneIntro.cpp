@@ -14,8 +14,8 @@
 
 
 ModuleSceneIntro::ModuleSceneIntro(bool start_enabled) : Module(start_enabled),
-about_window(false), config_window(false), console_window(true), inspector_window(true), hierarchy_window(true), demo_window(false),//docking_window(true), 
-org("CITM")
+about_window(false), config_window(false), console_window(true), inspector_window(true), hierarchy_window(true), demo_window(false), docking_window(true),
+org("CITM"), scroll(true)
 {
 }
 
@@ -25,21 +25,22 @@ ModuleSceneIntro::~ModuleSceneIntro()
 // Load assets
 bool ModuleSceneIntro::Start()
 {
-	LOG("Loading Intro assets");
+	//LOG("Loading Intro assets");
 	bool ret = true;
 
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
 	//warrior = new Model("C:/Users/User/Desktop/warrior/warrior.FBX");
 	//walk = new Model("C:/Users/User/Desktop/warrior/walk.FBX");
+
 	return ret;
 }
 
 // Load assets
 bool ModuleSceneIntro::CleanUp()
 {
-	LOG("Unloading Intro scene");
-
+	//LOG("Unloading Intro scene");
+	
 	return true;
 }
 
@@ -71,7 +72,7 @@ update_status ModuleSceneIntro::Update(float dt)
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
-	MenuBar();
+	WindowDocking();
 	WindowAbout();
 	WindowConfig();
 	WindowConsole();
@@ -106,119 +107,134 @@ void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 {
 }
 
-void ModuleSceneIntro::MenuBar()
+void ModuleSceneIntro::WindowDocking()
 {
+
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar;
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
 	ImGui::SetNextWindowPos(viewport->Pos);
 	ImGui::SetNextWindowSize(viewport->Size);
 	ImGui::SetNextWindowViewport(viewport->ID);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 	window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoBackground;
+	window_flags |= ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoBackground;
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
 	if (ImGui::Begin("DockSpace", &docking_window, window_flags)) {
 		// DockSpace
-		ImGuiID dockspace_id = ImGui::GetID("DockSpace");
-		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
-
-		if (ImGui::BeginMainMenuBar()) {
-			if (ImGui::BeginMenu("File")) {
-				if (ImGui::MenuItem("New Scene", "")) {
-				}
-				if (ImGui::MenuItem("Load Scene", "")) {
-				}
-				ImGui::Spacing();
-				ImGui::Separator();
-				ImGui::Spacing();
-				if (ImGui::MenuItem("Save Scene", "")) {
-				}
-				ImGui::Spacing();
-				ImGui::Separator();
-				ImGui::Spacing();
-				if (ImGui::MenuItem("New Project", "")) {
-				}
-				if (ImGui::MenuItem("Open Project", "")) {
-				}
-				if (ImGui::MenuItem("Save Project", "")) {
-				}
-				ImGui::Spacing();
-				ImGui::Separator();
-				ImGui::Spacing();
-				if (ImGui::MenuItem("Exit", "ESC")) {
-					App->close_app = true;
-				}
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("Edit")) {
-				if (ImGui::MenuItem("Project Settings...", NULL, config_window)) {
-					config_window = !config_window;
-				}
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("Create")) {
-				if (ImGui::BeginMenu("Primitives")) {
-
-					ImGui::EndMenu();
-				}
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("Window"))
-			{
-				if (ImGui::BeginMenu("Layouts", NULL)) {
-
-					ImGui::EndMenu();
-				}
-				ImGui::Spacing();
-				ImGui::Separator();
-				ImGui::Spacing();
-				if (ImGui::BeginMenu("General")) {
-					if (ImGui::MenuItem("Scene")) {
-
-					}
-					if (ImGui::MenuItem("Insperctor", NULL, inspector_window)) {
-						inspector_window = !inspector_window;
-					}
-					if (ImGui::MenuItem("Hierarchy", NULL, hierarchy_window)) {
-						hierarchy_window = !hierarchy_window;
-					}
-					if (ImGui::MenuItem("Console", NULL, console_window)) {
-						console_window = !console_window;
-					}
-					ImGui::EndMenu();
-				}
-				ImGui::Spacing();
-				ImGui::Separator();
-				ImGui::Spacing();
-				if (ImGui::MenuItem("Demo", NULL, demo_window)) {
-					demo_window = !demo_window;
-				}
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("Help")) {
-				if (ImGui::MenuItem("About Legacy Engine")) {
-					about_window = !about_window;
-				}
-				ImGui::Spacing();
-				ImGui::Separator();
-				ImGui::Spacing();
-				if (ImGui::MenuItem("Download Latest")) {
-					ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/releases", NULL, NULL, 3);
-				}
-				if (ImGui::MenuItem("Report a bug")) {
-					ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/issues", NULL, NULL, 3);
-				}
-				ImGui::Spacing();
-				ImGui::Separator();
-				ImGui::Spacing();
-				if (ImGui::MenuItem("Documentation")) {
-					ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine", NULL, NULL, 3);
-				}
-
-				ImGui::EndMenu();
-			}
-			ImGui::EndMainMenuBar();
+		ImGui::PopStyleVar(3);
+		if (docking_window)
+		{
+			ImGuiID dockspace_id = ImGui::GetID("DockSpace");
+			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
+			MenuBar();
 		}
 		ImGui::End();
+	}
+
+}
+
+
+void ModuleSceneIntro::MenuBar()
+{
+
+	if (ImGui::BeginMainMenuBar()) {
+		if (ImGui::BeginMenu("File")) {
+			if (ImGui::MenuItem("New Scene", "")) {
+			}
+			if (ImGui::MenuItem("Load Scene", "")) {
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Save Scene", "")) {
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			if (ImGui::MenuItem("New Project", "")) {
+			}
+			if (ImGui::MenuItem("Open Project", "")) {
+			}
+			if (ImGui::MenuItem("Save Project", "")) {
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Exit", "ESC")) {
+				App->close_app = true;
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Edit")) {
+			if (ImGui::MenuItem("Project Settings...", NULL, config_window)) {
+				config_window = !config_window;
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Create")) {
+			if (ImGui::BeginMenu("Primitives")) {
+	
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Window"))
+		{
+			if (ImGui::BeginMenu("Layouts", NULL)) {
+	
+				ImGui::EndMenu();
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			if (ImGui::BeginMenu("General")) {
+				if (ImGui::MenuItem("Scene")) {
+	
+				}
+				if (ImGui::MenuItem("Insperctor", NULL, inspector_window)) {
+					inspector_window = !inspector_window;
+				}
+				if (ImGui::MenuItem("Hierarchy", NULL, hierarchy_window)) {
+					hierarchy_window = !hierarchy_window;
+				}
+				if (ImGui::MenuItem("Console", NULL, console_window)) {
+					console_window = !console_window;
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Demo", NULL, demo_window)) {
+				demo_window = !demo_window;
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Help")) {
+			if (ImGui::MenuItem("About Legacy Engine")) {
+				about_window = !about_window;
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Download Latest")) {
+				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/releases", NULL, NULL, 3);
+			}
+			if (ImGui::MenuItem("Report a bug")) {
+				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine/issues", NULL, NULL, 3);
+			}
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Documentation")) {
+				ShellExecuteA(NULL, "open", "https://github.com/M1R4B3L/LegacyEngine", NULL, NULL, 3);
+			}
+	
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
 	}
 }
 
@@ -306,7 +322,7 @@ void ModuleSceneIntro::WindowConfig()
 						static int width = App->window->GetWidth();
 						static int height = App->window->GetHeight();
 						ImGui::Separator();
-						ImGui::Text("Windows Size: ");
+						ImGui::Text("Windows Size: You should not use this");
 						ImGui::Text("Width ");
 						ImGui::SameLine();
 						ImGui::TextColored(ImVec4(255,0,255,255),"%d ", width);
@@ -315,7 +331,7 @@ void ModuleSceneIntro::WindowConfig()
 						ImGui::TextColored(ImVec4(255, 0, 255, 255), "%d ", height);
 						ImGui::SliderInt("Width", &width, 640, 3840);
 						ImGui::SliderInt("Height", &height, 480, 2160);
-						App->window->SetSize(width,height);
+						App->window->SetSize(width, height);
 						ImGui::Separator();
 						ImGui::Text("Refresh date");
 						ImGui::SameLine();
@@ -520,17 +536,22 @@ void ModuleSceneIntro::WindowConsole()
 {
 	if (console_window)
 	{
-	ImGui::Begin("Console", &console_window);
+		if (ImGui::Begin("Console", &console_window)) {
 
-	for (int i = 0; i < 5; i++)
-	{
+			
+			for (int i = 0; i < string_log.size(); ++i)
+			{
+				ImGui::TextUnformatted(string_log[i]);
+			}
+			if (scroll == true)
+			{
+				ImGui::SetScrollHere(1.0f);											
 
-		ImGui::TextUnformatted("Hi, monkey");
+				scroll = false;
+			}
+			ImGui::End();
+		}
 	}
-
-	ImGui::End();
-	}
-
 }
 
 void ModuleSceneIntro::WindowInspector()
@@ -566,4 +587,24 @@ void ModuleSceneIntro::WindowDemo()
 		//our state (depenent de si el bool que pasem a la window es true o false s'ensenya la window i si la tanquem imgui posa el bool directament a false)
 		ImGui::ShowDemoWindow(&demo_window);
 	}
+}
+
+void ModuleSceneIntro::AddLog(const char* string)
+{
+	char* new_string = strdup(string);
+	string_log.push_back(new_string);
+
+	scroll = true;
+}
+
+void ModuleSceneIntro::ClearLog()
+{
+	for (uint i = 0; i < string_log.size(); ++i)
+	{
+		free(string_log[i]);
+	}
+
+	string_log.clear();
+
+	scroll = true;
 }
