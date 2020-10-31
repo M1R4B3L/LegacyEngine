@@ -120,7 +120,7 @@ void Application::FinishUpdate()
 
 	unsigned __int32 last_frame_ms = ms_timer.Read();
 	ms_log[ms_log.size() - 1] = last_frame_ms;
-	LOG("Last_frame_ms: %d", last_frame_ms);
+	//LOG("Last_frame_ms: %d", last_frame_ms);
 	
 	for (int i = ms_log.size() - 2; i >= 0; --i) {
 		ms_log[i] = ms_log[i + 1];
