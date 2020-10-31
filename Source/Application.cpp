@@ -78,7 +78,7 @@ bool Application::Init()
 void Application::CapFramerate(int fps) {
 	if (fps > 0)
 	{
-		capped_ms = 1000 / fps;
+		capped_ms = (1.f / ((float)fps / 1000.f));
 	}
 	else
 		capped_ms = 0;
@@ -88,7 +88,7 @@ uint Application::GetFramerate()
 {
 	if (capped_ms > 0)
 	{
-		return (uint)((1.0f / (float)capped_ms) * 1000.0f);
+		return (uint)((1.0f / capped_ms) * 1000.0f);
 	}
 	else
 	{
@@ -120,6 +120,7 @@ void Application::FinishUpdate()
 
 	unsigned __int32 last_frame_ms = ms_timer.Read();
 	ms_log[ms_log.size() - 1] = last_frame_ms;
+	LOG("Last_frame_ms: %d", last_frame_ms);
 	
 	for (int i = ms_log.size() - 2; i >= 0; --i) {
 		ms_log[i] = ms_log[i + 1];
@@ -127,7 +128,7 @@ void Application::FinishUpdate()
 	
 	if (capped_ms > 0 && last_frame_ms < capped_ms)
 	{
-		SDL_Delay(capped_ms - last_frame_ms);
+		SDL_Delay((uint)(capped_ms - last_frame_ms));
 	}
 }
 
