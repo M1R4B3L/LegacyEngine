@@ -8,10 +8,8 @@
 
 #define MAX_SNAKE 2
 
-struct PhysBody3D;
-struct PhysMotor3D;
-class Model;
-class Mesh;
+class GameObject;
+
 
 struct Hardware {
 
@@ -54,19 +52,9 @@ public:
 	Sphere s_snake2[MAX_SNAKE];
 	*/
 	
-	PhysBody3D* pb_chassis;
-	Cube p_chassis;
 
-	PhysBody3D* pb_wheel;
-	Cylinder p_wheel;
+	GameObject* ImportGameObject(char* path);
 
-	PhysBody3D* pb_wheel2;
-	Cylinder p_wheel2;
-
-	PhysMotor3D* left_wheel;
-	PhysMotor3D* right_wheel;
-
-	//DefaultCube c;
 
 	//IMGUI!!!!
 	bool docking_window;
@@ -79,10 +67,6 @@ public:
 
 	char org[128];
 
-	Model* warrior = nullptr;
-	Model* walk = nullptr;
-
-	std::vector<Mesh> CurrentMeshes;
 	//Config Window
 
 	void WindowDocking();
@@ -99,6 +83,7 @@ public:
 
 private:
 
+	std::vector<GameObject*> game_objects;
 	std::vector<char*> string_log;
 	bool scroll;
 };

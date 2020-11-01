@@ -3,6 +3,8 @@
 #include "scene.h"
 #include "cimport.h"
 #include "postprocess.h"
+#include "ComponentMesh.h"
+#include "GameObjects.h"
 #include "il.h"
 #include "ilu.h"
 #include "ilut.h"
@@ -33,11 +35,13 @@ std::vector<Mesh> Importer::Meshes::Import(const char* file_path)
 			}
 			
 			if (scene->mMeshes[i]->HasNormals()) {
+				ourMesh.num_normals = ourMesh.num_vertex * 3;
 				ourMesh.normals = new float[ourMesh.num_vertex * 3];
 				memcpy(ourMesh.normals, scene->mMeshes[i]->mNormals, sizeof(float) * ourMesh.num_vertex * 3);
 			}
 
 			if (scene->mMeshes[i]->HasTextureCoords(0)) {
+				ourMesh.num_texcoords = ourMesh.num_vertex * 2;
 				ourMesh.texturecoords = new float[ourMesh.num_vertex * 2];
 
 				for (unsigned int j = 0; j < ourMesh.num_vertex; j++)
@@ -47,20 +51,22 @@ std::vector<Mesh> Importer::Meshes::Import(const char* file_path)
 				}
 			}
 			//Loading possible Diffuse texture files
-			for (int i = 0; i < scene->mNumMaterials; ++i) {
-				uint numTextures = scene->mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE);
+			for (int k = 0; k < scene->mNumMaterials; ++k) {
+				uint numTextures = scene->mMaterials[k]->GetTextureCount(aiTextureType_DIFFUSE);
 				for (int j = 0; j < numTextures; ++j) {
 					aiString path;
-					scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path);
+					scene->mMaterials[k]->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 					//Problem: Storing multiple textures (I can use a vector)
-					ourMesh.difuseTexture = Importer::Textures::Import(path.C_Str());
+					ourMesh.difuseTexture = Importer::Textures::GenerateTexture(path.C_Str());
 				}
 			}
+			//ourMesh.difuseTexture = 234293;
 
 			//generate the glbuffers
 			Importer::Meshes::setupmesh(ourMesh);
 			LoadedMeshes.push_back(ourMesh);
 		}
+
 	}
 	else
 		LOG("Warning loading Meshes in file %s: File has no meshes or textures to load", file_path);
@@ -71,29 +77,42 @@ std::vector<Mesh> Importer::Meshes::Import(const char* file_path)
 void Importer::Meshes::setupmesh(Mesh& mesh)
 {
 	glGenVertexArrays(1, &mesh.VAO);
+	glBindVertexArray(mesh.VAO);
+	
 	glGenBuffers(1, &mesh.VBO);
 	glGenBuffers(1, &mesh.EBO);
-
-	glBindVertexArray(mesh.VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
 
-	glBufferData(GL_ARRAY_BUFFER, mesh.num_vertex * sizeof(float) * 3, &mesh.vertex[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, mesh.num_vertex * sizeof(float) * 3, mesh.vertex, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.num_indices * sizeof(unsigned int) ,&mesh.index[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.num_indices * sizeof(unsigned int) ,mesh.index, GL_STATIC_DRAW);
 
 	// vertex positions
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 	
-	//Problem: what happens if the model doesn't have textures or normals ??
-	// vertex normals
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)(sizeof(float)*3));
+	if (mesh.num_normals > 0) {
+		uint NormalsBuffer;
+		glGenBuffers(1, &NormalsBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, NormalsBuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.num_normals * 2, mesh.normals, GL_STATIC_DRAW);
 
-	// vertex texture coords
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)(sizeof(float) * 6));
+		// vertex normals
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
+	}
+	
+	if (mesh.num_texcoords > 0) {
+		uint TexCoordBuffer;
+		glGenBuffers(1, &TexCoordBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, TexCoordBuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.num_texcoords * 2, mesh.texturecoords, GL_STATIC_DRAW);
+
+		// vertex texture coords
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
+	}
 	
 
 	glBindVertexArray(0);
@@ -113,20 +132,35 @@ uint Importer::Textures::Import(const char* imagePath) {
 	uint ImageName;
 	ilGenImages(1, &ImageName);
 	ilBindImage(ImageName);
-	if (ilLoadImage(imagePath)) {
-		LOG("Error loading the image")
+	//"C:/Users/User/Desktop/LegacyEngine/Baker_house/Baker_house.png"
+	if (!ilLoadImage(imagePath)) {
+		LOG("Error loading the image");
 		ILenum Error;
 		while ((Error = ilGetError()) != IL_NO_ERROR) {
 			LOG("Importing image error %d: %s/n", Error, iluErrorString(Error));
 		}
 		return 0;
 	}
+	//ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
 	return ImageName;
 }
 
-/* Without using ilutGlBindTexImage
-uint Importer::Textures::GenerateTexture(uint& ImageName)
+// Without using ilutGlBindTexImage
+uint Importer::Textures::GenerateTexture(const char* imagePath)
 {
+	uint ImageName;
+	ilGenImages(1, &ImageName);
+	ilBindImage(ImageName);
+	//"C:/Users/User/Desktop/LegacyEngine/Baker_house/Baker_house.png"
+	if (!ilLoadImage(imagePath)) {
+		LOG("Error loading the image");
+		ILenum Error;
+		while ((Error = ilGetError()) != IL_NO_ERROR) {
+			LOG("Importing image error %d: %s/n", Error, iluErrorString(Error));
+		}
+		return 0;
+	}
+	
 	if (ImageName != 0)
 	{
 		uint texture;
@@ -160,4 +194,31 @@ uint Importer::Textures::GenerateTexture(uint& ImageName)
 		return 0;
 	}
 }
-*/
+
+
+uint Importer::Textures::checkerImage() {
+
+	GLubyte checkerImage[64][64][4];
+	for (int i = 0; i < 64; i++) {
+		for (int j = 0; j < 64; j++) {
+			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
+			checkerImage[i][j][0] = (GLubyte)c;
+			checkerImage[i][j][1] = (GLubyte)c;
+			checkerImage[i][j][2] = (GLubyte)c;
+			checkerImage[i][j][3] = (GLubyte)255;
+		}
+	}
+
+	uint textureID = 234293;
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 64, 64,
+		0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
+	
+	return textureID;
+}

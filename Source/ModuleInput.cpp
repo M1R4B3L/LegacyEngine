@@ -5,6 +5,7 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleSceneIntro.h"
 #include "examples/imgui_impl_sdl.h"
+#include <string>
 
 #define MAX_KEYS 300
 
@@ -124,12 +125,8 @@ update_status ModuleInput::PreUpdate(float dt)
 
 			case SDL_DROPFILE: {
 				char* file = e.drop.file;
-				LOG("DROPED %s!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",e.drop.file);
-				std::vector<Mesh> Meshes = Importer::Meshes::Import(e.drop.file);
-				std::vector<Mesh>::iterator it = Meshes.begin();
-				for (it; it != Meshes.end();++it) {
-					App->scene_intro->CurrentMeshes.push_back((*it));
-				}
+				LOG("DROPED file: %s",e.drop.file);
+				App->scene_intro->ImportGameObject(e.drop.file);
 				SDL_free(file);
 				break; 
 			}

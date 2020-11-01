@@ -12,6 +12,7 @@
 #include "il.h"
 #include "ilu.h"
 #include "ilut.h"
+#include "ComponentMesh.h"
 
 ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled),
 wireframes(false)
@@ -152,6 +153,7 @@ bool ModuleRenderer3D::Init()
 		lights[0].Active(true);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
+		glEnable(GL_TEXTURE_2D);
 	}
 
 	// Projection matrix for
@@ -198,18 +200,19 @@ bool ModuleRenderer3D::CleanUp()
 void ModuleRenderer3D::Draw(Mesh &mesh)
 {
 	// draw mesh
-	if (mesh.difuseTexture != 0){
-		ilBindImage(mesh.difuseTexture);
-		ilutGLBindTexImage();
+	if (mesh.difuseTexture != 0) {
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, mesh.difuseTexture);
+		//ilutGLBindTexImage();
 		//ilutGLBindMipmaps
 	}
-
 	glBindVertexArray(mesh.VAO);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawElements(GL_TRIANGLES, mesh.num_indices, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
-	ilBindImage(0);
+	//ilBindImage(0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void ModuleRenderer3D::OnResize(int width, int height)

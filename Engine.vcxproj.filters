@@ -65,7 +65,9 @@
       <Filter>Deps\imGui</Filter>
     </ClInclude>
     <ClInclude Include="Source\Importer.h" />
-    <ClInclude Include="GameObjects.h" />
+    <ClInclude Include="Source\Components.h" />
+    <ClInclude Include="Source\GameObjects.h" />
+    <ClInclude Include="Source\ComponentMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source/Application.cpp" />
@@ -100,6 +102,8 @@
       <Filter>Deps\imGui</Filter>
     </ClCompile>
     <ClCompile Include="Source\Importer.cpp" />
-    <ClCompile Include="GameObjects.cpp" />
+    <ClCompile Include="Source\Components.cpp" />
+    <ClCompile Include="Source\GameObjects.cpp" />
+    <ClCompile Include="Source\ComponentMesh.cpp" />
   </ItemGroup>
 </Project>

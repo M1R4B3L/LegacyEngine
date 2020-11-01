@@ -10,6 +10,9 @@
 #include "examples\imgui_impl_sdl.h"
 #include "examples\imgui_impl_opengl3.h"
 #include "Importer.h"
+#include "GameObjects.h"
+#include "Components.h"
+#include "ComponentMesh.h"
 
 
 
@@ -31,8 +34,8 @@ bool ModuleSceneIntro::Start()
 
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
-	//warrior = new Model("C:/Users/User/Desktop/warrior/warrior.FBX");
-	//walk = new Model("C:/Users/User/Desktop/warrior/walk.FBX");
+
+	ImportGameObject("Assets/Baker_house/BakerHouse.fbx");
 
 	return ret;
 }
@@ -48,9 +51,15 @@ bool ModuleSceneIntro::CleanUp()
 // Update
 update_status ModuleSceneIntro::Update(float dt)
 {
+
 	Plane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
+
+	std::vector<GameObject*>::iterator it;
+	for (it = game_objects.begin(); it != game_objects.end(); it++) {
+		(*it)->Update(dt);
+	}
 
 	//PROBA RENDER 1X1 CUBE OPENGL
 	//static DefaultCube c;
@@ -60,10 +69,6 @@ update_status ModuleSceneIntro::Update(float dt)
 
 	//warrior->Draw();
 	//walk->Draw();
-	std::vector<Mesh>::iterator it;
-	for (it = CurrentMeshes.begin(); it != CurrentMeshes.end(); it++) {
-		App->renderer3D->Draw((*it));
-	}
 
 	//IMGUI!!!!
 	/*if (ImGui::IsKeyPressed(SDL_SCANCODE_1)) {
@@ -106,6 +111,18 @@ update_status ModuleSceneIntro::Update(float dt)
 
 void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 {
+}
+
+GameObject* ModuleSceneIntro::ImportGameObject(char* filepath)
+{
+	
+	ComponentMesh* CMesh = new ComponentMesh(Importer::Meshes::Import(filepath));
+
+	GameObject* Go = new GameObject();
+	Component* component = CMesh;
+	Go->AddComponent(component);	
+	game_objects.push_back(Go);
+	return Go;
 }
 
 void ModuleSceneIntro::WindowDocking()
