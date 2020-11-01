@@ -251,10 +251,52 @@ void ModuleSceneIntro::WindowAbout()
 			ImGui::Spacing();
 			ImGui::BulletText("Libraries:");
 			ImGui::Separator();
-			ImGui::Text("SDL version");
+			ImGui::Text("STL Wiki");
+			ImGui::SameLine();
+			if (ImGui::Button("STL")) {
+				ShellExecuteA(NULL, "open", "https://www.geeksforgeeks.org/the-c-standard-template-library-stl/?ref=lbp", NULL, NULL, 3);
+			}
+			ImGui::Spacing();
+			ImGui::Text("SDL v2.0.12");
 			ImGui::SameLine();
 			if (ImGui::Button("SDL")) {
 				ShellExecuteA(NULL, "open", "https://www.libsdl.org/download-2.0.php", NULL, NULL, 3);
+			}
+			ImGui::Spacing();
+			ImGui::Text("OpenGL");
+			ImGui::SameLine();
+			if (ImGui::Button("OpenGL")) {
+				ShellExecuteA(NULL, "open", "https://www.opengl.org/", NULL, NULL, 3);
+			}
+			ImGui::Spacing();
+			ImGui::Text("Glew v2.1.0");
+			ImGui::SameLine();
+			if (ImGui::Button("Glew")) {
+				ShellExecuteA(NULL, "open", "http://glew.sourceforge.net/", NULL, NULL, 3);
+			}
+			ImGui::Spacing();
+			ImGui::Text("ImGui v1.79");
+			ImGui::SameLine();
+			if (ImGui::Button("ImGui")) {
+				ShellExecuteA(NULL, "open", "https://github.com/ocornut/imgui", NULL, NULL, 3);
+			}
+			ImGui::Spacing();
+			ImGui::Text("Assimp v3.1.1");
+			ImGui::SameLine();
+			if (ImGui::Button("Assimp")) {
+				ShellExecuteA(NULL, "open", "https://github.com/assimp/assimp", NULL, NULL, 3);
+			}
+			ImGui::Spacing();
+			ImGui::Text("Devil v1.8.0");
+			ImGui::SameLine();
+			if (ImGui::Button("Devil")) {
+				ShellExecuteA(NULL, "open", "http://openil.sourceforge.net/download.php", NULL, NULL, 3);
+			}
+			ImGui::Spacing();
+			ImGui::Text("MathGeoLib v1.5");
+			ImGui::SameLine();
+			if (ImGui::Button("MathGeoLib")) {
+				ShellExecuteA(NULL, "open", "https://github.com/juj/MathGeoLib", NULL, NULL, 3);
 			}
 			if (ImGui::CollapsingHeader("License"))
 			{
