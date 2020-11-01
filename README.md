@@ -33,3 +33,7 @@ The Console menu will tell you internal information of the process and some impo
 
 Drag & drop different .fbx files, .png or .dds textures. All the accepted meshed must be triangulated (Made by triangles).
 
+### Special information
+The fish.fbx is small!!!!
+
+We don't have working textures.
