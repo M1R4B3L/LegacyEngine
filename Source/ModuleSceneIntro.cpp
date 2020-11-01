@@ -263,7 +263,7 @@ void ModuleSceneIntro::WindowAbout()
 				ShellExecuteA(NULL, "open", "https://www.libsdl.org/download-2.0.php", NULL, NULL, 3);
 			}
 			ImGui::Spacing();
-			ImGui::Text("OpenGL v3.1.0");
+			ImGui::Text("OpenGL");
 			ImGui::SameLine();
 			if (ImGui::Button("OpenGL")) {
 				ShellExecuteA(NULL, "open", "https://www.opengl.org/", NULL, NULL, 3);
@@ -479,6 +479,12 @@ void ModuleSceneIntro::WindowConfig()
 					{
 						App->renderer3D->SetglEnbleFlags(GL_TEXTURE_2D, texture2D);
 					}
+					//Deberia ir al inspector de cada material
+					bool show_normals = true;	//De donde saco las normales????
+					if (ImGui::Checkbox("Normals", &show_normals))
+					{
+						//App->renderer3D->SetWireframes(show_normals);
+					}
 					ImGui::EndTabItem();
 				}
 				
@@ -513,10 +519,6 @@ void ModuleSceneIntro::WindowConfig()
 					ImGui::Text("SDL Version:");
 					ImGui::SameLine();
 					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%d.%d.%d", stats.H_SDLVersion.major, stats.H_SDLVersion.minor, stats.H_SDLVersion.patch);
-					ImGui::Spacing();
-					ImGui::Text("OpenGL Version:");
-					ImGui::SameLine();
-					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%s", glGetString(GL_VERSION));
 					ImGui::Separator();
 					ImGui::Spacing();
 					ImGui::Text("CPUs:");
