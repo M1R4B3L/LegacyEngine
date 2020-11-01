@@ -9,6 +9,9 @@
 #include "imgui.h"
 #include "examples\imgui_impl_sdl.h"
 #include "examples\imgui_impl_opengl3.h"
+#include "il.h"
+#include "ilu.h"
+#include "ilut.h"
 
 ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled),
 wireframes(false)
@@ -195,11 +198,18 @@ bool ModuleRenderer3D::CleanUp()
 void ModuleRenderer3D::Draw(Mesh &mesh)
 {
 	// draw mesh
+	if (mesh.difuseTexture != 0){
+		ilBindImage(mesh.difuseTexture);
+		ilutGLBindTexImage();
+		//ilutGLBindMipmaps
+	}
+
 	glBindVertexArray(mesh.VAO);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawElements(GL_TRIANGLES, mesh.num_indices, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+	ilBindImage(0);
 }
 
 void ModuleRenderer3D::OnResize(int width, int height)

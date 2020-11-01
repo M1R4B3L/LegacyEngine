@@ -1,4 +1,4 @@
-#include "Meshes.h"
+#include "Importer.h"
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleInput.h"
@@ -125,7 +125,7 @@ update_status ModuleInput::PreUpdate(float dt)
 			case SDL_DROPFILE: {
 				char* file = e.drop.file;
 				LOG("DROPED %s!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",e.drop.file);
-				std::vector<Mesh> Meshes = LoadFileMeshes(e.drop.file);
+				std::vector<Mesh> Meshes = Importer::Meshes::Import(e.drop.file);
 				std::vector<Mesh>::iterator it = Meshes.begin();
 				for (it; it != Meshes.end();++it) {
 					App->scene_intro->CurrentMeshes.push_back((*it));

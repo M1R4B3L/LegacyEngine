@@ -64,7 +64,7 @@
     <ClInclude Include="Source\Dependencies\imgui\examples\imgui_impl_sdl.h">
       <Filter>Deps\imGui</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Meshes.h" />
+    <ClInclude Include="Source\Importer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source/Application.cpp" />
@@ -98,6 +98,6 @@
     <ClCompile Include="Source\Dependencies\imgui\examples\imgui_impl_sdl.cpp">
       <Filter>Deps\imGui</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Meshes.cpp" />
+    <ClCompile Include="Source\Importer.cpp" />
   </ItemGroup>
 </Project>

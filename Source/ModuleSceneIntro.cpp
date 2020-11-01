@@ -9,7 +9,7 @@
 #include "imgui.h"
 #include "examples\imgui_impl_sdl.h"
 #include "examples\imgui_impl_opengl3.h"
-#include "Meshes.h"
+#include "Importer.h"
 
 
 
@@ -25,6 +25,7 @@ ModuleSceneIntro::~ModuleSceneIntro()
 // Load assets
 bool ModuleSceneIntro::Start()
 {
+	Importer::Textures::Init();
 	//LOG("Loading Intro assets");
 	bool ret = true;
 
