@@ -81,6 +81,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="GameObjects.h" />
     <ClInclude Include="Source/Application.h" />
     <ClInclude Include="Source/Color.h" />
     <ClInclude Include="Source/glmath.h" />
@@ -105,6 +106,7 @@
     <ClInclude Include="Source\Importer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameObjects.cpp" />
     <ClCompile Include="Source/Application.cpp" />
     <ClCompile Include="Source/Color.cpp" />
     <ClCompile Include="Source/glmath.cpp" />

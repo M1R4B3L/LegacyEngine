@@ -65,6 +65,7 @@
       <Filter>Deps\imGui</Filter>
     </ClInclude>
     <ClInclude Include="Source\Importer.h" />
+    <ClInclude Include="GameObjects.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source/Application.cpp" />
@@ -99,5 +100,6 @@
       <Filter>Deps\imGui</Filter>
     </ClCompile>
     <ClCompile Include="Source\Importer.cpp" />
+    <ClCompile Include="GameObjects.cpp" />
   </ItemGroup>
 </Project>

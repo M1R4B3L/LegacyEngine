@@ -1,5 +1,5 @@
-
 #pragma once
+
 #include "glmath.h"
 #include "Color.h"
 
