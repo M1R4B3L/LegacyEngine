@@ -5,6 +5,7 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
 #include "ModuleSceneIntro.h"
+#include "ModuleEditor.h"
 
 #include <list>
 
@@ -16,6 +17,7 @@ close_app(false)
 	scene_intro = new ModuleSceneIntro(this);
 	renderer3D = new ModuleRenderer3D(this);
 	camera = new ModuleCamera3D(this);
+	editor = new ModuleEditor(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -28,6 +30,7 @@ close_app(false)
 	
 	// Scenes
 	AddModule(scene_intro);
+	AddModule(editor);
 
 	// Renderer last!
 	AddModule(renderer3D);
@@ -207,7 +210,7 @@ void Application::AddConsoleLog(const char* string)
 
 			std::string short_log = tmp_log.substr(log_start_position, log_end_position);
 
-			scene_intro->AddLog(short_log.c_str());
+			editor->AddLog(short_log.c_str());
 
 			tmp_log.clear();
 			short_log.clear();

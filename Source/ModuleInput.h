@@ -1,4 +1,3 @@
-#pragma once
 #ifndef __ModuleInput_H__
 #define __ModuleInput_H__
 

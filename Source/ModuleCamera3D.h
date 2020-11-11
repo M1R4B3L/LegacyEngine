@@ -1,4 +1,3 @@
-#pragma once
 #ifndef __ModuleCamera3D_H__
 #define __ModuleCamera3D_H__
 

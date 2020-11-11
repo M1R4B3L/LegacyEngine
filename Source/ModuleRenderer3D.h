@@ -1,4 +1,3 @@
-#pragma once
 #ifndef __ModuleRenderer3D_H__
 #define __ModuleRenderer3D_H__
 

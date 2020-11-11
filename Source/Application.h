@@ -15,6 +15,7 @@ class ModuleInput;
 class ModuleSceneIntro;
 class ModuleRenderer3D;
 class ModuleCamera3D;
+class ModuleEditor;
 
 class Application
 {
@@ -25,6 +26,7 @@ public:
 	ModuleSceneIntro* scene_intro = nullptr;
 	ModuleRenderer3D* renderer3D = nullptr;
 	ModuleCamera3D* camera = nullptr;
+	ModuleEditor* editor = nullptr;
 
 	std::array<float,50>fps_log;
 	std::array<float,50>ms_log;
