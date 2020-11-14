@@ -57,7 +57,8 @@ std::vector<Mesh> Importer::Meshes::Import(const char* file_path)
 					aiString path;
 					scene->mMaterials[k]->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 					//Problem: Storing multiple textures (I can use a vector)
-					ourMesh.difuseTexture = Importer::Textures::GenerateTexture(path.C_Str());
+					path = "Assets/Baker_house/Baker_house.png";
+					ourMesh.difuseTexture = Importer::Textures::Import(path.C_Str());
 				}
 			}
 			//ourMesh.difuseTexture = 234293;
@@ -92,7 +93,7 @@ void Importer::Meshes::setupmesh(Mesh& mesh)
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 	
-	if (mesh.num_normals > 0) {
+	/*if (mesh.num_normals > 0) {
 		uint NormalsBuffer;
 		glGenBuffers(1, &NormalsBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, NormalsBuffer);
@@ -101,20 +102,20 @@ void Importer::Meshes::setupmesh(Mesh& mesh)
 		// vertex normals
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
-	}
+	}*/
 	
 	if (mesh.num_texcoords > 0) {
 		uint TexCoordBuffer;
 		glGenBuffers(1, &TexCoordBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, TexCoordBuffer);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.num_texcoords * 2, mesh.texturecoords, GL_STATIC_DRAW);
+		glTexCoordPointer(2, GL_FLOAT, 0, NULL); //TODO: DEPRECATED: Haig d'escriure els shaders!!!!
 
 		// vertex texture coords
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
 	}
 	
-
 	glBindVertexArray(0);
 }
 
@@ -132,7 +133,7 @@ uint Importer::Textures::Import(const char* imagePath) {
 	uint ImageName;
 	ilGenImages(1, &ImageName);
 	ilBindImage(ImageName);
-	//"C:/Users/User/Desktop/LegacyEngine/Baker_house/Baker_house.png"
+
 	if (!ilLoadImage(imagePath)) {
 		LOG("Error loading the image");
 		ILenum Error;
@@ -141,11 +142,17 @@ uint Importer::Textures::Import(const char* imagePath) {
 		}
 		return 0;
 	}
-	//ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-	return ImageName;
+
+	/*if (ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE)) //TODO: Cal convertir les textures a RGBA
+		LOG("Succesfully converted image to RGBA");*/
+
+	uint texture = ilutGLBindTexImage();
+	ilutGLBindMipmaps();
+	ilDeleteImages(1, &ImageName);
+	return texture;
 }
 
-// Without using ilutGlBindTexImage
+/*// Without using ilutGlBindTexImage
 uint Importer::Textures::GenerateTexture(const char* imagePath)
 {
 	uint ImageName;
@@ -193,7 +200,7 @@ uint Importer::Textures::GenerateTexture(const char* imagePath)
 		LOG("Can't generate texture because image data null");
 		return 0;
 	}
-}
+}*/
 
 
 uint Importer::Textures::checkerImage() {

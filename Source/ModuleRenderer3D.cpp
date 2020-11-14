@@ -41,8 +41,8 @@ bool ModuleRenderer3D::Init()
 		LOG("Error initializing glew");
 	}
 
-	// Our state
-	
+	LOG("OpenGL version: %s", glGetString(GL_VERSION));
+
 	if(ret == true)
 	{
 		//Use Vsync
@@ -156,19 +156,26 @@ bool ModuleRenderer3D::CleanUp()
 void ModuleRenderer3D::Draw(Mesh &mesh)
 {
 	// draw mesh
+	glBindVertexArray(mesh.VAO);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	//glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
 	if (mesh.difuseTexture != 0) {
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, mesh.difuseTexture);
 		//ilutGLBindTexImage();
 		//ilutGLBindMipmaps
 	}
-	glBindVertexArray(mesh.VAO);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawElements(GL_TRIANGLES, mesh.num_indices, GL_UNSIGNED_INT, 0);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	//glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glBindVertexArray(0);
-	//ilBindImage(0);
-	//glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_2D);
 }
 
 void ModuleRenderer3D::OnResize(int width, int height)

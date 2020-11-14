@@ -14,7 +14,7 @@ namespace Importer {
     namespace Textures {
         void Init();
         uint Import(const char* imagePath);
-        uint GenerateTexture(const char* imagePath);
+        //uint GenerateTexture(const char* imagePath);
         uint checkerImage();
     }
 }
