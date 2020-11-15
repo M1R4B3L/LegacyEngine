@@ -13,14 +13,14 @@
     <Filter Include="Sources\Tools">
       <UniqueIdentifier>{7e4dfaf7-022c-4f7d-92aa-f3b3fa9d6248}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\Helpers">
-      <UniqueIdentifier>{121f8e6b-df36-4ab0-be0d-601ddfc9e503}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Deps">
       <UniqueIdentifier>{ee01b75b-d622-4779-b7ea-6e0c5a191aed}</UniqueIdentifier>
     </Filter>
     <Filter Include="Deps\imGui">
       <UniqueIdentifier>{8101dfa4-7efe-4801-8bd2-79d1cf080711}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\GameObjects&amp;Components">
+      <UniqueIdentifier>{121f8e6b-df36-4ab0-be0d-601ddfc9e503}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -56,9 +56,6 @@
       <Filter>Deps\imGui</Filter>
     </ClInclude>
     <ClInclude Include="Source\Importer.h" />
-    <ClInclude Include="Source\Components.h" />
-    <ClInclude Include="Source\GameObjects.h" />
-    <ClInclude Include="Source\ComponentMesh.h" />
     <ClInclude Include="Source\ModuleEditor.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
@@ -79,6 +76,18 @@
     </ClInclude>
     <ClInclude Include="Source/Module.h">
       <Filter>Sources\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ComponentMesh.h">
+      <Filter>Sources\GameObjects&amp;Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Components.h">
+      <Filter>Sources\GameObjects&amp;Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjects.h">
+      <Filter>Sources\GameObjects&amp;Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ComponentCamera.h">
+      <Filter>Sources\GameObjects&amp;Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -109,9 +118,6 @@
       <Filter>Deps\imGui</Filter>
     </ClCompile>
     <ClCompile Include="Source\Importer.cpp" />
-    <ClCompile Include="Source\Components.cpp" />
-    <ClCompile Include="Source\GameObjects.cpp" />
-    <ClCompile Include="Source\ComponentMesh.cpp" />
     <ClCompile Include="Source\ModuleEditor.cpp">
       <Filter>Sources\Modules</Filter>
     </ClCompile>
@@ -129,6 +135,18 @@
     </ClCompile>
     <ClCompile Include="Source/ModuleWindow.cpp">
       <Filter>Sources\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ComponentMesh.cpp">
+      <Filter>Sources\GameObjects&amp;Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components.cpp">
+      <Filter>Sources\GameObjects&amp;Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjects.cpp">
+      <Filter>Sources\GameObjects&amp;Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ComponentCamera.cpp">
+      <Filter>Sources\GameObjects&amp;Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
