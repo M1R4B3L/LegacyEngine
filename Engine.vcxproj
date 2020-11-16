@@ -107,6 +107,7 @@
     <ClInclude Include="Source\GameObjects.h" />
     <ClInclude Include="Source\Importer.h" />
     <ClInclude Include="Source\ModuleEditor.h" />
+    <ClInclude Include="Source\Shader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source/Application.cpp" />
@@ -133,6 +134,7 @@
     <ClCompile Include="Source\GameObjects.cpp" />
     <ClCompile Include="Source\Importer.cpp" />
     <ClCompile Include="Source\ModuleEditor.cpp" />
+    <ClCompile Include="Source\Shader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

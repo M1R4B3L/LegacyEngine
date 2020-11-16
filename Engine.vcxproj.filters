@@ -80,6 +80,7 @@
     <ClInclude Include="Source/Module.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Shader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source/Application.cpp" />
@@ -130,5 +131,6 @@
     <ClCompile Include="Source/ModuleWindow.cpp">
       <Filter>Sources\Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Shader.cpp" />
   </ItemGroup>
 </Project>

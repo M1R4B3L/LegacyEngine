@@ -162,7 +162,7 @@ void ModuleRenderer3D::Draw(Mesh &mesh)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	if (mesh.difuseTexture != 0) {
-		glEnable(GL_TEXTURE_2D);
+		//glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, mesh.difuseTexture);
 		//ilutGLBindTexImage();
 		//ilutGLBindMipmaps
@@ -175,7 +175,7 @@ void ModuleRenderer3D::Draw(Mesh &mesh)
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glDisable(GL_TEXTURE_2D);
+	//glDisable(GL_TEXTURE_2D);
 }
 
 void ModuleRenderer3D::OnResize(int width, int height)
