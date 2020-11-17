@@ -165,6 +165,7 @@ bool ModuleRenderer3D::CleanUp()
 
 void ModuleRenderer3D::Draw(Mesh &mesh)
 {
+	defaultShader->use();
 	// draw mesh
 	if (mesh.difuseTexture != 0) {
 		//glEnable(GL_TEXTURE_2D);
@@ -172,7 +173,8 @@ void ModuleRenderer3D::Draw(Mesh &mesh)
 		//ilutGLBindTexImage();
 		//ilutGLBindMipmaps
 	}
-	defaultShader->use();
+	defaultShader->setMat4("projection", ProjectionMatrix.M);
+	defaultShader->setMat4("view", App->camera->GetViewMatrix());
 	glBindVertexArray(mesh.VAO);
 	/*glEnableClientState(GL_VERTEX_ARRAY);
 	//glEnableClientState(GL_NORMAL_ARRAY);
@@ -198,7 +200,6 @@ void ModuleRenderer3D::OnResize(int width, int height)
 	glLoadIdentity();
 	ProjectionMatrix = perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
 	glLoadMatrixf(&ProjectionMatrix);
-
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }

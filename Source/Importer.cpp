@@ -57,7 +57,7 @@ std::vector<Mesh> Importer::Meshes::Import(const char* file_path)
 					aiString path;
 					scene->mMaterials[k]->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 					//Problem: Storing multiple textures (I can use a vector)
-					path = "Assets/Lenna.png";
+					path = "Assets/Baker_house/Baker_house.png";
 					ourMesh.difuseTexture = Importer::Textures::Import(path.C_Str());
 				}
 			}
@@ -93,7 +93,7 @@ void Importer::Meshes::setupmesh(Mesh& mesh)
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 
-	/*if (mesh.num_texcoords > 0) {
+	if (mesh.num_texcoords > 0) {
 		uint TexCoordBuffer;
 		glGenBuffers(1, &TexCoordBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, TexCoordBuffer);
@@ -103,7 +103,7 @@ void Importer::Meshes::setupmesh(Mesh& mesh)
 		// vertex texture coords
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
-	}*/
+	}
 	/*
 	if (mesh.num_normals > 0) {
 		uint NormalsBuffer;

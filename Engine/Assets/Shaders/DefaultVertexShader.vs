@@ -4,9 +4,12 @@ layout (location = 1) in vec2 tCoord;
   
 out vec2 textCoord;
 
+uniform mat4 projection;
+uniform mat4 view;
+
 void main()
 {
-    gl_Position = vec4(aPos, 1.0);
+    gl_Position = projection * view * vec4(aPos, 1.0);
     textCoord = tCoord;
 }
 //

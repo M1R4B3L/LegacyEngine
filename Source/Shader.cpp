@@ -45,7 +45,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 		char infoLog[512];
 
 		//vertex shader
-		//LOG("vertex shader: %s", vertexCode);
+		LOG("vertex shader: %s", vertexCode);
 		vertex = glCreateShader(GL_VERTEX_SHADER); //Necesitare el glgetshadermacro() si no sse quin tipus de shader es
 		glShaderSource(vertex, 1, &vertexCode, NULL);
 		glCompileShader(vertex);
@@ -58,7 +58,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 		};
 
 		//fragment shader
-		//LOG("Fragment shader: %s\n", fragmentCode);
+		LOG("Fragment shader: %s\n", fragmentCode);
 		fragment = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fragment, 1, &fragmentCode, NULL);
 		glCompileShader(fragment);
@@ -111,4 +111,10 @@ void Shader::setInt(const std::string& name, int value) const
 void Shader::setFloat(const std::string& name, float value) const
 {
 	glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+}
+
+void Shader::setMat4(const std::string& name, float* value) const
+{
+	unsigned int transformLoc = glGetUniformLocation(ID, name.c_str());
+	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, value);
 }
