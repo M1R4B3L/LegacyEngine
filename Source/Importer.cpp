@@ -92,30 +92,30 @@ void Importer::Meshes::setupmesh(Mesh& mesh)
 	// vertex positions
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
-	
-	if (mesh.num_normals > 0) {
-		uint NormalsBuffer;
-		glGenBuffers(1, &NormalsBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, NormalsBuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.num_normals * 2, mesh.normals, GL_STATIC_DRAW);
 
-		// vertex normals
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
-	}
-	
-	if (mesh.num_texcoords > 0) {
+	/*if (mesh.num_texcoords > 0) {
 		uint TexCoordBuffer;
 		glGenBuffers(1, &TexCoordBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, TexCoordBuffer);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.num_texcoords * 2, mesh.texturecoords, GL_STATIC_DRAW);
-		glTexCoordPointer(2, GL_FLOAT, 0, NULL); //TODO: DEPRECATED: Haig d'escriure els shaders!!!!
+		//glTexCoordPointer(2, GL_FLOAT, 0, NULL); //TODO: DEPRECATED: Haig d'escriure els shaders!!!!
 
 		// vertex texture coords
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
+	}*/
+	/*
+	if (mesh.num_normals > 0) {
+		uint NormalsBuffer;
+		glGenBuffers(1, &NormalsBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, NormalsBuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.num_normals * 3, mesh.normals, GL_STATIC_DRAW);
+
+		// vertex normals
 		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
-	}
-	
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+	}*/
+
 	glBindVertexArray(0);
 }
 

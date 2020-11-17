@@ -10,6 +10,7 @@
 #define MAX_LIGHTS 8
 
 typedef unsigned int GLenum;
+class Shader;
 
 class ModuleRenderer3D : public Module
 {
@@ -41,6 +42,8 @@ public:
 	SDL_GLContext context;
 	mat3x3 NormalMatrix;
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
+
+	Shader* defaultShader = nullptr;
 };
 
 #endif //__ModuleRenderer3D_H__

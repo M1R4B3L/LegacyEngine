@@ -37,3 +37,23 @@ enum update_status
 #define WIN_FULLSCREEN_DESKTOP false
 #define VSYNC 1
 #define TITLE "Legacy Engine"
+
+// Deletes a buffer
+#define RELEASE( x )\
+    {\
+       if( x != nullptr )\
+       {\
+         delete x;\
+	     x = nullptr;\
+       }\
+    }
+
+// Deletes an array of buffers
+#define RELEASE_ARRAY( x )\
+	{\
+       if( x != nullptr )\
+       {\
+           delete[] x;\
+	       x = nullptr;\
+		 }\
+	 }

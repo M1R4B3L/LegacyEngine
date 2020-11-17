@@ -13,6 +13,8 @@
 #include "ilu.h"
 #include "ilut.h"
 #include "ComponentMesh.h"
+#include "Shader.h"
+#include "physfs.h"
 
 ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled),
 wireframes(false)
@@ -110,6 +112,12 @@ bool ModuleRenderer3D::Init()
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
+
+		//TODO: where do I init physfs library ???
+		PHYSFS_init(nullptr);
+		if(!PHYSFS_mount("Assets/Shaders/",nullptr,1))
+			LOG("Error while setting path: %s\n", PHYSFS_getLastError());
+		defaultShader = new Shader("DefaultVertexShader.vs", "DefaultFragmentShader.fs");
 	}
 
 	// Projection matrix for
@@ -148,6 +156,8 @@ bool ModuleRenderer3D::CleanUp()
 {
 	LOG("Destroying 3D Renderer");
 
+	glDeleteShader(defaultShader->ID); //TODO: maybe on the shader destructor
+	RELEASE(defaultShader);
 	SDL_GL_DeleteContext(context);
 
 	return true;
@@ -156,25 +166,27 @@ bool ModuleRenderer3D::CleanUp()
 void ModuleRenderer3D::Draw(Mesh &mesh)
 {
 	// draw mesh
-	glBindVertexArray(mesh.VAO);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	//glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
 	if (mesh.difuseTexture != 0) {
 		//glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, mesh.difuseTexture);
 		//ilutGLBindTexImage();
 		//ilutGLBindMipmaps
 	}
+	defaultShader->use();
+	glBindVertexArray(mesh.VAO);
+	/*glEnableClientState(GL_VERTEX_ARRAY);
+	//glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);*/
+
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawElements(GL_TRIANGLES, mesh.num_indices, GL_UNSIGNED_INT, 0);
-	glDisableClientState(GL_VERTEX_ARRAY);
+	/*glDisableClientState(GL_VERTEX_ARRAY);
 	//glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);*/
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glUseProgram(0);
 	//glDisable(GL_TEXTURE_2D);
 }
 
