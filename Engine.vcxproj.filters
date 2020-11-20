@@ -96,9 +96,6 @@
     <ClInclude Include="Source\ComponentMesh.h">
       <Filter>Sources\GameObjects&amp;Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Components.h">
-      <Filter>Sources\GameObjects&amp;Components</Filter>
-    </ClInclude>
     <ClInclude Include="Source\GameObjects.h">
       <Filter>Sources\GameObjects&amp;Components</Filter>
     </ClInclude>
@@ -285,6 +282,12 @@
     <ClInclude Include="Source\Dependencies\MathGeoLib\include\Math\TransformOps.h">
       <Filter>Deps\MathGeoLib\Math</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ComponentTransform.h">
+      <Filter>Sources\GameObjects&amp;Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Component.h">
+      <Filter>Sources\GameObjects&amp;Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source/Application.cpp" />
@@ -334,9 +337,6 @@
     </ClCompile>
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ComponentMesh.cpp">
-      <Filter>Sources\GameObjects&amp;Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Components.cpp">
       <Filter>Sources\GameObjects&amp;Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameObjects.cpp">
@@ -440,6 +440,12 @@
     </ClCompile>
     <ClCompile Include="Source\Dependencies\MathGeoLib\include\Math\TransformOps.cpp">
       <Filter>Deps\MathGeoLib\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ComponentTransform.cpp">
+      <Filter>Sources\GameObjects&amp;Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Component.cpp">
+      <Filter>Sources\GameObjects&amp;Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

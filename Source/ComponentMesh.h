@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Components.h"
+#include "Component.h"
 #include "Globals.h"
 #include <vector>
+
+class Component;
 
 struct Mesh {
     uint VAO; //vertex array object

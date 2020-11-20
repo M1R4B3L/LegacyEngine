@@ -11,7 +11,7 @@
 #include "examples\imgui_impl_opengl3.h"
 #include "Importer.h"
 #include "GameObjects.h"
-#include "Components.h"
+#include "Component.h"
 #include "ComponentMesh.h"
 
 
@@ -50,7 +50,7 @@ bool ModuleSceneIntro::CleanUp()
 update_status ModuleSceneIntro::Update(float dt)
 {
 
-	Plane p(0, 1, 0, 0);
+	plane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
 

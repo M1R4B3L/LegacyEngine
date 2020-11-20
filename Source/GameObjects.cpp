@@ -1,36 +1,45 @@
 #include "GameObjects.h"
-#include "Components.h"
+#include "Component.h"
 
-GameObject::GameObject() : m_Name("No name")
+GameObject::GameObject() : parent(nullptr), name("No name")
 {
 }
 
-GameObject::GameObject(const std::string&& name) : m_Name(name) {}
+GameObject::GameObject(GameObject * iParent, const char* iName, float3 transf, float3 scale, Quat rot) : parent(iParent), name(iName) 
+{
+	if (!parent) 
+	{
+		iParent->children.push_back(this);
+	}
+	
+
+}
 
 GameObject::~GameObject()
 {
-	std::vector<Component*>::iterator component = m_Components.begin();
-	for (component;component!= m_Components.end();component++)	
+	std::vector<Component*>::iterator component = components.begin();
+	for (component;component!= components.end();component++)	
 		delete (*component);
-	m_Components.clear();
+	components.clear();
 }
 
 void GameObject::AddComponent(Component* c)
 {
+	//TODO:Check si ia en tenim un d'aquet tipus??
 	c->SetGameObject(*this);	
-	m_Components.emplace_back(c);
+	components.emplace_back(c);
 }
 
-void GameObject::Start()
+/*void GameObject::Start()
 {
-	std::vector<Component*>::iterator it = m_Components.begin();
-	for (it; it != m_Components.end(); it++)
+	std::vector<Component*>::iterator it = components.begin();
+	for (it; it != components.end(); it++)
 		(*it)->Start();
-}
+}*/
 
 void GameObject::Update(float dt)
 {
-	std::vector<Component*>::iterator it = m_Components.begin();
-	for (it; it != m_Components.end(); it++)
+	std::vector<Component*>::iterator it = components.begin();
+	for (it; it != components.end(); it++)
 		(*it)->Update(dt);
 }

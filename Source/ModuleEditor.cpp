@@ -11,7 +11,7 @@
 #include "examples\imgui_impl_opengl3.h"
 #include "Importer.h"
 #include "GameObjects.h"
-#include "Components.h"
+#include "Component.h"
 #include "ComponentMesh.h"
 
 

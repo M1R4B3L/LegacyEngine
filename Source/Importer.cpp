@@ -229,3 +229,9 @@ uint Importer::Textures::checkerImage() {
 	
 	return textureID;
 }
+
+bool Importer::ImportDroped(const char* fliePath)
+{
+	
+	return false;
+}

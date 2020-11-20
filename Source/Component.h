@@ -13,33 +13,20 @@ enum class ComponentType {
 class Component
 {
 public:
-	Component();
+	//Component();
+	Component(GameObject* go, ComponentType iType, bool iActive);
 	virtual	~Component() {}
 
 	virtual void Start() {}
 	virtual void Update(float dt) {}
 	virtual void Enable(){}
 	virtual void Disable(){}
-	GameObject* Owner;
 	const GameObject& GetGameObject() const;	
 	GameObject& GetGameObject();
 	void SetGameObject(GameObject& go);
 private:
-	GameObject* m_GameObject;
+	GameObject* gameObject;
 	ComponentType type;
 	bool active;
 };
-
-//	2D	position:	just	x,y	coordinates
-class TransformComponent : public Component
-{
-public:
-	float	x, y;
-};
-
-class MaterialsComponent : public Component 
-{
-
-};
-
 #endif

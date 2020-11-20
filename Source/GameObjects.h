@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "MathGeoLib.h"
 
 class Component;
 enum class ComponentType;
@@ -11,23 +12,19 @@ class GameObject
 {
 public:
 	GameObject();
-	GameObject(const std::string&& name);
+	GameObject(GameObject* parent, const char* iName = "noName",float3 transf = float3::zero,float3 scale = float3::one, Quat rot = Quat::identity);
 	~GameObject();
 
 	//	add	a	new	component	to	this	game	object
 	void AddComponent(Component* c);
-	
-	Component* CreateComponent(ComponentType type);
 
-	void Start();
+	//void Start();
 	void Update(float dt);
 
-
-
 private:
-	GameObject* parent;
-	std::string m_Name;
-	std::vector<Component*> m_Components;
+	GameObject* parent = nullptr;
+	std::string name;
+	std::vector<Component*> components;
 	std::vector<GameObject*> children;
 };
 

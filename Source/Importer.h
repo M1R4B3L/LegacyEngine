@@ -6,6 +6,7 @@ struct Mesh;
 class GameObject;
 
 namespace Importer {
+    bool ImportDroped(const char* filepath);
     namespace Meshes {
 
         std::vector<Mesh> Import(const char* filePath);

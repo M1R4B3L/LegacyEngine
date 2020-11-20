@@ -24,6 +24,7 @@ public:
 
 public:
 	GameObject* ImportGameObject(char* path);
+	GameObject* CreateGameObject();
 
 private:
 

@@ -1,7 +1,6 @@
-#ifndef __ComponentCamera_H__
-#define __ComponentCamera_H__
+#pragma once
 
-#include "Components.h"
+#include "Component.h"
 
 #include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
 
@@ -12,5 +11,3 @@ public:
 	Frustum frustrum_camera;
 
 };
-
-#endif //__ComponentCamera_H__

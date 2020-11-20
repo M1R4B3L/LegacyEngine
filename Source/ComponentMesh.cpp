@@ -3,7 +3,7 @@
 #include "ModuleRenderer3D.h"
 
 
-ComponentMesh::ComponentMesh(std::vector<Mesh> imported_meshes) : Component(), meshes(imported_meshes) {}
+ComponentMesh::ComponentMesh(std::vector<Mesh> imported_meshes) : Component(nullptr,ComponentType::Mesh,true), meshes(imported_meshes) {}
 
 void ComponentMesh::Update(float dt)
 {
