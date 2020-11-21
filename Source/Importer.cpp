@@ -20,92 +20,99 @@ void Importer::Meshes::ImportFbx(const char* fbxPath)
 	const aiScene* scene = aiImportFile(fbxPath, aiProcessPreset_TargetRealtime_MaxQuality);
 	if (scene != nullptr && scene->HasMeshes())
 	{
-		ParseFbxNode(scene->mRootNode, scene);
+		std::string filePath = fbxPath;
+		std::string  fbxPath = filePath.substr(0,filePath.find_last_of("/") + 1);
+		ParseFbxNode(scene->mRootNode, scene, fbxPath.c_str());
 	}
 	else
 		LOG("Error opening file: %s ", fbxPath);
 	//TODO: Destroy the FBX
 }
 
-void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, GameObject*parentGo) 
+void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const char * fbxPath, GameObject*parentGo) 
 {
 	GameObject* go = nullptr;
 	
-	for (int i = 0; i < node->mNumChildren; ++i) 
+	for (int i = 0; i < node->mNumMeshes; ++i) 
 	{
 
-		if (node->mChildren[i]->mNumMeshes != 0)
-		{
-			//Create a game object with its name and the parent of the go is this node
-			//TODO: use the name of the node or the name of the mesh ?
-			go = App->scene_intro->CreateGameObject(parentGo, node->mChildren[i]->mName.C_Str());
-			LOG("%s", node->mChildren[i]->mName.C_Str());
+		//Create a game object with its name and the parent of the go is this node
+		//TODO: use the name of the node or the name of the mesh ?
+		go = App->scene_intro->CreateGameObject(parentGo, node->mName.C_Str());
+		LOG("%s", node->mName.C_Str());
 
-			//Create and attach all the components this node will need (using the scene check if it has a texture for adding a component material and add the transform and mesh component)
-			int count = scene->mNumMeshes;
-
-			aiMesh* nodeMesh = scene->mMeshes[node->mChildren[i]->mMeshes[i]];
-			Mesh ourMesh;
-			//Loading Vertex Positions
-			ourMesh.numVertex = nodeMesh->mNumVertices;
-			ourMesh.vertex = new float[ourMesh.numVertex * 3];
-			memcpy(ourMesh.vertex, nodeMesh->mVertices, sizeof(float) * ourMesh.numVertex * 3);
-			LOG("New Mesh with %d vertices", ourMesh.numVertex);
-			//load indices
-			if (nodeMesh->HasFaces()) {
-				ourMesh.numIndices = nodeMesh->mNumFaces * 3;
-				ourMesh.index = new uint[ourMesh.numIndices];
-				for (int j = 0; j < nodeMesh->mNumFaces; ++j) {
-					if (nodeMesh->mFaces[j].mNumIndices != 3) {
-						LOG("WARNING, geometry face with != 3 indices!");
-					}
-					else
-						memcpy(&ourMesh.index[j * 3], nodeMesh->mFaces[j].mIndices, 3 * sizeof(uint));
+		//Create and attach all the components this node will need (using the scene check if it has a texture for adding a component material and add the transform and mesh component)
+		aiMesh* nodeMesh = scene->mMeshes[node->mMeshes[i]];
+		Mesh ourMesh;
+		//Loading Vertex Positions
+		ourMesh.numVertex = nodeMesh->mNumVertices;
+		ourMesh.vertex = new float[ourMesh.numVertex * 3];
+		memcpy(ourMesh.vertex, nodeMesh->mVertices, sizeof(float) * ourMesh.numVertex * 3);
+		LOG("New Mesh with %d vertices", ourMesh.numVertex);
+		//load indices
+		if (nodeMesh->HasFaces()) {
+			ourMesh.numIndices = nodeMesh->mNumFaces * 3;
+			ourMesh.index = new uint[ourMesh.numIndices];
+			for (int j = 0; j < nodeMesh->mNumFaces; ++j) {
+				if (nodeMesh->mFaces[j].mNumIndices != 3) {
+					LOG("WARNING, geometry face with != 3 indices!");
 				}
-			}
-			//Loading Normals
-			if (nodeMesh->HasNormals()) {
-				ourMesh.numNormals = ourMesh.numVertex * 3;
-				ourMesh.normals = new float[ourMesh.numNormals];
-				memcpy(ourMesh.normals, nodeMesh->mNormals, sizeof(float) * ourMesh.numNormals);
-			}
-			if (nodeMesh->HasTextureCoords(0)) {
-				ourMesh.numTexcoords = ourMesh.numVertex * 2;
-				ourMesh.texturecoords = new float[ourMesh.numTexcoords];
-
-				for (int j = 0; j < ourMesh.numVertex; j++)
-				{
-					ourMesh.texturecoords[j * 2] = nodeMesh->mTextureCoords[0][j].x;
-					ourMesh.texturecoords[j * 2 + 1] = nodeMesh->mTextureCoords[0][j].y;
-				}
-			}
-
-			//TODO: can i add components to the game objects on their constructors ?
-			ComponentTransform* transformComponent = new ComponentTransform(go);
-			ComponentMesh* meshComponent = new ComponentMesh(App->renderer3D->VAOFromMesh(ourMesh), ourMesh.numVertex, ourMesh.numIndices);
-			go->AddComponent(meshComponent);
-
-			//Adding Materials
-			if (scene->HasMaterials())
-			{
-				aiMaterial* material = scene->mMaterials[nodeMesh->mMaterialIndex];
-				if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) //TODO: Import more than one texture on a mesh (still not suported on the shader level)
-				{
-					aiString path;
-					material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
-					uint textureID = Textures::Import(path.C_Str());
-					if (textureID)
-					{
-						ComponentMaterial* materialComponent = new ComponentMaterial(textureID);
-						go->AddComponent(materialComponent);
-					}
-				}
-
+				else
+					memcpy(&ourMesh.index[j * 3], nodeMesh->mFaces[j].mIndices, 3 * sizeof(uint));
 			}
 		}
-		//parse all the childs of this node calling this same function recursively
-		ParseFbxNode(node->mChildren[i], scene, go);
+		//Loading Normals
+		if (nodeMesh->HasNormals()) {
+			ourMesh.numNormals = ourMesh.numVertex * 3;
+			ourMesh.normals = new float[ourMesh.numNormals];
+			memcpy(ourMesh.normals, nodeMesh->mNormals, sizeof(float) * ourMesh.numNormals);
+		}
+		if (nodeMesh->HasTextureCoords(0)) {
+			ourMesh.numTexcoords = ourMesh.numVertex * 2;
+			ourMesh.texturecoords = new float[ourMesh.numTexcoords];
+
+			for (int j = 0; j < ourMesh.numVertex; j++)
+			{
+				ourMesh.texturecoords[j * 2] = nodeMesh->mTextureCoords[0][j].x;
+				ourMesh.texturecoords[j * 2 + 1] = nodeMesh->mTextureCoords[0][j].y;
+			}
+		}
+
+		//TODO: can i add components to the game objects on their constructors ?
+		ComponentTransform* transformComponent = new ComponentTransform(go);
+		ComponentMesh* meshComponent = new ComponentMesh(App->renderer3D->VAOFromMesh(ourMesh), ourMesh.numVertex, ourMesh.numIndices);
+		go->AddComponent(meshComponent);
+
+		//Adding Materials
+		if (scene->HasMaterials())
+		{
+			aiMaterial* material = scene->mMaterials[nodeMesh->mMaterialIndex];
+			if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0) //TODO: Import more than one texture on a mesh (still not suported on the shader level)
+			{
+				aiString name;
+				material->GetTexture(aiTextureType_DIFFUSE, 0, &name);
+
+				std::string fileName = name.C_Str();
+				fileName = fileName.substr(fileName.find_last_of("/") + 1);
+				std::string filePath = fbxPath;
+				filePath = filePath + fileName;
+
+				uint textureID = Textures::Import(filePath.c_str());
+				if (textureID)
+				{
+					ComponentMaterial* materialComponent = new ComponentMaterial(textureID);
+					go->AddComponent(materialComponent);
+				}
+			}
+
+		}
 	}
+	for (unsigned int j = 0; j < node->mNumChildren; j++)
+	{
+		//parse all the childs of this node calling this same function recursively
+		ParseFbxNode(node->mChildren[j], scene, fbxPath, go);
+	}
+
 }
 
 void Importer::Textures::Init() //Problem: Where do we call these function. Do we create a modul Importer?
@@ -128,7 +135,7 @@ unsigned int Importer::Textures::Import(const char* imagePath) {
 		LOG("Error loading the image");
 		ILenum Error;
 		while ((Error = ilGetError()) != IL_NO_ERROR) {
-			LOG("Importing image error %d: %s/n", Error, iluErrorString(Error));
+			LOG("Importing image error %d: %s", Error, iluErrorString(Error));
 		}
 		return 0;
 	}
@@ -223,6 +230,7 @@ uint Importer::Textures::checkerImage() {
 bool Importer::ImportDroped(const char* absFilepath)
 {
 	std::string absPath = absFilepath;
+	std::replace(absPath.begin(), absPath.end(), '\\', '/');
 	std::string extension = absPath.substr(absPath.find_last_of(".") + 1);
 
 	if (extension == "fbx" || extension == "FBX") 
