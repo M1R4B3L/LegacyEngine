@@ -23,6 +23,8 @@ public:
 	void DrawAllGameObjects();
 	GameObject* CreateGameObject(GameObject*parent, const char* name);
 
+	const GameObject* GetRootObject();
+
 private:
 
 	GameObject* root = nullptr;

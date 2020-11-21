@@ -42,6 +42,8 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, GameOb
 			LOG("%s", node->mChildren[i]->mName.C_Str());
 
 			//Create and attach all the components this node will need (using the scene check if it has a texture for adding a component material and add the transform and mesh component)
+			int count = scene->mNumMeshes;
+
 			aiMesh* nodeMesh = scene->mMeshes[node->mChildren[i]->mMeshes[i]];
 			Mesh ourMesh;
 			//Loading Vertex Positions

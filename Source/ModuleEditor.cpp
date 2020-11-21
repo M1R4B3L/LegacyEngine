@@ -13,6 +13,7 @@
 #include "GameObjects.h"
 #include "Component.h"
 #include "ComponentMesh.h"
+#include "ModuleSceneIntro.h"
 
 
 ModuleEditor::ModuleEditor(bool start_enable) : Module(start_enable),
@@ -592,7 +593,15 @@ void ModuleEditor::WindowInspector()
 	{
 		if (ImGui::Begin("Inspector", &inspector_window))
 		{
-			ImGui::Text("HI");
+			if (ImGui::CollapsingHeader("Transform"))
+			{
+				
+				static float position_x[3] = { 0.0f,0.0f,0.0f };
+
+				ImGui::DragFloat3("Position", position_x, 1.0f, 0.0f, 100.0f);
+				
+			}
+
 
 			ImGui::End();
 		}
@@ -605,8 +614,7 @@ void ModuleEditor::WindowHierarchy()
 	{
 		if (ImGui::Begin("Hierarchy", &hierarchy_window))
 		{
-			ImGui::Text("HI");
-
+			
 			ImGui::End();
 		}
 	}
