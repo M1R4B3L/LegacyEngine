@@ -4,7 +4,6 @@
 #include "Module.h"
 #include "Globals.h"
 #include "Primitive.h"
-#include <vector>
 
 #define MAX_SNAKE 2
 
@@ -20,14 +19,13 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
-	void OnCollision(PhysBody3D* body1, PhysBody3D* body2);
-
-public:
-	GameObject* ImportGameObject(char* path);
-	GameObject* CreateGameObject();
+	void UpdateAllGameObjects(float dt);
+	void DrawAllGameObjects();
+	GameObject* CreateGameObject(GameObject*parent, const char* name);
 
 private:
 
-	std::vector<GameObject*> game_objects;
+	GameObject* root = nullptr;
+	//GameObject * selected;
 };
 #endif // __ModuleSceneIntro_H__

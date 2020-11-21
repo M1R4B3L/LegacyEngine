@@ -13,7 +13,7 @@ enum class ComponentType {
 class Component
 {
 public:
-	//Component();
+	Component(ComponentType iType);
 	Component(GameObject* go, ComponentType iType, bool iActive);
 	virtual	~Component() {}
 
@@ -21,8 +21,9 @@ public:
 	virtual void Update(float dt) {}
 	virtual void Enable(){}
 	virtual void Disable(){}
-	const GameObject& GetGameObject() const;	
 	GameObject& GetGameObject();
+	const GameObject& GetGameObject() const;
+	const ComponentType GetType() const;
 	void SetGameObject(GameObject& go);
 private:
 	GameObject* gameObject;

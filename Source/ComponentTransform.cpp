@@ -4,7 +4,7 @@
 ComponentTransform::ComponentTransform(GameObject* go) : Component(go,ComponentType::Transform, true), translation(float3::zero), scale(float3::one), rotation(Quat::identity),globalFlag(true) 
 { 
 	localTransform.SetIdentity();
-	globalTransform = localTransform;
+	globalTransform.SetIdentity();
 }
 
 ComponentTransform::ComponentTransform(GameObject* go, float3 iTranslate, float3 iScale, Quat iRotation) : Component(go, ComponentType::Transform, true), 
@@ -25,10 +25,12 @@ void ComponentTransform::SetLocalTransform(float3 iTranslate, float3 iScale, Qua
 	globalFlag = true;
 }
 
-void ComponentTransform::SetWorldTransform(float4x4 parentGlobal)
+void ComponentTransform::SetGlobalTransform() const
 {
-		globalTransform = parentGlobal * localTransform;
-		globalFlag = false;
+	const GameObject* parentGo = GetGameObject().GetParent();
+	if (parentGo && parentGo->HasComponent(ComponentType::Transform)) 
+		globalTransform = ((ComponentTransform*)parentGo->GetComponent(ComponentType::Transform))->GetGlobalTransform() * localTransform;
+	globalFlag = false;
 }
 
 void ComponentTransform::GetLocalTransform(float3& translation, float3& scale, Quat& rotation) const
@@ -40,10 +42,7 @@ void ComponentTransform::GetLocalTransform(float3& translation, float3& scale, Q
 
 const float4x4 ComponentTransform::GetGlobalTransform() const
 {
+	if(globalFlag)
+		SetGlobalTransform();
 	return globalTransform;
-}
-
-const bool ComponentTransform::GetGlobalFlag() const
-{
-	return globalFlag;
 }

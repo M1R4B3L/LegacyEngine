@@ -45,7 +45,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 		char infoLog[512];
 
 		//vertex shader
-		LOG("vertex shader: %s", vertexCode);
+		//LOG("vertex shader: %s", vertexCode);
 		vertex = glCreateShader(GL_VERTEX_SHADER); //Necesitare el glgetshadermacro() si no sse quin tipus de shader es
 		glShaderSource(vertex, 1, &vertexCode, NULL);
 		glCompileShader(vertex);

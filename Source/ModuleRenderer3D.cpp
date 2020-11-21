@@ -15,6 +15,7 @@
 #include "ComponentMesh.h"
 #include "Shader.h"
 #include "physfs.h"
+#include "MathGeoLib.h"
 
 ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled),
 wireframes(false)
@@ -163,26 +164,27 @@ bool ModuleRenderer3D::CleanUp()
 	return true;
 }
 
-void ModuleRenderer3D::Draw(Mesh &mesh)
+void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint textureID)
 {
 	defaultShader->use();
 	// draw mesh
-	if (mesh.difuseTexture != 0) {
+	if (textureID != 0) {
 		//glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, mesh.difuseTexture);
+		glBindTexture(GL_TEXTURE_2D, textureID);
 		//ilutGLBindTexImage();
 		//ilutGLBindMipmaps
 	}
 	defaultShader->setMat4("projection", ProjectionMatrix.M);
 	defaultShader->setMat4("view", App->camera->GetViewMatrix());
-	glBindVertexArray(mesh.VAO);
+	defaultShader->setMat4("model", modelMatrix.ptr());
+	glBindVertexArray(VAO);
 	/*glEnableClientState(GL_VERTEX_ARRAY);
 	//glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);*/
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glDrawElements(GL_TRIANGLES, mesh.num_indices, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, indices, GL_UNSIGNED_INT, 0);
 	/*glDisableClientState(GL_VERTEX_ARRAY);
 	//glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);*/
@@ -244,4 +246,49 @@ void ModuleRenderer3D::SetglEnbleFlags(GLenum flag, bool activate)
 			glDisable(flag);
 		}
 	}
+}
+
+unsigned int ModuleRenderer3D::VAOFromMesh(Mesh mesh)
+{
+	glGenVertexArrays(1, &mesh.VAO);
+	glBindVertexArray(mesh.VAO);
+
+	glGenBuffers(1, &mesh.VBO);
+	glGenBuffers(1, &mesh.EBO);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
+
+	glBufferData(GL_ARRAY_BUFFER, mesh.numVertex * sizeof(float) * 3, mesh.vertex, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.numIndices * sizeof(unsigned int), mesh.index, GL_STATIC_DRAW);
+
+	// vertex positions
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+
+	if (mesh.numTexcoords > 0) {
+		uint TexCoordBuffer;
+		glGenBuffers(1, &TexCoordBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, TexCoordBuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.numTexcoords, mesh.texturecoords, GL_STATIC_DRAW);
+		//glTexCoordPointer(2, GL_FLOAT, 0, NULL); //TODO: DEPRECATED: Haig d'escriure els shaders!!!!
+
+		// vertex texture coords
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
+	}
+	/*
+	if (mesh.num_normals > 0) {
+		uint NormalsBuffer;
+		glGenBuffers(1, &NormalsBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, NormalsBuffer);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.num_normals * 3, mesh.normals, GL_STATIC_DRAW);
+
+		// vertex normals
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+	}*/
+
+	glBindVertexArray(0);
+	return mesh.VAO;
 }

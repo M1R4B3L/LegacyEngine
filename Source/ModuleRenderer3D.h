@@ -6,6 +6,7 @@
 #include "glmath.h"
 #include "Light.h"
 #include "Importer.h"
+#include "Math/float4x4.h"
 
 #define MAX_LIGHTS 8
 
@@ -23,7 +24,7 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
-	void Draw(Mesh &mesh);
+	void Draw(float4x4 modelMatrix, uint VAO, uint indices, uint textureId = 0);
 
 	void OnResize(int width, int height);
 
@@ -34,6 +35,7 @@ public:
 	void SetWireframes(bool activate);
 	void SetglEnbleFlags(GLenum flag, bool activate);
 
+	unsigned int VAOFromMesh(Mesh mesh);
 
 
 public:

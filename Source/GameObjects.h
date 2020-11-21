@@ -20,6 +20,11 @@ public:
 
 	//void Start();
 	void Update(float dt);
+	void Draw();
+
+	const GameObject* GetParent() const;
+	const Component* GetComponent(ComponentType type) const;
+	bool HasComponent(ComponentType type) const;
 
 private:
 	GameObject* parent = nullptr;

@@ -2,19 +2,18 @@
 
 #include "Component.h"
 #include "Globals.h"
-#include <vector>
 
 class Component;
 
 struct Mesh {
     uint VAO; //vertex array object
     uint VBO; //vertex buffer object
-    uint num_vertex;
-    uint num_texcoords;
-    uint num_normals;
+    uint numVertex;
+    uint numTexcoords;
+    uint numNormals;
     uint EBO; //element buffer object
-    uint num_indices;
-    uint* index = nullptr;
+    uint numIndices;
+    uint* index = nullptr; //TODO: S'han de borrar els buffers !!!
     float* vertex = nullptr;
     float* normals;
     float* texturecoords;
@@ -24,8 +23,15 @@ struct Mesh {
 class ComponentMesh : public Component
 {
 public:
-    ComponentMesh(std::vector<Mesh> imported_meshes);
-    void Update(float dt) override;
+    ComponentMesh() = delete;
+    ComponentMesh(unsigned int iVAO, unsigned int vertices, unsigned int indices);
+    ~ComponentMesh();
+
+    const unsigned int GetVAO() const;
+    const unsigned int GetNumIndices() const;
+    
 private:
-    std::vector<Mesh> meshes;
+    unsigned int VAO;
+    unsigned int numIndices;
+    unsigned int numVertices;
 };

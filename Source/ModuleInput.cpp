@@ -3,7 +3,7 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "ModuleRenderer3D.h"
-#include "ModuleSceneIntro.h"
+#include "Importer.h"
 #include "examples/imgui_impl_sdl.h"
 #include <string>
 
@@ -126,7 +126,7 @@ update_status ModuleInput::PreUpdate(float dt)
 			case SDL_DROPFILE: {
 				char* file = e.drop.file;
 				LOG("DROPED file: %s",e.drop.file);
-				App->scene_intro->ImportGameObject(e.drop.file);
+				Importer::ImportDroped(e.drop.file);
 				SDL_free(file);
 				break; 
 			}

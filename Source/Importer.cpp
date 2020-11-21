@@ -1,122 +1,109 @@
+#include "Application.h"
+#include "ModuleSceneIntro.h"
+#include "ModuleRenderer3D.h"
 #include "Importer.h"
-#include "GL/glew.h"
 #include "scene.h"
 #include "cimport.h"
 #include "postprocess.h"
 #include "ComponentMesh.h"
+#include "ComponentTransform.h"
+#include "ComponentMaterial.h"
 #include "GameObjects.h"
 #include "il.h"
 #include "ilu.h"
 #include "ilut.h"
 
-std::vector<Mesh> Importer::Meshes::Import(const char* file_path)
+void Importer::Meshes::ImportFbx(const char* fbxPath)
 {
-	std::vector<Mesh> LoadedMeshes;
-	const aiScene* scene = aiImportFile(file_path, aiProcessPreset_TargetRealtime_MaxQuality);
-	if (scene != nullptr && scene->HasMeshes()) {
-		for (int i = 0; i < scene->mNumMeshes; ++i) {
+	//TODO: return a bool if any error?
+	LOG("Importing Mesh");
+	const aiScene* scene = aiImportFile(fbxPath, aiProcessPreset_TargetRealtime_MaxQuality);
+	if (scene != nullptr && scene->HasMeshes())
+	{
+		ParseFbxNode(scene->mRootNode, scene);
+	}
+	else
+		LOG("Error opening file: %s ", fbxPath);
+	//TODO: Destroy the FBX
+}
+
+void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, GameObject*parentGo) 
+{
+	GameObject* go = nullptr;
+	
+	for (int i = 0; i < node->mNumChildren; ++i) 
+	{
+
+		if (node->mChildren[i]->mNumMeshes != 0)
+		{
+			//Create a game object with its name and the parent of the go is this node
+			//TODO: use the name of the node or the name of the mesh ?
+			go = App->scene_intro->CreateGameObject(parentGo, node->mChildren[i]->mName.C_Str());
+			LOG("%s", node->mChildren[i]->mName.C_Str());
+
+			//Create and attach all the components this node will need (using the scene check if it has a texture for adding a component material and add the transform and mesh component)
+			aiMesh* nodeMesh = scene->mMeshes[node->mChildren[i]->mMeshes[i]];
 			Mesh ourMesh;
-			//load vertices
-			ourMesh.num_vertex = scene->mMeshes[i]->mNumVertices;
-			ourMesh.vertex = new float[ourMesh.num_vertex * 3];
-			memcpy(ourMesh.vertex, scene->mMeshes[i]->mVertices, sizeof(float) * ourMesh.num_vertex * 3);
-			LOG("New Mesh with %d vertices", ourMesh.num_vertex);
+			//Loading Vertex Positions
+			ourMesh.numVertex = nodeMesh->mNumVertices;
+			ourMesh.vertex = new float[ourMesh.numVertex * 3];
+			memcpy(ourMesh.vertex, nodeMesh->mVertices, sizeof(float) * ourMesh.numVertex * 3);
+			LOG("New Mesh with %d vertices", ourMesh.numVertex);
 			//load indices
-			if (scene->mMeshes[i]->HasFaces()) {
-				ourMesh.num_indices = scene->mMeshes[i]->mNumFaces * 3;
-				ourMesh.index = new uint[ourMesh.num_indices];
-				for (int j = 0; j < scene->mMeshes[i]->mNumFaces; ++j) {
-					if (scene->mMeshes[i]->mFaces[j].mNumIndices != 3) {
+			if (nodeMesh->HasFaces()) {
+				ourMesh.numIndices = nodeMesh->mNumFaces * 3;
+				ourMesh.index = new uint[ourMesh.numIndices];
+				for (int j = 0; j < nodeMesh->mNumFaces; ++j) {
+					if (nodeMesh->mFaces[j].mNumIndices != 3) {
 						LOG("WARNING, geometry face with != 3 indices!");
 					}
 					else
-						memcpy(&ourMesh.index[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, 3 * sizeof(uint));
+						memcpy(&ourMesh.index[j * 3], nodeMesh->mFaces[j].mIndices, 3 * sizeof(uint));
 				}
 			}
-			
-			if (scene->mMeshes[i]->HasNormals()) {
-				ourMesh.num_normals = ourMesh.num_vertex * 3;
-				ourMesh.normals = new float[ourMesh.num_vertex * 3];
-				memcpy(ourMesh.normals, scene->mMeshes[i]->mNormals, sizeof(float) * ourMesh.num_vertex * 3);
+			//Loading Normals
+			if (nodeMesh->HasNormals()) {
+				ourMesh.numNormals = ourMesh.numVertex * 3;
+				ourMesh.normals = new float[ourMesh.numNormals];
+				memcpy(ourMesh.normals, nodeMesh->mNormals, sizeof(float) * ourMesh.numNormals);
 			}
+			if (nodeMesh->HasTextureCoords(0)) {
+				ourMesh.numTexcoords = ourMesh.numVertex * 2;
+				ourMesh.texturecoords = new float[ourMesh.numTexcoords];
 
-			if (scene->mMeshes[i]->HasTextureCoords(0)) {
-				ourMesh.num_texcoords = ourMesh.num_vertex * 2;
-				ourMesh.texturecoords = new float[ourMesh.num_vertex * 2];
-
-				for (unsigned int j = 0; j < ourMesh.num_vertex; j++)
+				for (int j = 0; j < ourMesh.numVertex; j++)
 				{
-					ourMesh.texturecoords[j * 2] = scene->mMeshes[i]->mTextureCoords[0][j].x;
-					ourMesh.texturecoords[j * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][j].y;
+					ourMesh.texturecoords[j * 2] = nodeMesh->mTextureCoords[0][j].x;
+					ourMesh.texturecoords[j * 2 + 1] = nodeMesh->mTextureCoords[0][j].y;
 				}
 			}
-			//Loading possible Diffuse texture files
-			for (int k = 0; k < scene->mNumMaterials; ++k) {
-				uint numTextures = scene->mMaterials[k]->GetTextureCount(aiTextureType_DIFFUSE);
-				for (int j = 0; j < numTextures; ++j) {
+
+			//TODO: can i add components to the game objects on their constructors ?
+			ComponentTransform* transformComponent = new ComponentTransform(go);
+			ComponentMesh* meshComponent = new ComponentMesh(App->renderer3D->VAOFromMesh(ourMesh), ourMesh.numVertex, ourMesh.numIndices);
+			go->AddComponent(meshComponent);
+
+			//Adding Materials
+			if (scene->HasMaterials())
+			{
+				aiMaterial* material = scene->mMaterials[nodeMesh->mMaterialIndex];
+				if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) //TODO: Import more than one texture on a mesh (still not suported on the shader level)
+				{
 					aiString path;
-					scene->mMaterials[k]->GetTexture(aiTextureType_DIFFUSE, 0, &path);
-					//Problem: Storing multiple textures (I can use a vector)
-					path = "Assets/Baker_house/Baker_house.png";
-					ourMesh.difuseTexture = Importer::Textures::Import(path.C_Str());
+					material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
+					uint textureID = Textures::Import(path.C_Str());
+					if (textureID)
+					{
+						ComponentMaterial* materialComponent = new ComponentMaterial(textureID);
+						go->AddComponent(materialComponent);
+					}
 				}
+
 			}
-			//ourMesh.difuseTexture = 234293;
-
-			//generate the glbuffers
-			Importer::Meshes::setupmesh(ourMesh);
-			LoadedMeshes.push_back(ourMesh);
 		}
-
+		//parse all the childs of this node calling this same function recursively
+		ParseFbxNode(node->mChildren[i], scene, go);
 	}
-	else
-		LOG("Warning loading Meshes in file %s: File has no meshes or textures to load", file_path);
-
-	return LoadedMeshes;
-}
-
-void Importer::Meshes::setupmesh(Mesh& mesh)
-{
-	glGenVertexArrays(1, &mesh.VAO);
-	glBindVertexArray(mesh.VAO);
-	
-	glGenBuffers(1, &mesh.VBO);
-	glGenBuffers(1, &mesh.EBO);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
-
-	glBufferData(GL_ARRAY_BUFFER, mesh.num_vertex * sizeof(float) * 3, mesh.vertex, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.num_indices * sizeof(unsigned int) ,mesh.index, GL_STATIC_DRAW);
-
-	// vertex positions
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
-
-	if (mesh.num_texcoords > 0) {
-		uint TexCoordBuffer;
-		glGenBuffers(1, &TexCoordBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, TexCoordBuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.num_texcoords * 2, mesh.texturecoords, GL_STATIC_DRAW);
-		//glTexCoordPointer(2, GL_FLOAT, 0, NULL); //TODO: DEPRECATED: Haig d'escriure els shaders!!!!
-
-		// vertex texture coords
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*)0);
-	}
-	/*
-	if (mesh.num_normals > 0) {
-		uint NormalsBuffer;
-		glGenBuffers(1, &NormalsBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, NormalsBuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.num_normals * 3, mesh.normals, GL_STATIC_DRAW);
-
-		// vertex normals
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
-	}*/
-
-	glBindVertexArray(0);
 }
 
 void Importer::Textures::Init() //Problem: Where do we call these function. Do we create a modul Importer?
@@ -127,9 +114,10 @@ void Importer::Textures::Init() //Problem: Where do we call these function. Do w
 	ilutRenderer(ILUT_OPENGL);
 }
 
-uint Importer::Textures::Import(const char* imagePath) {
+unsigned int Importer::Textures::Import(const char* imagePath) {
 	//ILuint ImageName to keep track of your image and to use o modify it bind it
 	//If i no longer need the image bound with a name i can call ilDeleteImages()
+	LOG("LoadingImage");
 	uint ImageName;
 	ilGenImages(1, &ImageName);
 	ilBindImage(ImageName);
@@ -230,8 +218,21 @@ uint Importer::Textures::checkerImage() {
 	return textureID;
 }
 
-bool Importer::ImportDroped(const char* fliePath)
+bool Importer::ImportDroped(const char* absFilepath)
 {
-	
+	std::string absPath = absFilepath;
+	std::string extension = absPath.substr(absPath.find_last_of(".") + 1);
+
+	if (extension == "fbx" || extension == "FBX") 
+	{
+		Meshes::ImportFbx(absPath.c_str());
+		return true;
+	}
+	else if (extension == "png") 
+	{
+		Textures::Import(absPath.c_str());
+		return true;
+	}
+
 	return false;
 }

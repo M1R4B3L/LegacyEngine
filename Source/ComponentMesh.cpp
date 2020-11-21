@@ -2,13 +2,16 @@
 #include "Application.h"
 #include "ModuleRenderer3D.h"
 
+ComponentMesh::ComponentMesh(unsigned int iVAO, unsigned int vertices, unsigned int indices) : Component(ComponentType::Mesh), VAO(iVAO), numIndices(indices), numVertices(vertices) {}
 
-ComponentMesh::ComponentMesh(std::vector<Mesh> imported_meshes) : Component(nullptr,ComponentType::Mesh,true), meshes(imported_meshes) {}
+ComponentMesh::~ComponentMesh(){}
 
-void ComponentMesh::Update(float dt)
+const unsigned int ComponentMesh::GetVAO() const
 {
-	std::vector<Mesh>::iterator it;
-	for (it = meshes.begin(); it != meshes.end(); it++) {
-		App->renderer3D->Draw((*it));
-	}
+	return VAO;
+}
+
+const unsigned int ComponentMesh::GetNumIndices() const
+{
+	return numIndices;
 }
