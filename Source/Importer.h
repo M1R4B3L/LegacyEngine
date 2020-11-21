@@ -11,7 +11,7 @@ namespace Importer {
     bool ImportDroped(const char* filepath);
     namespace Meshes {
         void ImportFbx(const char* fbxPath);
-        void ParseFbxNode(aiNode * node, const aiScene * scene, GameObject* parentGo = nullptr);
+        void ParseFbxNode(aiNode * node, const aiScene * scene, const char * path, GameObject* parentGo = nullptr);
         std::vector<Mesh> Import(const char* absFilepath);
     }
     namespace Textures {
