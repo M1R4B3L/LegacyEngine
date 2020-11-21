@@ -81,7 +81,7 @@ GameObject* ModuleSceneIntro::CreateGameObject(GameObject* parent, const char* n
 }
 
 
-const GameObject* ModuleSceneIntro::GetRootObject()
+const GameObject* ModuleSceneIntro::GetRootObject() const
 {
 	return root;
 }

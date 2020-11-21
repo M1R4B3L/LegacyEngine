@@ -602,7 +602,6 @@ void ModuleEditor::WindowInspector()
 				
 			}
 
-
 			ImGui::End();
 		}
 	}
@@ -612,12 +611,45 @@ void ModuleEditor::WindowHierarchy()
 {
 	if (hierarchy_window)
 	{
+		
 		if (ImGui::Begin("Hierarchy", &hierarchy_window))
 		{
-			
+			if (App->scene_intro->GetRootObject() != nullptr) {
+
+				HierarchyNodes(App->scene_intro->GetRootObject());
+
+			}
 			ImGui::End();
 		}
 	}
+}
+
+void ModuleEditor::HierarchyNodes(const GameObject* node)
+{
+	std::vector<GameObject*>::const_iterator children = node->children.cbegin();
+
+	const char* rootName = node->GetName();
+
+	ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_None;
+
+	if (node == App->scene_intro->GetRootObject())
+	{
+		treeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
+	}
+
+	if (ImGui::TreeNodeEx(rootName, treeFlags)) {
+
+		for (children; children != node->children.cend(); children++)
+		{
+			if (!node->children.empty())
+			{
+				HierarchyNodes((*children));
+			}
+		}
+		
+		ImGui::TreePop();
+	}
+
 }
 
 void ModuleEditor::WindowDemo()

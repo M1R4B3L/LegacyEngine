@@ -25,11 +25,17 @@ public:
 	const GameObject* GetParent() const;
 	const Component* GetComponent(ComponentType type) const;
 	bool HasComponent(ComponentType type) const;
+	std::vector<GameObject*> GetChildren() const;
+
+	const char* GetName() const;
 
 private:
 	GameObject* parent = nullptr;
 	std::string name;
 	std::vector<Component*> components;
+
+	//TODO: Change children to private
+public:
 	std::vector<GameObject*> children;
 };
 

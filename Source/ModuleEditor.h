@@ -60,6 +60,8 @@ public:
 	void AddLog(const char*);
 	void ClearLog();
 
+	void HierarchyNodes(const GameObject* node);
+
 private:
 
 	std::vector<char*> string_log;

@@ -23,7 +23,7 @@ public:
 	void DrawAllGameObjects();
 	GameObject* CreateGameObject(GameObject*parent, const char* name);
 
-	const GameObject* GetRootObject();
+	const GameObject* GetRootObject() const;
 
 private:
 
