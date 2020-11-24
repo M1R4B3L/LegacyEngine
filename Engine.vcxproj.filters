@@ -7,12 +7,6 @@
     <Filter Include="Sources\Modules">
       <UniqueIdentifier>{7b418be2-1631-4a31-9ef2-8a8b234a7339}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\Containers">
-      <UniqueIdentifier>{afc36133-f401-499a-aa33-0da1e500fb52}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources\Tools">
-      <UniqueIdentifier>{7e4dfaf7-022c-4f7d-92aa-f3b3fa9d6248}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Deps">
       <UniqueIdentifier>{ee01b75b-d622-4779-b7ea-6e0c5a191aed}</UniqueIdentifier>
     </Filter>
@@ -37,15 +31,16 @@
     <Filter Include="Deps\MathGeoLib\Algorithm">
       <UniqueIdentifier>{b3dd9927-f56b-4faf-a406-79bc4a60c071}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Helpers">
+      <UniqueIdentifier>{7e4dfaf7-022c-4f7d-92aa-f3b3fa9d6248}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Tools">
+      <UniqueIdentifier>{8b9a4a82-4a3d-4393-99f5-e7ea1d9e39da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source/Application.h" />
-    <ClInclude Include="Source/Color.h" />
-    <ClInclude Include="Source/glmath.h" />
     <ClInclude Include="Source/Globals.h" />
-    <ClInclude Include="Source/Light.h" />
-    <ClInclude Include="Source/Primitive.h" />
-    <ClInclude Include="Source/Timer.h" />
     <ClInclude Include="Source\Dependencies\imgui\imconfig.h">
       <Filter>Deps\imGui</Filter>
     </ClInclude>
@@ -291,16 +286,25 @@
     <ClInclude Include="Source\ComponentMaterial.h">
       <Filter>Sources\GameObjects&amp;Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source/Color.h">
+      <Filter>Sources\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source/Light.h">
+      <Filter>Sources\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source/Primitive.h">
+      <Filter>Sources\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source/Timer.h">
+      <Filter>Sources\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Source/glmath.h">
+      <Filter>Sources\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source/Application.cpp" />
-    <ClCompile Include="Source/Color.cpp" />
-    <ClCompile Include="Source/glmath.cpp" />
-    <ClCompile Include="Source/Light.cpp" />
-    <ClCompile Include="Source/log.cpp" />
     <ClCompile Include="Source/Main.cpp" />
-    <ClCompile Include="Source/Primitive.cpp" />
-    <ClCompile Include="Source/Timer.cpp" />
     <ClCompile Include="Source\Dependencies\imgui\imgui.cpp">
       <Filter>Deps\imGui</Filter>
     </ClCompile>
@@ -452,6 +456,24 @@
     </ClCompile>
     <ClCompile Include="Source\ComponentMaterial.cpp">
       <Filter>Sources\GameObjects&amp;Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source/Color.cpp">
+      <Filter>Sources\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source/Light.cpp">
+      <Filter>Sources\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source/Primitive.cpp">
+      <Filter>Sources\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source/log.cpp">
+      <Filter>Sources\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Source/Timer.cpp">
+      <Filter>Sources\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Source/glmath.cpp">
+      <Filter>Sources\Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

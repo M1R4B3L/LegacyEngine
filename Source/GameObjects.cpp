@@ -99,7 +99,6 @@ bool GameObject::HasComponent(ComponentType type) const
 	return false;
 }
 
-
 const char* GameObject::GetName() const
 {
 	return name.c_str();

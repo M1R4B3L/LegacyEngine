@@ -168,7 +168,18 @@ void ModuleEditor::MenuBar()
 		}
 		if (ImGui::BeginMenu("Create")) {
 			if (ImGui::BeginMenu("Primitives")) {
+				if (ImGui::MenuItem("Cube")) {
+					
+				}
+				if (ImGui::MenuItem("Sphere")) {
 
+				}
+				if (ImGui::MenuItem("Piramid")) {
+
+				}
+				if (ImGui::MenuItem("Cylinder")) {
+
+				}
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenu();
@@ -636,6 +647,10 @@ void ModuleEditor::HierarchyNodes(const GameObject* node)
 	{
 		treeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
 	}
+	if (node->children.empty())
+	{
+		treeFlags = ImGuiTreeNodeFlags_Leaf;	//Only applyied to the nodes without childrens (Usually the last one)
+	}
 
 	if (ImGui::TreeNodeEx(rootName, treeFlags)) {
 
@@ -643,6 +658,11 @@ void ModuleEditor::HierarchyNodes(const GameObject* node)
 		{
 			if (!node->children.empty())
 			{
+				if (ImGui::IsItemClicked())
+				{
+					
+				}
+
 				HierarchyNodes((*children));
 			}
 		}

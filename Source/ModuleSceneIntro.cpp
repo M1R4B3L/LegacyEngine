@@ -80,7 +80,6 @@ GameObject* ModuleSceneIntro::CreateGameObject(GameObject* parent, const char* n
 	return go;
 }
 
-
 const GameObject* ModuleSceneIntro::GetRootObject() const
 {
 	return root;
