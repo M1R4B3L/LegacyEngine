@@ -5,6 +5,7 @@
 #include "ComponentTransform.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
+#include "Globals.h"
 
 GameObject::GameObject() : parent(nullptr), name("No name")
 {
@@ -68,6 +69,7 @@ void GameObject::Draw()
 		const ComponentMaterial* materialComponent = (ComponentMaterial*)GetComponent(ComponentType::Material);
 		if (materialComponent)
 			material = materialComponent->GetID();
+		LOG("Draw: %s", this->name.c_str());
 		App->renderer3D->Draw(transformComponent->GetGlobalTransform(), mesh, meshComponent->GetNumIndices(), material);
 	}
 }

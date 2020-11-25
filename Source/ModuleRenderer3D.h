@@ -46,6 +46,7 @@ public:
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
 	Shader* defaultShader = nullptr;
+	unsigned int dropedTexture = 0;
 };
 
 #endif //__ModuleRenderer3D_H__

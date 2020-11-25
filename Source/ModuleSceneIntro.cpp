@@ -68,7 +68,7 @@ update_status ModuleSceneIntro::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
-GameObject* ModuleSceneIntro::CreateGameObject(GameObject* parent, const char* name)
+GameObject* ModuleSceneIntro::CreateGameObject(const char* name , GameObject* parent)
 {
 	//Todo: this ?!?!
 	GameObject* go;

@@ -38,12 +38,13 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 
 		//Create a game object with its name and the parent of the go is this node
 		//TODO: use the name of the node or the name of the mesh ?
-		go = App->scene_intro->CreateGameObject(parentGo, node->mName.C_Str());
+		go = App->scene_intro->CreateGameObject(node->mName.C_Str() ,parentGo);
 		LOG("%s", node->mName.C_Str());
 
 		//Create and attach all the components this node will need (using the scene check if it has a texture for adding a component material and add the transform and mesh component)
 		aiMesh* nodeMesh = scene->mMeshes[node->mMeshes[i]];
 		Mesh ourMesh;
+		ourMesh.texturecoords = 0;
 		//Loading Vertex Positions
 		ourMesh.numVertex = nodeMesh->mNumVertices;
 		ourMesh.vertex = new float[ourMesh.numVertex * 3];
@@ -79,6 +80,7 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 		}
 
 		//TODO: can i add components to the game objects on their constructors ?
+		LOG("SettingUp %s transform", go->GetName());
 		ComponentTransform* transformComponent = new ComponentTransform(go);
 		ComponentMesh* meshComponent = new ComponentMesh(App->renderer3D->VAOFromMesh(ourMesh), ourMesh.numVertex, ourMesh.numIndices);
 		go->AddComponent(meshComponent);
@@ -240,7 +242,8 @@ bool Importer::ImportDroped(const char* absFilepath)
 	}
 	else if (extension == "png") 
 	{
-		Textures::Import(absPath.c_str());
+		App->renderer3D->dropedTexture = Textures::Import(absPath.c_str());
+
 		return true;
 	}
 

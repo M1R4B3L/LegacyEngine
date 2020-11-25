@@ -21,7 +21,7 @@ public:
 
 	void UpdateAllGameObjects(float dt);
 	void DrawAllGameObjects();
-	GameObject* CreateGameObject(GameObject*parent, const char* name);
+	GameObject* CreateGameObject(const char* name, GameObject* parent = nullptr);
 
 	const GameObject* GetRootObject() const;
 
