@@ -268,11 +268,11 @@ void plane::InnerRender() const
 }
 
 
-DefaultCube::DefaultCube(): my_array_id(0), my_index_array_id(1), index_buffer(2)
+DefaultCube::DefaultCube(): myArrayId(0), myIndexArrayId(1), IndexBuffer(2)
 {
 	float array[36 * 3] = { 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, 1.f, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 1.f, 0.f, 0.f, 1.f, 0.f, -1.f, 1.f, 1.f, 0.f, 1.f, 0.f, -1.f, 1.f, 1.f, -1.f, 1.f, 1.f, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, -1.f, 0.f, 1.f, 0.f, 0.f, 1.f, -1.f, 0.f, 0.f, -1.f, 0.f, 1.f, -1.f, 1.f, 1.f, -1.f, 1.f, 1.f, -1.f, 1.f, 0.f, -1.f, 0.f, 0.f, -1.f, 1.f, 1.f, 0.f, 0.f, 1.f, -1.f, 0.f, 1.f, 0.f, 1.f, 1.f, 0.f, 1.f, 1.f, -1.f, 0.f, 1.f, -1.f, 1.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, -1.f, 1.f, 0.f, 0.f, 0.f, 0.f, -1.f, 1.f, 0.f, -1.f };
-	glGenBuffers(1, &my_array_id);
-	glBindBuffer(GL_ARRAY_BUFFER, my_array_id);
+	glGenBuffers(1, &myArrayId);
+	glBindBuffer(GL_ARRAY_BUFFER, myArrayId);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, array, GL_STATIC_DRAW);
 
 	float iarray[8 * 3] = {
@@ -301,13 +301,13 @@ DefaultCube::DefaultCube(): my_array_id(0), my_index_array_id(1), index_buffer(2
 		1, 4, 5
 	};
 
-	glGenBuffers(1, &my_index_array_id);
-	glBindBuffer(GL_ARRAY_BUFFER, my_index_array_id);
+	glGenBuffers(1, &myIndexArrayId);
+	glBindBuffer(GL_ARRAY_BUFFER, myIndexArrayId);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 8 * 3, iarray, GL_STATIC_DRAW);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	glGenBuffers(1, &index_buffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
+	glGenBuffers(1, &IndexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 12 * 3, indices, GL_STATIC_DRAW);
 }
 
@@ -368,7 +368,7 @@ void DefaultCube::RenderArrayBuffer()
 {
 	//cube using the vertex array
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, my_array_id);
+	glBindBuffer(GL_ARRAY_BUFFER, myArrayId);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -376,7 +376,7 @@ void DefaultCube::RenderArrayBuffer()
 
 void DefaultCube::RenderIndexBuffer()
 {
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexBuffer);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
 	glDisableClientState(GL_VERTEX_ARRAY);

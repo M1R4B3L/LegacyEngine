@@ -1,5 +1,5 @@
 #include "Application.h"
-#include "ModuleSceneIntro.h"
+#include "ModuleScene.h"
 #include "ModuleRenderer3D.h"
 #include "Importer.h"
 #include "scene.h"
@@ -38,7 +38,7 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 
 		//Create a game object with its name and the parent of the go is this node
 		//TODO: use the name of the node or the name of the mesh ?
-		go = App->scene_intro->CreateGameObject(node->mName.C_Str() ,parentGo);
+		go = App->scene->CreateGameObject(node->mName.C_Str() ,parentGo);
 		LOG("%s", node->mName.C_Str());
 
 		//Create and attach all the components this node will need (using the scene check if it has a texture for adding a component material and add the transform and mesh component)

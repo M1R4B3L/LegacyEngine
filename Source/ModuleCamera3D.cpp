@@ -3,7 +3,7 @@
 #include "ModuleInput.h"
 #include "ModuleCamera3D.h"
 
-ModuleCamera3D::ModuleCamera3D(bool start_enabled) : Module(start_enabled)
+ModuleCamera3D::ModuleCamera3D(bool startEnable) : Module(startEnable)
 {
 	CalculateViewMatrix();
 
@@ -11,9 +11,9 @@ ModuleCamera3D::ModuleCamera3D(bool start_enabled) : Module(start_enabled)
 	Y = vec3(0.0f, 1.0f, 0.0f);
 	Z = vec3(0.0f, 0.0f, 1.0f);
 
-	move_speed = 5.0f;
-	rotate_speed = 10.0f;
-	zoom_speed = 10.0f;
+	moveSpeed = 5.0f;
+	rotateSpeed = 10.0f;
+	zoomSpeed = 30.0f;
 
 	Position = vec3(0.0f, 0.0f, 5.0f);
 	Reference = vec3(0.0f, 0.0f, 0.0f);
@@ -76,11 +76,11 @@ update_status ModuleCamera3D::Update(float dt)
 		{
 			if (App->input->GetMouseYMotion() > 0)
 			{
-				Position -= Z * zoom_speed * dt;
+				Position -= Z * zoomSpeed * dt;
 			}
 			else if (App->input->GetMouseYMotion() < 0)
 			{
-				Position += Z * zoom_speed * dt;
+				Position += Z * zoomSpeed * dt;
 			}
 		}
 	}
@@ -95,7 +95,7 @@ void ModuleCamera3D::WASDMovement(float dt)
 {
 	vec3 newPos(0,0,0);
 
-	float speed = move_speed * dt;
+	float speed = moveSpeed * dt;
 
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 	{
@@ -134,7 +134,7 @@ void ModuleCamera3D::WorldTranslation(float dt)
 	int x_motion = App->input->GetMouseXMotion();
 	int y_motion = App->input->GetMouseYMotion();
 
-	float speed = move_speed * dt;
+	float speed = moveSpeed * dt;
 
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 	{
@@ -142,12 +142,12 @@ void ModuleCamera3D::WorldTranslation(float dt)
 
 		if (x_motion != 0)
 		{
-			x_pos = -x_motion * X * move_speed * dt;
+			x_pos = -x_motion * X * moveSpeed * dt;
 		}
 
 		if (y_motion != 0)
 		{
-			y_pos = y_motion * Y * move_speed * dt;
+			y_pos = y_motion * Y * moveSpeed * dt;
 		}
 	}
 	else
@@ -173,7 +173,7 @@ void ModuleCamera3D::WorldRotation(float dt)
 		int dx = -App->input->GetMouseXMotion();
 		int dy = -App->input->GetMouseYMotion();
 
-		float Sensitivity = rotate_speed * dt;
+		float Sensitivity = rotateSpeed * dt;
 
 		if(dx != 0)
 		{
@@ -204,7 +204,7 @@ void ModuleCamera3D::ReferenceRotation(float dt)
 	int dx = -App->input->GetMouseXMotion();
 	int dy = -App->input->GetMouseYMotion();
 
-	float Sensitivity = rotate_speed * dt;
+	float Sensitivity = rotateSpeed * dt;
 
 	Position -= Reference;
 
@@ -236,11 +236,11 @@ void ModuleCamera3D::Zoom(float dt)
 {
 	if (App->input->GetMouseZ() > 0)
 	{
-		Position -= Z * zoom_speed * dt;
+		Position -= Z * zoomSpeed * dt;
 	}
 	else
 	{
-		Position += Z * zoom_speed * dt;
+		Position += Z * zoomSpeed * dt;
 	}
 }
 

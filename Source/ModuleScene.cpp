@@ -3,7 +3,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera3D.h"
-#include "ModuleSceneIntro.h"
+#include "ModuleScene.h"
 #include "Primitive.h"
 #include "imgui.h"
 #include "examples\imgui_impl_sdl.h"
@@ -15,15 +15,15 @@
 
 
 
-ModuleSceneIntro::ModuleSceneIntro(bool start_enabled) : Module(start_enabled)
+ModuleScene::ModuleScene(bool startEnable) : Module(startEnable)
 {
 }
 
-ModuleSceneIntro::~ModuleSceneIntro()
+ModuleScene::~ModuleScene()
 {}
 
 // Load assets
-bool ModuleSceneIntro::Start()
+bool ModuleScene::Start()
 {
 	Importer::Textures::Init();
 	//LOG("Loading Intro assets");
@@ -39,24 +39,24 @@ bool ModuleSceneIntro::Start()
 }
 
 // Load assets
-bool ModuleSceneIntro::CleanUp()
+bool ModuleScene::CleanUp()
 {
 	//LOG("Unloading Intro scene");
 	
 	return true;
 }
 
-void ModuleSceneIntro::UpdateAllGameObjects(float dt)
+void ModuleScene::UpdateAllGameObjects(float dt)
 {
 	root->Update(dt);
 }
 
-void ModuleSceneIntro::DrawAllGameObjects()
+void ModuleScene::DrawAllGameObjects()
 {
 }
 
 // Update
-update_status ModuleSceneIntro::Update(float dt)
+update_status ModuleScene::Update(float dt)
 {
 
 	plane p(0, 1, 0, 0);
@@ -68,7 +68,7 @@ update_status ModuleSceneIntro::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
-GameObject* ModuleSceneIntro::CreateGameObject(const char* name , GameObject* parent)
+GameObject* ModuleScene::CreateGameObject(const char* name , GameObject* parent)
 {
 	//Todo: this ?!?!
 	GameObject* go;
@@ -80,7 +80,7 @@ GameObject* ModuleSceneIntro::CreateGameObject(const char* name , GameObject* pa
 	return go;
 }
 
-const GameObject* ModuleSceneIntro::GetRootObject() const
+const GameObject* ModuleScene::GetRootObject() const
 {
 	return root;
 }

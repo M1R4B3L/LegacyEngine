@@ -17,7 +17,7 @@
 #include "physfs.h"
 #include "MathGeoLib.h"
 
-ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled),
+ModuleRenderer3D::ModuleRenderer3D(bool startEnable) : Module(startEnable),
 wireframes(false)
 {
 }

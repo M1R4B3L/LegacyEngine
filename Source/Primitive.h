@@ -102,7 +102,7 @@ public:
 	void RenderArrayBuffer();
 	void RenderIndexBuffer();
 private:
-	uint my_array_id;
-	uint my_index_array_id;
-	uint index_buffer;
+	uint myArrayId;
+	uint myIndexArrayId;
+	uint IndexBuffer;
 };

@@ -10,7 +10,7 @@ private :
 
 public:
 
-	Module(bool start_enabled = true)
+	Module(bool startEnable = true)
 	{}
 
 	virtual ~Module()

@@ -2,15 +2,15 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 
-ModuleWindow::ModuleWindow(bool start_enabled) : Module(start_enabled)
+ModuleWindow::ModuleWindow(bool startEnable) : Module(startEnable)
 {
 	window = NULL;
-	screen_surface = NULL;
+	screenSurface = NULL;
 
-	w_config.fullscreen = WIN_FULLSCREEN;
-	w_config.resizable = WIN_RESIZABLE;
-	w_config.border = WIN_BORDERLESS;
-	w_config.full_desktop = WIN_FULLSCREEN_DESKTOP;
+	windowConfig.fullscreen = WIN_FULLSCREEN;
+	windowConfig.resizable = WIN_RESIZABLE;
+	windowConfig.border = WIN_BORDERLESS;
+	windowConfig.fullDesktop = WIN_FULLSCREEN_DESKTOP;
 }
 
 // Destructor
@@ -32,8 +32,8 @@ bool ModuleWindow::Init()
 	else
 	{
 		//Create window
-		w_config.screen_width = SCREEN_WIDTH * SCREEN_SIZE;
-		w_config.screen_height = SCREEN_HEIGHT * SCREEN_SIZE;
+		windowConfig.screenWidth = SCREEN_WIDTH * SCREEN_SIZE;
+		windowConfig.screenHeight = SCREEN_HEIGHT * SCREEN_SIZE;
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
 		/*
@@ -62,7 +62,7 @@ bool ModuleWindow::Init()
 			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
 
-		window = SDL_CreateWindow(App->GetEngineTitle(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w_config.screen_width, w_config.screen_height, flags);
+		window = SDL_CreateWindow(App->GetEngineTitle(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowConfig.screenWidth, windowConfig.screenHeight, flags);
 
 		if(window == NULL)
 		{
@@ -72,7 +72,7 @@ bool ModuleWindow::Init()
 		else
 		{
 			//Get window surface
-			screen_surface = SDL_GetWindowSurface(window);
+			screenSurface = SDL_GetWindowSurface(window);
 		}
 	}
 
@@ -102,20 +102,20 @@ void ModuleWindow::SetTitle(const char* title)
 
 int ModuleWindow::GetWidth()
 {
-	return w_config.screen_width;
+	return windowConfig.screenWidth;
 }
 
 int ModuleWindow::GetHeight()
 {
-	return w_config.screen_height;
+	return windowConfig.screenHeight;
 }
 
 void ModuleWindow::SetSize(int width, int height)
 {
-	w_config.screen_width = width;
-	w_config.screen_height = height;
+	windowConfig.screenWidth = width;
+	windowConfig.screenHeight = height;
 
-	SDL_SetWindowSize(window, w_config.screen_width, w_config.screen_height);
+	SDL_SetWindowSize(window, windowConfig.screenWidth, windowConfig.screenHeight);
 }
 
 const int ModuleWindow::GetRefreshRate() const
@@ -134,100 +134,100 @@ const int ModuleWindow::GetRefreshRate() const
 
 bool ModuleWindow::GetFullscreen()
 {
-	return w_config.fullscreen;
+	return windowConfig.fullscreen;
 }
 
 void ModuleWindow::SetFullscreen(bool activate)
 {
-	if (activate != w_config.fullscreen)
+	if (activate != windowConfig.fullscreen)
 	{
 		if (activate == true)
 		{
 			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 			LOG("[WINDOWS] Set Fullscreen Mode");
-			w_config.fullscreen = activate;
+			windowConfig.fullscreen = activate;
 		}
 		else
 		{
 			SDL_SetWindowFullscreen(window, 0);
 			LOG("[WINDOWS] Set Windows Mode");
-			w_config.fullscreen = activate;
-			w_config.full_desktop = activate;
+			windowConfig.fullscreen = activate;
+			windowConfig.fullDesktop = activate;
 		}
 	}
 }
 
 bool ModuleWindow::GetResizable()
 {
-	return w_config.resizable;
+	return windowConfig.resizable;
 }
 
 void ModuleWindow::SetResizable(bool activate)
 {
 
-	if (activate != w_config.resizable)
+	if (activate != windowConfig.resizable)
 	{
 		if (activate == true)
 		{
 			SDL_SetWindowResizable(window, SDL_TRUE);
 			LOG("[WINDOWS] Resizable");
-			w_config.resizable = activate;
+			windowConfig.resizable = activate;
 		}
 		else
 		{
 			SDL_SetWindowResizable(window, SDL_FALSE);
 			LOG("[WINDOWS] Not Resizable");
-			w_config.resizable = activate;
+			windowConfig.resizable = activate;
 		}
 	}
 }
 
 bool ModuleWindow::GetBorderless()
 {
-	return w_config.border;
+	return windowConfig.border;
 }
 
 void ModuleWindow::SetBorderless(bool activate)
 {
 
-	if (activate != w_config.border && w_config.fullscreen == false && w_config.full_desktop == false)
+	if (activate != windowConfig.border && windowConfig.fullscreen == false && windowConfig.fullDesktop == false)
 	{
 		if (activate == true)
 		{
 			SDL_SetWindowBordered(window, SDL_FALSE);
 			LOG("[WINDOWS] Borderless");
-			w_config.border = activate;
+			windowConfig.border = activate;
 		}
 		else
 		{
 			SDL_SetWindowBordered(window, SDL_TRUE);
 			LOG("[WINDOWS] Bordered");
-			w_config.border = activate;
+			windowConfig.border = activate;
 		}
 	}
 }
 
 bool ModuleWindow::GetFullscreenDesktop()
 {
-	return w_config.full_desktop;
+	return windowConfig.fullDesktop;
 }
 
 void ModuleWindow::SetFullscreenDesktop(bool activate)
 {
-	if (activate != w_config.full_desktop)
+	if (activate != windowConfig.fullDesktop)
 	{
 		if (activate == true)
 		{
 			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 			LOG("[WINDOWS] Set Fullscreen Desktop Mode");
-			w_config.full_desktop = activate;
+			windowConfig.fullDesktop = activate;
 		}
 		else
 		{
 			SDL_SetWindowFullscreen(window, 0);
 			LOG("[WINDOWS] Set Windows Mode");
-			w_config.fullscreen = activate;
-			w_config.full_desktop = activate;
+			windowConfig.fullscreen = activate;
+			windowConfig.fullDesktop = activate;
 		}
 	}
 }

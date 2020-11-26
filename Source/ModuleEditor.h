@@ -7,28 +7,28 @@
 
 struct Hardware {
 
-	SDL_version H_SDLVersion;
-	int H_CPU;
-	int H_CPUCache;
-	float H_SystemRAM;
-	bool H_rdtsc;
-	bool H_3dnow;
-	bool H_altivec;
-	bool H_avx;
-	bool H_avx2;
-	bool H_mmx;
-	bool H_sse;
-	bool H_sse2;
-	bool H_sse3;
-	bool H_sse41;
-	bool H_sse42;
+	SDL_version hardwareSDLVersion;
+	int hardwareCPU;
+	int hardwareCPUCache;
+	float hardwareSystemRAM;
+	bool hardwareRdtsc;
+	bool hardware3dnow;
+	bool hardwareAltivec;
+	bool hardwareAvx;
+	bool hardwareAvx2;
+	bool hardwareMmx;
+	bool hardwareSse;
+	bool hardwareSse2;
+	bool hardwareSse3;
+	bool hardwareSse41;
+	bool hardwareSse42;
 
 };
 
 class ModuleEditor : public Module
 {
 public:
-	ModuleEditor(bool start_enable = true);
+	ModuleEditor(bool startEnable = true);
 	~ModuleEditor();
 
 	bool Init();
@@ -36,13 +36,13 @@ public:
 	bool CleanUp();
 
 	//IMGUI!!!!
-	bool docking_window;
-	bool about_window;
-	bool config_window;
-	bool console_window;
-	bool inspector_window;
-	bool hierarchy_window;
-	bool demo_window;
+	bool dockingWindow;
+	bool aboutWindow;
+	bool configWindow;
+	bool consoleWindow;
+	bool inspectorWindow;
+	bool hierarchyWindow;
+	bool demoWindow;
 
 	char org[128];
 
@@ -64,8 +64,10 @@ public:
 
 private:
 
-	std::vector<char*> string_log;
+	std::vector<char*> stringLog;
 	bool scroll;
+
+	GameObject* selectedObject = nullptr;
 
 };
 

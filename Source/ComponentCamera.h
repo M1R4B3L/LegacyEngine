@@ -8,6 +8,6 @@ class ComponentCamera : public Component
 {
 public:
 
-	Frustum frustrum_camera;
+	Frustum frustumCamera;
 
 };

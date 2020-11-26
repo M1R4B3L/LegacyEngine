@@ -8,7 +8,7 @@ class ModuleWindow : public Module
 {
 public:
 
-	ModuleWindow(bool start_enabled = true);
+	ModuleWindow(bool startEnable = true);
 
 	// Destructor
 	virtual ~ModuleWindow();
@@ -21,21 +21,21 @@ public:
 	SDL_Window* window;
 
 	//The surface contained by the window
-	SDL_Surface* screen_surface;
+	SDL_Surface* screenSurface;
 
 
 private:
 
 	struct WindowConfig {
-		int screen_width;
-		int screen_height;
+		int screenWidth;
+		int screenHeight;
 		bool fullscreen;
 		bool resizable;
 		bool border;
-		bool full_desktop;
+		bool fullDesktop;
 	};
 
-	WindowConfig w_config;
+	WindowConfig windowConfig;
 
 public:
 

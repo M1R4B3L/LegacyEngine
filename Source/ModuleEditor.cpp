@@ -13,11 +13,11 @@
 #include "GameObjects.h"
 #include "Component.h"
 #include "ComponentMesh.h"
-#include "ModuleSceneIntro.h"
+#include "ModuleScene.h"
 
 
-ModuleEditor::ModuleEditor(bool start_enable) : Module(start_enable),
-about_window(false), config_window(false), console_window(true), inspector_window(true), hierarchy_window(true), demo_window(false), docking_window(true),
+ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
+aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true),
 org("CITM"), scroll(true)
 {
 }
@@ -115,10 +115,10 @@ void ModuleEditor::WindowDocking()
 	window_flags |= ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoBackground;
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
-	if (ImGui::Begin("DockSpace", &docking_window, window_flags)) {
+	if (ImGui::Begin("DockSpace", &dockingWindow, window_flags)) {
 		// DockSpace
 		ImGui::PopStyleVar(3);
-		if (docking_window)
+		if (dockingWindow)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("DockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
@@ -156,13 +156,13 @@ void ModuleEditor::MenuBar()
 			ImGui::Separator();
 			ImGui::Spacing();
 			if (ImGui::MenuItem("Exit", "ESC")) {
-				App->close_app = true;
+				App->closeApp = true;
 			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Edit")) {
-			if (ImGui::MenuItem("Project Settings...", NULL, config_window)) {
-				config_window = !config_window;
+			if (ImGui::MenuItem("Project Settings...", NULL, configWindow)) {
+				configWindow = !configWindow;
 			}
 			ImGui::EndMenu();
 		}
@@ -197,28 +197,28 @@ void ModuleEditor::MenuBar()
 				if (ImGui::MenuItem("Scene")) {
 
 				}
-				if (ImGui::MenuItem("Insperctor", NULL, inspector_window)) {
-					inspector_window = !inspector_window;
+				if (ImGui::MenuItem("Insperctor", NULL, inspectorWindow)) {
+					inspectorWindow = !inspectorWindow;
 				}
-				if (ImGui::MenuItem("Hierarchy", NULL, hierarchy_window)) {
-					hierarchy_window = !hierarchy_window;
+				if (ImGui::MenuItem("Hierarchy", NULL, hierarchyWindow)) {
+					hierarchyWindow = !hierarchyWindow;
 				}
-				if (ImGui::MenuItem("Console", NULL, console_window)) {
-					console_window = !console_window;
+				if (ImGui::MenuItem("Console", NULL, consoleWindow)) {
+					consoleWindow = !consoleWindow;
 				}
 				ImGui::EndMenu();
 			}
 			ImGui::Spacing();
 			ImGui::Separator();
 			ImGui::Spacing();
-			if (ImGui::MenuItem("Demo", NULL, demo_window)) {
-				demo_window = !demo_window;
+			if (ImGui::MenuItem("Demo", NULL, demoWindow)) {
+				demoWindow = !demoWindow;
 			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Help")) {
 			if (ImGui::MenuItem("About Legacy Engine")) {
-				about_window = !about_window;
+				aboutWindow = !aboutWindow;
 			}
 			ImGui::Spacing();
 			ImGui::Separator();
@@ -244,8 +244,8 @@ void ModuleEditor::MenuBar()
 
 void ModuleEditor::WindowAbout()
 {
-	if (about_window) {
-		if (ImGui::Begin("About", &about_window))
+	if (aboutWindow) {
+		if (ImGui::Begin("About", &aboutWindow))
 		{
 			ImGui::BulletText("Legacy Engine:");
 			ImGui::Separator();
@@ -329,10 +329,10 @@ void ModuleEditor::WindowAbout()
 
 void ModuleEditor::WindowConfig()
 {
-	if (config_window) {
+	if (configWindow) {
 		//ImGuiCond_Once;
 		//ImGui::SetNextWindowPos()
-		if (ImGui::Begin("Configuration", &config_window, ImGuiWindowFlags_MenuBar)) {
+		if (ImGui::Begin("Configuration", &configWindow, ImGuiWindowFlags_MenuBar)) {
 
 			ImGui::BeginMenuBar();
 			if (ImGui::MenuItem("Save"))
@@ -429,10 +429,10 @@ void ModuleEditor::WindowConfig()
 						ImGui::TextColored(ImVec4(0, 255, 255, 255), "%u", App->GetFramerate());
 
 						char title[25];
-						sprintf_s(title, 25, "Framerate %.1f", App->fps_log[App->fps_log.size() - 1]);
-						ImGui::PlotHistogram("##framerate", &App->fps_log[0], App->fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
-						sprintf_s(title, 25, "Milliseconds %.1f", App->ms_log[App->ms_log.size() - 1]);
-						ImGui::PlotHistogram("##milliseconds", &App->ms_log[0], App->ms_log.size(), 0, title, 0.0f, 50.0f, ImVec2(310, 100));
+						sprintf_s(title, 25, "Framerate %.1f", App->fpsLog[App->fpsLog.size() - 1]);
+						ImGui::PlotHistogram("##framerate", &App->fpsLog[0], App->fpsLog.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
+						sprintf_s(title, 25, "Milliseconds %.1f", App->msLog[App->msLog.size() - 1]);
+						ImGui::PlotHistogram("##milliseconds", &App->msLog[0], App->msLog.size(), 0, title, 0.0f, 50.0f, ImVec2(310, 100));
 
 						//Falta memory pero hem de possar la llibreria del Ric
 					}
@@ -497,25 +497,25 @@ void ModuleEditor::WindowConfig()
 				if (ImGui::BeginTabItem("Software"))
 				{
 					static Hardware stats;
-					SDL_GetVersion(&stats.H_SDLVersion);
-					stats.H_CPU = SDL_GetCPUCount();
-					stats.H_CPUCache = SDL_GetCPUCacheLineSize();
-					stats.H_SystemRAM = (float)SDL_GetSystemRAM() / 1024.f; //This is returned in Mb thats why we divide
-					stats.H_rdtsc = SDL_HasRDTSC() == SDL_TRUE;
-					stats.H_3dnow = SDL_Has3DNow() == SDL_TRUE;
-					stats.H_altivec = SDL_HasAltiVec() == SDL_TRUE;
-					stats.H_avx = SDL_HasAVX() == SDL_TRUE;
-					stats.H_avx2 = SDL_HasAVX2() == SDL_TRUE;
-					stats.H_mmx = SDL_HasMMX() == SDL_TRUE;
-					stats.H_sse = SDL_HasSSE() == SDL_TRUE;
-					stats.H_sse2 = SDL_HasSSE2() == SDL_TRUE;
-					stats.H_sse3 = SDL_HasSSE3() == SDL_TRUE;
-					stats.H_sse41 = SDL_HasSSE41() == SDL_TRUE;
-					stats.H_sse42 = SDL_HasSSE42() == SDL_TRUE;
+					SDL_GetVersion(&stats.hardwareSDLVersion);
+					stats.hardwareCPU = SDL_GetCPUCount();
+					stats.hardwareCPUCache = SDL_GetCPUCacheLineSize();
+					stats.hardwareSystemRAM = (float)SDL_GetSystemRAM() / 1024.f; //This is returned in Mb thats why we divide
+					stats.hardwareRdtsc = SDL_HasRDTSC() == SDL_TRUE;
+					stats.hardware3dnow = SDL_Has3DNow() == SDL_TRUE;
+					stats.hardwareAltivec = SDL_HasAltiVec() == SDL_TRUE;
+					stats.hardwareAvx = SDL_HasAVX() == SDL_TRUE;
+					stats.hardwareAvx2 = SDL_HasAVX2() == SDL_TRUE;
+					stats.hardwareMmx = SDL_HasMMX() == SDL_TRUE;
+					stats.hardwareSse = SDL_HasSSE() == SDL_TRUE;
+					stats.hardwareSse2 = SDL_HasSSE2() == SDL_TRUE;
+					stats.hardwareSse3 = SDL_HasSSE3() == SDL_TRUE;
+					stats.hardwareSse41 = SDL_HasSSE41() == SDL_TRUE;
+					stats.hardwareSse42 = SDL_HasSSE42() == SDL_TRUE;
 
 					ImGui::Text("SDL Version:");
 					ImGui::SameLine();
-					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%d.%d.%d", stats.H_SDLVersion.major, stats.H_SDLVersion.minor, stats.H_SDLVersion.patch);
+					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%d.%d.%d", stats.hardwareSDLVersion.major, stats.hardwareSDLVersion.minor, stats.hardwareSDLVersion.patch);
 					ImGui::Spacing();
 					ImGui::Text("OpenGL Version:");
 					ImGui::SameLine();
@@ -524,26 +524,26 @@ void ModuleEditor::WindowConfig()
 					ImGui::Spacing();
 					ImGui::Text("CPUs:");
 					ImGui::SameLine();
-					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u (Cache: %ukb)", stats.H_CPU, stats.H_CPUCache);
+					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u (Cache: %ukb)", stats.hardwareCPU, stats.hardwareCPUCache);
 					ImGui::Text("System RAM:");
 					ImGui::SameLine();
-					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%.2fGb", stats.H_SystemRAM);
+					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%.2fGb", stats.hardwareSystemRAM);
 					ImGui::Text("Features:");
 					ImGui::SameLine();
 					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%s%s%s%s%s",
-						stats.H_rdtsc ? "RDTSC " : "",
-						stats.H_3dnow ? "3DNOW " : "",
-						stats.H_altivec ? "ALTIVEC " : "",
-						stats.H_avx ? "AVX " : "",
-						stats.H_avx2 ? "AVX2 " : ""
+						stats.hardwareRdtsc ? "RDTSC " : "",
+						stats.hardware3dnow ? "3DNOW " : "",
+						stats.hardwareAltivec ? "ALTIVEC " : "",
+						stats.hardwareAvx ? "AVX " : "",
+						stats.hardwareAvx2 ? "AVX2 " : ""
 					);
 					ImGui::TextColored(ImVec4(0, 255, 0, 255), "%s%s%s%s%s%s",
-						stats.H_mmx ? "MMX " : "",
-						stats.H_sse ? "SSE " : "",
-						stats.H_sse2 ? "SSE2 " : "",
-						stats.H_sse3 ? "SSE3 " : "",
-						stats.H_sse41 ? "SSE41 " : "",
-						stats.H_sse42 ? "SSE42 " : ""
+						stats.hardwareMmx ? "MMX " : "",
+						stats.hardwareSse ? "SSE " : "",
+						stats.hardwareSse2 ? "SSE2 " : "",
+						stats.hardwareSse3 ? "SSE3 " : "",
+						stats.hardwareSse41 ? "SSE41 " : "",
+						stats.hardwareSse42 ? "SSE42 " : ""
 					);
 					ImGui::Separator();
 					ImGui::Spacing();
@@ -578,14 +578,14 @@ void ModuleEditor::WindowConfig()
 
 void ModuleEditor::WindowConsole()
 {
-	if (console_window)
+	if (consoleWindow)
 	{
-		if (ImGui::Begin("Console", &console_window)) {
+		if (ImGui::Begin("Console", &consoleWindow)) {
 
 
-			for (int i = 0; i < string_log.size(); ++i)
+			for (int i = 0; i < stringLog.size(); ++i)
 			{
-				ImGui::TextUnformatted(string_log[i]);
+				ImGui::TextUnformatted(stringLog[i]);
 			}
 			if (scroll == true)
 			{
@@ -600,9 +600,9 @@ void ModuleEditor::WindowConsole()
 
 void ModuleEditor::WindowInspector()
 {
-	if (inspector_window)
+	if (inspectorWindow)
 	{
-		if (ImGui::Begin("Inspector", &inspector_window))
+		if (ImGui::Begin("Inspector", &inspectorWindow))
 		{
 			if (ImGui::CollapsingHeader("Transform"))
 			{
@@ -620,14 +620,14 @@ void ModuleEditor::WindowInspector()
 
 void ModuleEditor::WindowHierarchy()
 {
-	if (hierarchy_window)
+	if (hierarchyWindow)
 	{
 		
-		if (ImGui::Begin("Hierarchy", &hierarchy_window))
+		if (ImGui::Begin("Hierarchy", &hierarchyWindow))
 		{
-			if (App->scene_intro->GetRootObject() != nullptr) {
+			if (App->scene->GetRootObject() != nullptr) {
 
-				HierarchyNodes(App->scene_intro->GetRootObject());
+				HierarchyNodes(App->scene->GetRootObject());
 
 			}
 			ImGui::End();
@@ -643,7 +643,7 @@ void ModuleEditor::HierarchyNodes(const GameObject* node)
 
 	ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_None;
 
-	if (node == App->scene_intro->GetRootObject())
+	if (node == App->scene->GetRootObject())
 	{
 		treeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
 	}
@@ -674,29 +674,29 @@ void ModuleEditor::HierarchyNodes(const GameObject* node)
 
 void ModuleEditor::WindowDemo()
 {
-	if (demo_window)
+	if (demoWindow)
 	{
 		//our state (depenent de si el bool que pasem a la window es true o false s'ensenya la window i si la tanquem imgui posa el bool directament a false)
-		ImGui::ShowDemoWindow(&demo_window);
+		ImGui::ShowDemoWindow(&demoWindow);
 	}
 }
 
 void ModuleEditor::AddLog(const char* string)
 {
-	char* new_string = strdup(string);
-	string_log.push_back(new_string);
+	char* newString = strdup(string);
+	stringLog.push_back(newString);
 
 	scroll = true;
 }
 
 void ModuleEditor::ClearLog()
 {
-	for (uint i = 0; i < string_log.size(); ++i)
+	for (uint i = 0; i < stringLog.size(); ++i)
 	{
-		free(string_log[i]);
+		free(stringLog[i]);
 	}
 
-	string_log.clear();
+	stringLog.clear();
 
 	scroll = true;
 }

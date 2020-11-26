@@ -8,7 +8,7 @@
 class ModuleCamera3D : public Module
 {
 public:
-	ModuleCamera3D(bool start_enabled = true);
+	ModuleCamera3D(bool startEnable = true);
 	~ModuleCamera3D();
 
 	bool Start();
@@ -34,9 +34,9 @@ public:
 	
 	vec3 X, Y, Z, Position, Reference;
 
-	float move_speed;
-	float rotate_speed;
-	float zoom_speed;
+	float moveSpeed;
+	float rotateSpeed;
+	float zoomSpeed;
 
 private:
 

@@ -12,7 +12,7 @@
 
 class ModuleWindow;
 class ModuleInput;
-class ModuleSceneIntro;
+class ModuleScene;
 class ModuleRenderer3D;
 class ModuleCamera3D;
 class ModuleEditor;
@@ -23,25 +23,25 @@ public:
 
 	ModuleWindow* window = nullptr;
 	ModuleInput* input = nullptr;
-	ModuleSceneIntro* scene_intro = nullptr;
+	ModuleScene* scene = nullptr;
 	ModuleRenderer3D* renderer3D = nullptr;
 	ModuleCamera3D* camera = nullptr;
 	ModuleEditor* editor = nullptr;
 
-	std::array<float,50>fps_log;
-	std::array<float,50>ms_log;
+	std::array<float,50>fpsLog;
+	std::array<float,50>msLog;
 
 	const char* GetEngineTitle() const;
 	void SetEngineTitle(const char* title);
 
-	bool close_app;
+	bool closeApp;
 private:
 
-	Timer	ms_timer;
+	Timer	msTimer;
 	Timer   lastSecFrameTime;
 	unsigned __int32 lastSecFrameCount = 0;
 	float	dt;
-	float capped_ms = 0;
+	float cappedMs = 0;
 
 	//Windows
 	std::string title;
