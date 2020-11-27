@@ -61,6 +61,7 @@ public:
 	void ClearLog();
 
 	void HierarchyNodes(const GameObject* node);
+	void InspectorComponents(const GameObject* gameObject);
 
 private:
 

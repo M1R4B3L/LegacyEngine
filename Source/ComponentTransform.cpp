@@ -9,8 +9,10 @@ ComponentTransform::ComponentTransform(GameObject* go) : Component(go,ComponentT
 }
 
 ComponentTransform::ComponentTransform(GameObject* go, float3 iTranslate, float3 iScale, Quat iRotation) : Component(go, ComponentType::Transform, true), 
-translation(iTranslate), scale(iScale), rotation(iRotation), globalFlag(false) 
+translation(iTranslate), scale(iScale), rotation(iRotation), globalFlag(false)
 {
+	localTransform.SetIdentity();
+	globalTransform.SetIdentity();
 	localTransform = float4x4::FromTRS(translation, rotation, scale);
 	globalTransform = localTransform;
 }
@@ -50,3 +52,4 @@ const float4x4 ComponentTransform::GetGlobalTransform() const
 		SetGlobalTransform();
 	return globalTransform;
 }
+

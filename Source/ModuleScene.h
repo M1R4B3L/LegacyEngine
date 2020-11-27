@@ -25,6 +25,8 @@ public:
 
 	const GameObject* GetRootObject() const;
 
+	void SetGameObjectSelected(GameObject* gameObject);
+
 private:
 
 	GameObject* root = nullptr;

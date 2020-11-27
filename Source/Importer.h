@@ -21,4 +21,5 @@ namespace Importer {
         //uint GenerateTexture(const char* imagePath);
         uint checkerImage();
     }
+    void ImportTransform(aiNode* node, GameObject* gameObject);
 }

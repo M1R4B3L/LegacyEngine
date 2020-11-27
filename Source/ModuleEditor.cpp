@@ -604,14 +604,7 @@ void ModuleEditor::WindowInspector()
 	{
 		if (ImGui::Begin("Inspector", &inspectorWindow))
 		{
-			if (ImGui::CollapsingHeader("Transform"))
-			{
-				
-				static float position_x[3] = { 0.0f,0.0f,0.0f };
-
-				ImGui::DragFloat3("Position", position_x, 1.0f, 0.0f, 100.0f);
-				
-			}
+			InspectorComponents(App->scene->GetRootObject());
 
 			ImGui::End();
 		}
@@ -635,11 +628,24 @@ void ModuleEditor::WindowHierarchy()
 	}
 }
 
-void ModuleEditor::HierarchyNodes(const GameObject* node)
+void ModuleEditor::InspectorComponents(const GameObject* node)
 {
 	std::vector<GameObject*>::const_iterator children = node->children.cbegin();
 
-	const char* rootName = node->GetName();
+	if ((*children)->HasComponent(ComponentType::Transform))
+	{
+		if (ImGui::CollapsingHeader("Transform"))
+		{
+			ImGui::Text("pene");
+		}
+	}
+}
+
+void ModuleEditor::HierarchyNodes(const GameObject* node)
+{
+	std::vector<GameObject*>::const_iterator nodeIterator = node->children.cbegin();
+
+	const char* name = node->GetName();
 
 	ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_None;
 
@@ -649,27 +655,33 @@ void ModuleEditor::HierarchyNodes(const GameObject* node)
 	}
 	if (node->children.empty())
 	{
-		treeFlags = ImGuiTreeNodeFlags_Leaf;	//Only applyied to the nodes without childrens (Usually the last one)
+		treeFlags |= ImGuiTreeNodeFlags_Leaf;	//Only applyied to the nodes without childrens (Usually the last one)
+	}
+	if (node == selectedObject)
+	{
+		treeFlags |= ImGuiTreeNodeFlags_Selected;
 	}
 
-	if (ImGui::TreeNodeEx(rootName, treeFlags)) {
+	if (ImGui::TreeNodeEx(name, treeFlags)) {
 
-		for (children; children != node->children.cend(); children++)
+		if (node != App->scene->GetRootObject())
 		{
-			if (!node->children.empty())
-			{
-				if (ImGui::IsItemClicked())
-				{
-					
-				}
+			if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
 
-				HierarchyNodes((*children));
+				//selectedObject == (*nodeIterator);
+			}
+		}
+
+		if (!node->children.empty())
+		{
+			for (nodeIterator; nodeIterator != node->children.cend(); nodeIterator++)
+			{
+				HierarchyNodes((*nodeIterator));
 			}
 		}
 		
 		ImGui::TreePop();
 	}
-
 }
 
 void ModuleEditor::WindowDemo()

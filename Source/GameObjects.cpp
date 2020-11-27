@@ -69,7 +69,16 @@ void GameObject::Draw()
 		const ComponentMaterial* materialComponent = (ComponentMaterial*)GetComponent(ComponentType::Material);
 		if (materialComponent)
 			material = materialComponent->GetID();
-		LOG("Draw: %s", this->name.c_str());
+
+		float3 pos, scale;
+		Quat rot;
+
+		((ComponentTransform*)this->GetComponent(ComponentType::Transform))->GetGlobalTransform().Decompose(pos,rot,scale);
+		LOG("%s position x%f y%f z%f", name.c_str(), pos.x, pos.y, pos.z);
+		LOG("%s rot x%f y%f z%f", name.c_str(), rot.x, rot.y, rot.z);
+
+		
+
 		App->renderer3D->Draw(transformComponent->GetGlobalTransform(), mesh, meshComponent->GetNumIndices(), material);
 	}
 }

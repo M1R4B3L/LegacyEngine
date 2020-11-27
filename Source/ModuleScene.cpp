@@ -33,7 +33,7 @@ bool ModuleScene::Start()
 	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
 
-	Importer::ImportDroped("Assets/Fish/fish.fbx");
+	Importer::ImportDroped("Assets/Baker_house/BakerHouse.fbx");
 
 	return ret;
 }
@@ -83,4 +83,9 @@ GameObject* ModuleScene::CreateGameObject(const char* name , GameObject* parent)
 const GameObject* ModuleScene::GetRootObject() const
 {
 	return root;
+}
+
+void ModuleScene::SetGameObjectSelected(GameObject* gameObject)
+{
+	//if(gameObject != App->editor)
 }

@@ -35,7 +35,6 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 	
 	for (int i = 0; i < node->mNumMeshes; ++i) 
 	{
-
 		//Create a game object with its name and the parent of the go is this node
 		//TODO: use the name of the node or the name of the mesh ?
 		go = App->scene->CreateGameObject(node->mName.C_Str() ,parentGo);
@@ -81,7 +80,8 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 
 		//TODO: can i add components to the game objects on their constructors ?
 		LOG("SettingUp %s transform", go->GetName());
-		ComponentTransform* transformComponent = new ComponentTransform(go);
+		
+		ImportTransform(node, go);
 		ComponentMesh* meshComponent = new ComponentMesh(App->renderer3D->VAOFromMesh(ourMesh), ourMesh.numVertex, ourMesh.numIndices);
 		go->AddComponent(meshComponent);
 
@@ -227,6 +227,28 @@ uint Importer::Textures::checkerImage() {
 		0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
 	
 	return textureID;
+}
+
+void Importer::ImportTransform(aiNode* node, GameObject* gameObject)
+{
+	aiVector3D translation, scaling;
+
+	aiQuaternion rotation;
+
+	node->mTransformation.Decompose(scaling, rotation, translation);
+
+	float3 pos(translation.x, translation.y, translation.z);
+	float3 scale(scaling.x, scaling.y, scaling.z);
+	Quat rot(rotation.x, rotation.y, rotation.z, rotation.w);
+
+	float3 scale1 = { 1, 1, 1 };
+
+	if (!gameObject->HasComponent(ComponentType::Transform))
+	{
+		ComponentTransform* transformComponent = new ComponentTransform(gameObject, pos, scale1, rot);
+
+		//LOG("Draw: %s", this->name.c_str());
+	}
 }
 
 bool Importer::ImportDroped(const char* absFilepath)
