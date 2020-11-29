@@ -1,11 +1,13 @@
 #include "Globals.h"
 #include "GL/glew.h"
 #include "Application.h"
+#include "Globals.h"
 #include "ModuleWindow.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
 #include "ModuleEditor.h"
 #include "Primitive.h"
+#include "ModuleScene.h"
 #include "imgui.h"
 #include "examples\imgui_impl_sdl.h"
 #include "examples\imgui_impl_opengl3.h"
@@ -13,7 +15,8 @@
 #include "GameObjects.h"
 #include "Component.h"
 #include "ComponentMesh.h"
-#include "ModuleScene.h"
+#include "ComponentTransform.h"
+#include "ComponentMaterial.h"
 
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
@@ -604,7 +607,9 @@ void ModuleEditor::WindowInspector()
 	{
 		if (ImGui::Begin("Inspector", &inspectorWindow))
 		{
-			InspectorComponents(App->scene->GetRootObject());
+			if (App->scene->GetSelectedObject() != nullptr) {
+				InspectorComponents(App->scene->GetSelectedObject());
+			}
 
 			ImGui::End();
 		}
@@ -628,55 +633,120 @@ void ModuleEditor::WindowHierarchy()
 	}
 }
 
-void ModuleEditor::InspectorComponents(const GameObject* node)
+void ModuleEditor::InspectorComponents(GameObject* selectedGameObject)
 {
-	std::vector<GameObject*>::const_iterator children = node->children.cbegin();
+	static char name[128];
+	strcpy_s(name, 128, selectedGameObject->GetName());
+	if (ImGui::InputText("Name", name, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+		selectedGameObject->SetName(name);
 
-	if ((*children)->HasComponent(ComponentType::Transform))
-	{
-		if (ImGui::CollapsingHeader("Transform"))
+	for (uint i = 0; i < selectedGameObject->components.size(); i++) {
+
+		Component* currentComponent = selectedGameObject->components[i];
+
+		if (currentComponent != nullptr)
 		{
-			ImGui::Text("pene");
+			switch (currentComponent->GetType())
+			{
+			case ComponentType::Transform: {
+				InspectorDrawTransform((ComponentTransform*)currentComponent);
+			} break;
+			case ComponentType::Mesh: {
+				InspectorDrawMesh((ComponentMesh*)currentComponent);
+			} break;
+			case ComponentType::Material: {
+				InspectorDrawMaterial((ComponentMaterial*)currentComponent);
+			} break;
+
+			}
+
+			if (currentComponent->GetType() == ComponentType::Unknown)
+			{
+				LOG("Selected Object %s has invalid component: %s", selectedGameObject->GetName(), currentComponent->GetType());
+			}
 		}
+	}
+
+}
+
+void ModuleEditor::InspectorDrawTransform(ComponentTransform* componentTransform)
+{
+	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		float3 translation, scale;
+		Quat rotation;
+		componentTransform->GetLocalTransform(translation, scale, rotation);
+
+		if (ImGui::DragFloat3("Position", (float*)&translation, 0.01f, 0.0f, 0.0f, "%.3f", NULL)) {
+
+			componentTransform->SetLocalTransform(translation, scale, rotation);
+		}
+
+		//EULER ANGLES NO FUNCIONA
+		if (ImGui::DragFloat3("Rotation", (float*)&rotation, 0.01f, 0.0f, 0.0f, "%.3f", NULL)) {
+
+			componentTransform->SetLocalTransform(translation, scale, rotation);
+		}
+
+		if (ImGui::DragFloat3("Scale", (float*)&scale, 0.01f, 0.0f, 0.0f, "%.3f", NULL)) {
+
+			componentTransform->SetLocalTransform(translation, scale, rotation);
+		}
+	
 	}
 }
 
-void ModuleEditor::HierarchyNodes(const GameObject* node)
+void ModuleEditor::InspectorDrawMesh(ComponentMesh* componentMesh)
 {
-	std::vector<GameObject*>::const_iterator nodeIterator = node->children.cbegin();
+	if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		
+	}
+}
 
-	const char* name = node->GetName();
+void ModuleEditor::InspectorDrawMaterial(ComponentMaterial* componentMaterial)
+{
+	if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+
+	}
+}
+
+void ModuleEditor::HierarchyNodes(GameObject* gameObject)
+{
+
+	const char* name = gameObject->GetName();
 
 	ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_None;
 
-	if (node == App->scene->GetRootObject())
+	if (gameObject == App->scene->GetRootObject())
 	{
 		treeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
 	}
-	if (node->children.empty())
+	if (gameObject->children.empty())
 	{
 		treeFlags |= ImGuiTreeNodeFlags_Leaf;	//Only applyied to the nodes without childrens (Usually the last one)
 	}
-	if (node == selectedObject)
+	if (gameObject == App->scene->GetSelectedObject())
 	{
 		treeFlags |= ImGuiTreeNodeFlags_Selected;
 	}
 
 	if (ImGui::TreeNodeEx(name, treeFlags)) {
 
-		if (node != App->scene->GetRootObject())
+		if (gameObject != App->scene->GetRootObject())
 		{
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
 
-				//selectedObject == (*nodeIterator);
+				App->scene->SetGameObjectSelected(gameObject);
 			}
 		}
 
-		if (!node->children.empty())
+		if (!gameObject->children.empty())
 		{
-			for (nodeIterator; nodeIterator != node->children.cend(); nodeIterator++)
+			for (uint i = 0; i < gameObject->children.size(); i++)
 			{
-				HierarchyNodes((*nodeIterator));
+				HierarchyNodes(gameObject->children[i]);
 			}
 		}
 		

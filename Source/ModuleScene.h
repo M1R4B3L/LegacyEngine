@@ -23,13 +23,16 @@ public:
 	void DrawAllGameObjects();
 	GameObject* CreateGameObject(const char* name, GameObject* parent = nullptr);
 
-	const GameObject* GetRootObject() const;
+	GameObject* GetRootObject() const;
 
+	GameObject* GetSelectedObject() const;
 	void SetGameObjectSelected(GameObject* gameObject);
+	void SetGameObjectUnselected();
+
 
 private:
 
 	GameObject* root = nullptr;
-	//GameObject * selected;
+	GameObject* selectedObject = nullptr;
 };
 #endif // __ModuleSceneIntro_H__

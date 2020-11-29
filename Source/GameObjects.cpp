@@ -114,3 +114,8 @@ const char* GameObject::GetName() const
 {
 	return name.c_str();
 }
+
+void GameObject::SetName(char* newName)
+{
+	name = newName;
+}

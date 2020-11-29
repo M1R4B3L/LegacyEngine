@@ -4,6 +4,10 @@
 #include "Module.h"
 #include "Globals.h"
 
+enum class ComponentType;
+class ComponentTransform;
+class ComponentMesh;
+class ComponentMaterial;
 
 struct Hardware {
 
@@ -60,15 +64,17 @@ public:
 	void AddLog(const char*);
 	void ClearLog();
 
-	void HierarchyNodes(const GameObject* node);
-	void InspectorComponents(const GameObject* gameObject);
+	void HierarchyNodes(GameObject* node);
+	void InspectorComponents(GameObject* selectedGameObject);
+
+	void InspectorDrawTransform(ComponentTransform* componentTransform);
+	void InspectorDrawMesh(ComponentMesh* componentMesh);
+	void InspectorDrawMaterial(ComponentMaterial* componentMaterial);
 
 private:
 
 	std::vector<char*> stringLog;
 	bool scroll;
-
-	GameObject* selectedObject = nullptr;
 
 };
 

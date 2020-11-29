@@ -80,12 +80,22 @@ GameObject* ModuleScene::CreateGameObject(const char* name , GameObject* parent)
 	return go;
 }
 
-const GameObject* ModuleScene::GetRootObject() const
+GameObject* ModuleScene::GetRootObject() const
 {
 	return root;
 }
 
+GameObject* ModuleScene::GetSelectedObject() const
+{
+	return selectedObject;
+}
+
 void ModuleScene::SetGameObjectSelected(GameObject* gameObject)
 {
-	//if(gameObject != App->editor)
+	selectedObject = gameObject;
+}
+
+void ModuleScene::SetGameObjectUnselected()
+{
+	selectedObject = nullptr;
 }

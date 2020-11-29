@@ -28,14 +28,15 @@ public:
 	std::vector<GameObject*> GetChildren() const;
 
 	const char* GetName() const;
+	void SetName(char* newName);
 
 private:
 	GameObject* parent = nullptr;
 	std::string name;
-	std::vector<Component*> components;
-
+	
 	//TODO: Change children to private
 public:
+	std::vector<Component*> components;
 	std::vector<GameObject*> children;
 };
 
