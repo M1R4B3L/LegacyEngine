@@ -74,9 +74,6 @@ void GameObject::Draw()
 		Quat rot;
 
 		((ComponentTransform*)this->GetComponent(ComponentType::Transform))->GetGlobalTransform().Decompose(pos,rot,scale);
-		LOG("%s position x%f y%f z%f", name.c_str(), pos.x, pos.y, pos.z);
-		LOG("%s rot x%f y%f z%f", name.c_str(), rot.x, rot.y, rot.z);
-
 		
 
 		App->renderer3D->Draw(transformComponent->GetGlobalTransform().Transposed(), mesh, meshComponent->GetNumIndices(), material);

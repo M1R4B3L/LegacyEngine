@@ -1,6 +1,8 @@
 #include "ComponentTransform.h"
 #include "GameObjects.h"
 #include "Globals.h"
+#include "Application.h"
+#include "scene.h"
 
 ComponentTransform::ComponentTransform(GameObject* go) : Component(go,ComponentType::Transform, true), translation(float3::zero), scale(float3::one), rotation(Quat::identity),globalFlag(false) 
 { 
@@ -13,7 +15,7 @@ translation(iTranslate), scale(iScale), rotation(iRotation), globalFlag(false)
 {
 	localTransform.SetIdentity();
 	globalTransform.SetIdentity();
-	localTransform.FromTRS(translation, rotation, scale);
+	localTransform.Set(float4x4::FromTRS(translation, rotation, scale));
 	globalTransform.Set(localTransform);
 }
 
@@ -21,7 +23,7 @@ ComponentTransform::~ComponentTransform(){}
 
 void ComponentTransform::SetLocalTransform(float3 iTranslate, float3 iScale, Quat iRotation)
 {
-	localTransform.FromTRS(iTranslate,  iRotation, iScale);
+	localTransform.Set(float4x4::FromTRS(iTranslate,  iRotation, iScale));
 	translation = iTranslate;
 	scale = iScale;
 	rotation = iRotation;
@@ -31,9 +33,9 @@ void ComponentTransform::SetLocalTransform(float3 iTranslate, float3 iScale, Qua
 void ComponentTransform::SetGlobalTransform() const
 {
 	const GameObject* parentGo = GetGameObject().GetParent();
-	if (parentGo && parentGo->HasComponent(ComponentType::Transform)) {
-		LOG("SetGlobalTransform %s",this->GetGameObject().GetName());
-		LOG("SetGlobalTransformParent: %s", this->GetGameObject().GetParent()->GetName());
+	if ((parentGo->GetParent() == nullptr))
+		globalTransform.Set(localTransform);
+	else if (parentGo && (parentGo->HasComponent(ComponentType::Transform))) {
 		globalTransform = ((ComponentTransform*)parentGo->GetComponent(ComponentType::Transform))->GetGlobalTransform() * localTransform;
 	}
 	globalFlag = false;
