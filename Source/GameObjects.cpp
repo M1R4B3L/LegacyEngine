@@ -79,7 +79,7 @@ void GameObject::Draw()
 
 		
 
-		App->renderer3D->Draw(transformComponent->GetGlobalTransform(), mesh, meshComponent->GetNumIndices(), material);
+		App->renderer3D->Draw(transformComponent->GetGlobalTransform().Transposed(), mesh, meshComponent->GetNumIndices(), material);
 	}
 }
 

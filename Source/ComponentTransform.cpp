@@ -13,15 +13,15 @@ translation(iTranslate), scale(iScale), rotation(iRotation), globalFlag(false)
 {
 	localTransform.SetIdentity();
 	globalTransform.SetIdentity();
-	localTransform = float4x4::FromTRS(translation, rotation, scale);
-	globalTransform = localTransform;
+	localTransform.FromTRS(translation, rotation, scale);
+	globalTransform.Set(localTransform);
 }
 
 ComponentTransform::~ComponentTransform(){}
 
 void ComponentTransform::SetLocalTransform(float3 iTranslate, float3 iScale, Quat iRotation)
 {
-	localTransform = float4x4::FromTRS(iTranslate,  iRotation, iScale);
+	localTransform.FromTRS(iTranslate,  iRotation, iScale);
 	translation = iTranslate;
 	scale = iScale;
 	rotation = iRotation;
