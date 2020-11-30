@@ -17,6 +17,7 @@ GameObject::GameObject(GameObject * iParent, const char* iName, float3 transf, f
 	{
 		parent->children.push_back(this);
 	}
+
 }
 
 GameObject::~GameObject()
@@ -69,11 +70,6 @@ void GameObject::Draw()
 		const ComponentMaterial* materialComponent = (ComponentMaterial*)GetComponent(ComponentType::Material);
 		if (materialComponent)
 			material = materialComponent->GetID();
-
-		float3 pos, scale;
-		Quat rot;
-
-		((ComponentTransform*)this->GetComponent(ComponentType::Transform))->GetGlobalTransform().Decompose(pos,rot,scale);
 		
 
 		App->renderer3D->Draw(transformComponent->GetGlobalTransform().Transposed(), mesh, meshComponent->GetNumIndices(), material);
