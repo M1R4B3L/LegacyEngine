@@ -28,6 +28,12 @@ void ComponentTransform::SetLocalTransform(float3 iTranslate, float3 iScale, Qua
 	scale = iScale;
 	rotation = iRotation;
 	globalFlag = true;
+	for (int i = 0; i < GetGameObject().children.size(); ++i) {
+		if (GetGameObject().children[i]->HasComponent(ComponentType::Transform))
+		{
+			((ComponentTransform*)GetGameObject().children[i]->GetComponent(ComponentType::Transform))->SetFlag();
+		}
+	}
 }
 
 void ComponentTransform::SetGlobalTransform() const
@@ -36,7 +42,7 @@ void ComponentTransform::SetGlobalTransform() const
 	if ((parentGo->GetParent() == nullptr))
 		globalTransform.Set(localTransform);
 	else if (parentGo && (parentGo->HasComponent(ComponentType::Transform))) {
-		globalTransform = ((ComponentTransform*)parentGo->GetComponent(ComponentType::Transform))->GetGlobalTransform() * localTransform;
+		globalTransform.Set(((ComponentTransform*)parentGo->GetComponent(ComponentType::Transform))->GetGlobalTransform() * localTransform);
 	}
 	globalFlag = false;
 }
@@ -46,6 +52,11 @@ void ComponentTransform::GetLocalTransform(float3& translation, float3& scale, Q
 	translation = this->translation;
 	scale = this->scale;
 	rotation = this->rotation;
+}
+
+void ComponentTransform::SetFlag() const
+{
+	globalFlag = true;
 }
 
 const float4x4 ComponentTransform::GetGlobalTransform() const
