@@ -682,9 +682,12 @@ void ModuleEditor::InspectorDrawTransform(ComponentTransform* componentTransform
 			componentTransform->SetLocalTransform(translation, scale, rotation);
 		}
 
-		//EULER ANGLES NO FUNCIONA
-		if (ImGui::DragFloat3("Rotation", (float*)&rotation, 0.01f, 0.0f, 0.0f, "%.3f", NULL)) {
+		float3 eulerRotation = rotation.ToEulerXYZ();
+		eulerRotation *= (180 / pi);
+		if (ImGui::DragFloat3("Rotation", (float*)&eulerRotation, 0.01f, 0.0f, 0.0f, "%.3f", NULL)) {
 
+			eulerRotation = (eulerRotation/180) * pi;
+			rotation = Quat::FromEulerXYZ(eulerRotation.x,eulerRotation.y,eulerRotation.z);
 			componentTransform->SetLocalTransform(translation, scale, rotation);
 		}
 
