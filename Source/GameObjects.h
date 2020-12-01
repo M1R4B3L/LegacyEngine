@@ -22,7 +22,7 @@ public:
 	void Update(float dt);
 	void Draw();
 
-	const GameObject* GetParent() const;
+	GameObject* GetParent() const;
 	const Component* GetComponent(ComponentType type) const;
 	bool HasComponent(ComponentType type) const;
 	std::vector<GameObject*> GetChildren() const;

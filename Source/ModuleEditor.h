@@ -75,6 +75,7 @@ private:
 
 	std::vector<char*> stringLog;
 	bool scroll;
+	bool dragDrop;
 
 };
 

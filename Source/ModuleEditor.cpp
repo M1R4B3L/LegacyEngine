@@ -22,8 +22,7 @@
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
 aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true),
 org("CITM"), scroll(true)
-{
-}
+{}
 
 ModuleEditor::~ModuleEditor()
 {
@@ -720,7 +719,7 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 
 	const char* name = gameObject->GetName();
 
-	ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_None;
+	ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_OpenOnArrow;
 
 	if (gameObject == App->scene->GetRootObject())
 	{
@@ -742,6 +741,21 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
 
 				App->scene->SetGameObjectSelected(gameObject);
+			}
+
+			if (ImGui::BeginDragDropSource()) {
+				ImGui::SetDragDropPayload("_TREENODE", &gameObject, sizeof(float));
+				
+				ImGui::Text("%s", gameObject->GetName());
+				
+				ImGui::EndDragDropSource();
+			}
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_TREENODE")) {
+
+					//App->scene->SetParent(gameObject, )
+				}
+				ImGui::EndDragDropTarget();
 			}
 		}
 

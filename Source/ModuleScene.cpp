@@ -28,9 +28,9 @@ bool ModuleScene::Start()
 	Importer::Textures::Init();
 	//LOG("Loading Intro assets");
 	bool ret = true;
-	root = new GameObject(nullptr, "root");
+	root = new GameObject(nullptr, "Scene");
 
-	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
+	App->camera->Move(vec3(5.0f, 5.0f, 5.0f));
 	App->camera->LookAt(vec3(0, 0, 0));
 
 	Importer::ImportDroped("Assets/Baker_house/BakerHouse.fbx");
@@ -80,6 +80,25 @@ GameObject* ModuleScene::CreateGameObject(const char* name , GameObject* parent)
 	return go;
 }
 
+void ModuleScene::AddChild(GameObject* gameObject)
+{
+
+}
+
+void ModuleScene::SetParent(GameObject* gameObject, GameObject* newParent)
+{
+	GameObject* parent = gameObject->GetParent();
+
+	for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); ++it)
+	{
+		if((*it) == gameObject)
+		parent->children.erase(it);
+	}
+
+	parent = newParent;
+	newParent->children.push_back(gameObject);
+	
+}
 GameObject* ModuleScene::GetRootObject() const
 {
 	return root;

@@ -76,7 +76,7 @@ void GameObject::Draw()
 	}
 }
 
-const GameObject* GameObject::GetParent() const
+GameObject* GameObject::GetParent() const
 {
 	return parent;
 }
