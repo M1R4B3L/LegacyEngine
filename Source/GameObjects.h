@@ -23,6 +23,7 @@ public:
 	void Draw();
 
 	GameObject* GetParent() const;
+	void SetParent(GameObject* newParent);
 	const Component* GetComponent(ComponentType type) const;
 	bool HasComponent(ComponentType type) const;
 	std::vector<GameObject*> GetChildren() const;

@@ -92,10 +92,11 @@ void ModuleScene::SetParent(GameObject* gameObject, GameObject* newParent)
 		}
 	}
 
-	parent = newParent;
 	newParent->children.push_back(gameObject);
-
+	gameObject->SetParent(newParent);
+	((ComponentTransform*)gameObject->GetComponent(ComponentType::Transform))->SetFlag();
 }
+
 GameObject* ModuleScene::GetRootObject() const
 {
 	return root;

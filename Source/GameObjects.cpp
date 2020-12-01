@@ -81,6 +81,11 @@ GameObject* GameObject::GetParent() const
 	return parent;
 }
 
+void GameObject::SetParent(GameObject* newParent)
+{
+	parent = newParent;
+}
+
 const Component* GameObject::GetComponent(ComponentType type) const
 {
 	std::vector<Component*>::const_iterator it = components.cbegin();
