@@ -743,7 +743,7 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 			}
 
 			if (ImGui::BeginDragDropSource()) {
-				ImGui::SetDragDropPayload("_TREENODE", &gameObject, sizeof(float));
+				ImGui::SetDragDropPayload("_TREENODE", &gameObject, sizeof(GameObject));
 				
 				ImGui::Text("%s", gameObject->GetName());
 				dragDropObject = gameObject;

@@ -80,11 +80,6 @@ GameObject* ModuleScene::CreateGameObject(const char* name , GameObject* parent)
 	return go;
 }
 
-void ModuleScene::AddChild(GameObject* gameObject)
-{
-
-}
-
 void ModuleScene::SetParent(GameObject* gameObject, GameObject* newParent)
 {
 	GameObject* parent = gameObject->GetParent();
