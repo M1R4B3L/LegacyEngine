@@ -12,7 +12,7 @@
 #include "GameObjects.h"
 #include "Component.h"
 #include "ComponentMesh.h"
-
+#include "ComponentTransform.h"
 
 
 ModuleScene::ModuleScene(bool startEnable) : Module(startEnable)
@@ -91,13 +91,15 @@ void ModuleScene::SetParent(GameObject* gameObject, GameObject* newParent)
 
 	for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); ++it)
 	{
-		if((*it) == gameObject)
-		parent->children.erase(it);
+		if ((*it) == gameObject) {
+			parent->children.erase(it);
+			break;
+		}
 	}
 
 	parent = newParent;
 	newParent->children.push_back(gameObject);
-	
+
 }
 GameObject* ModuleScene::GetRootObject() const
 {

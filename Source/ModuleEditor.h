@@ -77,6 +77,8 @@ private:
 	bool scroll;
 	bool dragDrop;
 
+	GameObject* dragDropObject = nullptr;
+
 };
 
 #endif //__ModuleEditor_H__
