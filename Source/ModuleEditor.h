@@ -67,9 +67,9 @@ public:
 	void HierarchyNodes(GameObject* node);
 	void InspectorComponents(GameObject* selectedGameObject);
 
-	void InspectorDrawTransform(ComponentTransform* componentTransform);
-	void InspectorDrawMesh(ComponentMesh* componentMesh);
-	void InspectorDrawMaterial(ComponentMaterial* componentMaterial);
+	void InspectorShowTransform(ComponentTransform* componentTransform);
+	void InspectorShowMesh(ComponentMesh* componentMesh);
+	void InspectorShowMaterial(ComponentMaterial* componentMaterial);
 
 private:
 

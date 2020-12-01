@@ -20,93 +20,146 @@ void Importer::Meshes::ImportFbx(const char* fbxPath)
 	const aiScene* scene = aiImportFile(fbxPath, aiProcessPreset_TargetRealtime_MaxQuality);
 	if (scene != nullptr && scene->HasMeshes())
 	{
-		std::string filePath = fbxPath;
-		std::string  fbxPath = filePath.substr(0,filePath.find_last_of("/") + 1);
-		ParseFbxNode(scene->mRootNode, scene, fbxPath.c_str());
+		ParseFbxNode(scene->mRootNode, scene, fbxPath);
 	}
 	else
 		LOG("Error opening file: %s ", fbxPath);
 	//TODO: Destroy the FBX
 }
 
-void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const char * fbxPath, GameObject*parentGo) 
+void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const char* fbxPath, GameObject*parentGo) 
 {
+
+	if (strcmp(node->mName.C_Str(), "RootNode") == 0) {
+
+		std::string tmp = fbxPath;
+		std::string name = tmp.substr(tmp.find_last_of("/")+1);
+		node->mName = name;
+	}
+
 	GameObject* go = nullptr;
 	
-	for (int i = 0; i < node->mNumMeshes; ++i) 
+	aiVector3D translation, scaling;
+
+	aiQuaternion aiRotation;
+
+	node->mTransformation.Decompose(scaling, aiRotation, translation);
+
+	float3 pos(translation.x, translation.y, translation.z);
+	float3 scale(scaling.x, scaling.y, scaling.z);
+	Quat rot(aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w);
+	Quat	tempRotation;
+	float3 scale1 = { 1, 1, 1 };
+
+	while (strstr(node->mName.C_Str(), "_$AssimpFbx$_") != nullptr && node->mNumChildren == 1)
 	{
-		//Create a game object with its name and the parent of the go is this node
-		//TODO: use the name of the node or the name of the mesh ?
-		go = App->scene->CreateGameObject(node->mName.C_Str() ,parentGo);
-		LOG("%s", node->mName.C_Str());
+		node = node->mChildren[0];
+		node->mTransformation.Decompose(scaling, aiRotation, translation);
 
-		//Create and attach all the components this node will need (using the scene check if it has a texture for adding a component material and add the transform and mesh component)
-		aiMesh* nodeMesh = scene->mMeshes[node->mMeshes[i]];
-		Mesh ourMesh;
-		ourMesh.texturecoords = 0;
-		//Loading Vertex Positions
-		ourMesh.numVertex = nodeMesh->mNumVertices;
-		ourMesh.vertex = new float[ourMesh.numVertex * 3];
-		memcpy(ourMesh.vertex, nodeMesh->mVertices, sizeof(float) * ourMesh.numVertex * 3);
-		LOG("New Mesh with %d vertices", ourMesh.numVertex);
-		//load indices
-		if (nodeMesh->HasFaces()) {
-			ourMesh.numIndices = nodeMesh->mNumFaces * 3;
-			ourMesh.index = new uint[ourMesh.numIndices];
-			for (int j = 0; j < nodeMesh->mNumFaces; ++j) {
-				if (nodeMesh->mFaces[j].mNumIndices != 3) {
-					LOG("WARNING, geometry face with != 3 indices!");
-				}
-				else
-					memcpy(&ourMesh.index[j * 3], nodeMesh->mFaces[j].mIndices, 3 * sizeof(uint));
-			}
-		}
-		//Loading Normals
-		if (nodeMesh->HasNormals()) {
-			ourMesh.numNormals = ourMesh.numVertex * 3;
-			ourMesh.normals = new float[ourMesh.numNormals];
-			memcpy(ourMesh.normals, nodeMesh->mNormals, sizeof(float) * ourMesh.numNormals);
-		}
-		if (nodeMesh->HasTextureCoords(0)) {
-			ourMesh.numTexcoords = ourMesh.numVertex * 2;
-			ourMesh.texturecoords = new float[ourMesh.numTexcoords];
+		tempRotation = Quat(aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w);
 
-			for (int j = 0; j < ourMesh.numVertex; j++)
-			{
-				ourMesh.texturecoords[j * 2] = nodeMesh->mTextureCoords[0][j].x;
-				ourMesh.texturecoords[j * 2 + 1] = nodeMesh->mTextureCoords[0][j].y;
-			}
-		}
+		pos.x += translation.x;
+		pos.y += translation.y;
+		pos.z += translation.z;
 
-		//TODO: can i add components to the game objects on their constructors ?
-		LOG("SettingUp %s transform", go->GetName());
+		scale.x *= scaling.x;
+		scale.y *= scaling.y;
+		scale.z *= scaling.z;
+
+		rot = rot * tempRotation;
 		
-		ImportTransform(node, go);
-		ComponentMesh* meshComponent = new ComponentMesh(App->renderer3D->VAOFromMesh(ourMesh), ourMesh.numVertex, ourMesh.numIndices);
-		go->AddComponent(meshComponent);
+	}
+	
+	go = App->scene->CreateGameObject(node->mName.C_Str(), parentGo);
 
-		//Adding Materials
-		if (scene->HasMaterials())
+	if (!go->HasComponent(ComponentType::Transform))
+	{
+		ComponentTransform* transformComponent = new ComponentTransform(go, pos, scale1, rot);
+
+		//LOG("Draw: %s", this->name.c_str());
+	}
+
+	
+	
+	if (node->mNumMeshes > 0) {
+		for (int i = 0; i < node->mNumMeshes; ++i)
 		{
-			aiMaterial* material = scene->mMaterials[nodeMesh->mMaterialIndex];
-			if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0) //TODO: Import more than one texture on a mesh (still not suported on the shader level)
-			{
-				aiString name;
-				material->GetTexture(aiTextureType_DIFFUSE, 0, &name);
+			//Create a game object with its name and the parent of the go is this node
+			//TODO: use the name of the node or the name of the mesh ?
 
-				std::string fileName = name.C_Str();
-				fileName = fileName.substr(fileName.find_last_of("/") + 1);
-				std::string filePath = fbxPath;
-				filePath = filePath + fileName;
+			LOG("%s", node->mName.C_Str());
 
-				uint textureID = Textures::Import(filePath.c_str());
-				if (textureID)
+			//Create and attach all the components this node will need (using the scene check if it has a texture for adding a component material and add the transform and mesh component)
+			aiMesh* nodeMesh = scene->mMeshes[node->mMeshes[i]];
+			Mesh ourMesh;
+			ourMesh.texturecoords = 0;
+			//Loading Vertex Positions
+			ourMesh.numVertex = nodeMesh->mNumVertices;
+			ourMesh.vertex = new float[ourMesh.numVertex * 3];
+			memcpy(ourMesh.vertex, nodeMesh->mVertices, sizeof(float) * ourMesh.numVertex * 3);
+			LOG("New Mesh with %d vertices", ourMesh.numVertex);
+			//load indices
+			if (nodeMesh->HasFaces()) {
+				ourMesh.numIndices = nodeMesh->mNumFaces * 3;
+				ourMesh.index = new uint[ourMesh.numIndices];
+				for (int j = 0; j < nodeMesh->mNumFaces; ++j) {
+					if (nodeMesh->mFaces[j].mNumIndices != 3) {
+						LOG("WARNING, geometry face with != 3 indices!");
+					}
+					else
+						memcpy(&ourMesh.index[j * 3], nodeMesh->mFaces[j].mIndices, 3 * sizeof(uint));
+				}
+			}
+			//Loading Normals
+			if (nodeMesh->HasNormals()) {
+				ourMesh.numNormals = ourMesh.numVertex * 3;
+				ourMesh.normals = new float[ourMesh.numNormals];
+				memcpy(ourMesh.normals, nodeMesh->mNormals, sizeof(float) * ourMesh.numNormals);
+			}
+			if (nodeMesh->HasTextureCoords(0)) {
+				ourMesh.numTexcoords = ourMesh.numVertex * 2;
+				ourMesh.texturecoords = new float[ourMesh.numTexcoords];
+
+				for (int j = 0; j < ourMesh.numVertex; j++)
 				{
-					ComponentMaterial* materialComponent = new ComponentMaterial(textureID);
-					go->AddComponent(materialComponent);
+					ourMesh.texturecoords[j * 2] = nodeMesh->mTextureCoords[0][j].x;
+					ourMesh.texturecoords[j * 2 + 1] = nodeMesh->mTextureCoords[0][j].y;
 				}
 			}
 
+			//TODO: can i add components to the game objects on their constructors ?
+			LOG("SettingUp %s transform", go->GetName());
+
+
+			ComponentMesh* meshComponent = new ComponentMesh(App->renderer3D->VAOFromMesh(ourMesh), ourMesh.numVertex, ourMesh.numIndices);
+			go->AddComponent(meshComponent);
+
+			//Adding Materials
+			if (scene->HasMaterials())
+			{
+				aiMaterial* material = scene->mMaterials[nodeMesh->mMaterialIndex];
+				if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0) //TODO: Import more than one texture on a mesh (still not suported on the shader level)
+				{
+					aiString name;
+					material->GetTexture(aiTextureType_DIFFUSE, 0, &name);
+
+					std::string fileName = name.C_Str();
+					fileName = fileName.substr(fileName.find_last_of("/") + 1);
+					std::string filePath = fbxPath;
+					std::string newfilePath = filePath.substr(0,filePath.find_last_of("/") + 1);
+					newfilePath = newfilePath + fileName;
+
+					
+
+					uint textureID = Textures::Import(newfilePath.c_str());
+					if (textureID)
+					{
+						ComponentMaterial* materialComponent = new ComponentMaterial(textureID);
+						go->AddComponent(materialComponent);
+					}
+				}
+
+			}
 		}
 	}
 	for (unsigned int j = 0; j < node->mNumChildren; j++)
@@ -231,24 +284,8 @@ uint Importer::Textures::checkerImage() {
 
 void Importer::ImportTransform(aiNode* node, GameObject* gameObject)
 {
-	aiVector3D translation, scaling;
+	
 
-	aiQuaternion rotation;
-
-	node->mTransformation.Decompose(scaling, rotation, translation);
-
-	float3 pos(translation.x, translation.y, translation.z);
-	float3 scale(scaling.x, scaling.y, scaling.z);
-	Quat rot(rotation.x, rotation.y, rotation.z, rotation.w);
-
-	float3 scale1 = { 1, 1, 1 };
-
-	if (!gameObject->HasComponent(ComponentType::Transform))
-	{
-		ComponentTransform* transformComponent = new ComponentTransform(gameObject, pos, scale1, rot);
-
-		//LOG("Draw: %s", this->name.c_str());
-	}
 }
 
 bool Importer::ImportDroped(const char* absFilepath)

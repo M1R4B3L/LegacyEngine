@@ -648,13 +648,13 @@ void ModuleEditor::InspectorComponents(GameObject* selectedGameObject)
 			switch (currentComponent->GetType())
 			{
 			case ComponentType::Transform: {
-				InspectorDrawTransform((ComponentTransform*)currentComponent);
+				InspectorShowTransform((ComponentTransform*)currentComponent);
 			} break;
 			case ComponentType::Mesh: {
-				InspectorDrawMesh((ComponentMesh*)currentComponent);
+				InspectorShowMesh((ComponentMesh*)currentComponent);
 			} break;
 			case ComponentType::Material: {
-				InspectorDrawMaterial((ComponentMaterial*)currentComponent);
+				InspectorShowMaterial((ComponentMaterial*)currentComponent);
 			} break;
 
 			}
@@ -668,7 +668,7 @@ void ModuleEditor::InspectorComponents(GameObject* selectedGameObject)
 
 }
 
-void ModuleEditor::InspectorDrawTransform(ComponentTransform* componentTransform)
+void ModuleEditor::InspectorShowTransform(ComponentTransform* componentTransform)
 {
 	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -698,7 +698,7 @@ void ModuleEditor::InspectorDrawTransform(ComponentTransform* componentTransform
 	}
 }
 
-void ModuleEditor::InspectorDrawMesh(ComponentMesh* componentMesh)
+void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 {
 	if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -706,7 +706,7 @@ void ModuleEditor::InspectorDrawMesh(ComponentMesh* componentMesh)
 	}
 }
 
-void ModuleEditor::InspectorDrawMaterial(ComponentMaterial* componentMaterial)
+void ModuleEditor::InspectorShowMaterial(ComponentMaterial* componentMaterial)
 {
 	if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
 	{
