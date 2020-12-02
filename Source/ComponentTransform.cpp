@@ -36,6 +36,11 @@ void ComponentTransform::SetLocalTransform(float3 iTranslate, float3 iScale, Qua
 	}*/
 }
 
+void ComponentTransform::NewParentLocal(GameObject* newParent)
+{
+	localTransform.Set(((ComponentTransform*)newParent->GetComponent(ComponentType::Transform))->GetGlobalTransform().Transposed() * globalTransform);
+}
+
 void ComponentTransform::SetGlobalTransform() const
 {
 	/*const GameObject* parentGo = GetGameObject().GetParent();

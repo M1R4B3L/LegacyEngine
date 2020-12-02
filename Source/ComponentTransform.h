@@ -10,6 +10,7 @@ public:
 	~ComponentTransform();
 
 	void SetLocalTransform(float3 iTranslate, float3 iScale, Quat iRotation);
+	void NewParentLocal(GameObject* newParent);
 	void GetLocalTransform(float3& translation, float3& scale, Quat& rotation) const;
 	void SetFlag() const;
 	const float4x4 GetGlobalTransform() const;

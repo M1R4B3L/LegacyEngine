@@ -271,7 +271,7 @@ unsigned int ModuleRenderer3D::VAOFromMesh(Mesh mesh)
 		glGenBuffers(1, &TexCoordBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, TexCoordBuffer);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.numTexcoords, mesh.texturecoords, GL_STATIC_DRAW);
-		//glTexCoordPointer(2, GL_FLOAT, 0, NULL); //TODO: DEPRECATED: Haig d'escriure els shaders!!!!
+		//glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
 		// vertex texture coords
 		glEnableVertexAttribArray(1);
