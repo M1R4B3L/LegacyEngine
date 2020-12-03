@@ -15,3 +15,8 @@ const unsigned int ComponentMesh::GetNumIndices() const
 {
 	return numIndices;
 }
+
+const unsigned int ComponentMesh::GetNumVertex() const
+{
+	return numVertices;
+}

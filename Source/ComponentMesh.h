@@ -29,6 +29,7 @@ public:
 
     const unsigned int GetVAO() const;
     const unsigned int GetNumIndices() const;
+    const unsigned int GetNumVertex() const;
     
 private:
     unsigned int VAO;

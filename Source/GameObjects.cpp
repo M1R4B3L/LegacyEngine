@@ -11,7 +11,7 @@ GameObject::GameObject() : parent(nullptr), name("No name")
 {
 }
 
-GameObject::GameObject(GameObject * iParent, const char* iName, float3 transf, float3 scale, Quat rot) : parent(iParent), name(iName) 
+GameObject::GameObject(GameObject * iParent, const char* iName, float3 transf, float3 scale, Quat rot, bool active) : parent(iParent), name(iName) 
 {
 	if (parent) 
 	{
@@ -51,8 +51,11 @@ void GameObject::Update(float dt)
 	std::vector<GameObject*>::iterator itr = children.begin();
 	for (itr; itr != children.end(); itr++) 
 	{
-		(*itr)->Update(dt);
-		(*itr)->Draw();
+		if ((*itr)->active)
+		{
+			(*itr)->Update(dt);
+			(*itr)->Draw();
+		}
 	}
 }
 

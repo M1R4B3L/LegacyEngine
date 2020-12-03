@@ -74,13 +74,17 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 
 	if (!go->HasComponent(ComponentType::Transform))
 	{
-		ComponentTransform* transformComponent = new ComponentTransform(go, pos, scale1, rot);
+		ComponentTransform* transformComponent = new ComponentTransform(go, pos, scale, rot);
+		transformComponent->SetLocalTransform(pos, scale, rot);
 
 		//LOG("Draw: %s", this->name.c_str());
 	}
 
-	
-	
+	if (scene->mNumCameras > 0)
+	{
+		//Componen
+	}
+
 	if (node->mNumMeshes > 0) {
 		for (int i = 0; i < node->mNumMeshes; ++i)
 		{
@@ -144,16 +148,20 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 					material->GetTexture(aiTextureType_DIFFUSE, 0, &name);
 
 					std::string fileName = name.C_Str();
-					fileName = fileName.substr(fileName.find_last_of("/") + 1);
+					fileName = fileName.substr(fileName.find_last_of("/""\\") + 1);
 					std::string filePath = fbxPath;
 					std::string newfilePath = filePath.substr(0,filePath.find_last_of("/") + 1);
 					newfilePath = newfilePath + fileName;
 
-					
-
 					uint textureID = Textures::Import(newfilePath.c_str());
+
 					if (textureID)
 					{
+						ILinfo ilInfo;
+						iluGetImageInfo(&ilInfo);
+
+						float2 size = { (float)ilInfo.Width, (float)ilInfo.Height };
+
 						ComponentMaterial* materialComponent = new ComponentMaterial(textureID);
 						go->AddComponent(materialComponent);
 					}
@@ -299,7 +307,7 @@ bool Importer::ImportDroped(const char* absFilepath)
 		Meshes::ImportFbx(absPath.c_str());
 		return true;
 	}
-	else if (extension == "png") 
+	else if (extension == "png" || extension == "tga") 
 	{
 		App->renderer3D->dropedTexture = Textures::Import(absPath.c_str());
 

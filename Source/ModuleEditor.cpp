@@ -676,21 +676,21 @@ void ModuleEditor::InspectorShowTransform(ComponentTransform* componentTransform
 		Quat rotation;
 		componentTransform->GetLocalTransform(translation, scale, rotation);
 
-		if (ImGui::DragFloat3("Position", (float*)&translation, 0.01f, 0.0f, 0.0f, "%.3f", NULL)) {
+		if (ImGui::DragFloat3("Position", (float*)&translation, 0.01f, 0.0f, 0.0f, "%.3f")) {
 
 			componentTransform->SetLocalTransform(translation, scale, rotation);
 		}
 
 		float3 eulerRotation = rotation.ToEulerXYZ();
 		eulerRotation *= (180 / pi);
-		if (ImGui::DragFloat3("Rotation", (float*)&eulerRotation, 0.01f, 0.0f, 0.0f, "%.3f", NULL)) {
+		if (ImGui::DragFloat3("Rotation", (float*)&eulerRotation, 0.01f, 0.0f, 0.0f, "%.3f")) {
 
 			eulerRotation = (eulerRotation/180) * pi;
 			rotation = Quat::FromEulerXYZ(eulerRotation.x,eulerRotation.y,eulerRotation.z);
 			componentTransform->SetLocalTransform(translation, scale, rotation);
 		}
 
-		if (ImGui::DragFloat3("Scale", (float*)&scale, 0.01f, 0.0f, 0.0f, "%.3f", NULL)) {
+		if (ImGui::DragFloat3("Scale", (float*)&scale, 0.01f, 0.0f, 0.0f, "%.3f")) {
 
 			componentTransform->SetLocalTransform(translation, scale, rotation);
 		}
@@ -700,17 +700,27 @@ void ModuleEditor::InspectorShowTransform(ComponentTransform* componentTransform
 
 void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 {
-	if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
+	bool active = true;
+	ImGui::Checkbox("", &active);
+	ImGui::SameLine();
+	if (ImGui::CollapsingHeader("Mesh", &active, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		
+		ImGui::Text("Number of vertex: ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u", componentMesh->GetNumVertex());
 	}
 }
 
 void ModuleEditor::InspectorShowMaterial(ComponentMaterial* componentMaterial)
 {
-	if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
+	bool active = true;
+	if (ImGui::CollapsingHeader("Material", &active, ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		ImGui::Text("Texture Size ");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u x %u");
 
+		ImGui::Image((ImTextureID)componentMaterial->GetID(), ImVec2(100, 100));
 	}
 }
 

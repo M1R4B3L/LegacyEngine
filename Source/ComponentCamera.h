@@ -6,8 +6,10 @@
 
 class ComponentCamera : public Component
 {
-public:
 
+
+
+public:
 	Frustum frustumCamera;
 
 };

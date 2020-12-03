@@ -12,7 +12,7 @@ class GameObject
 {
 public:
 	GameObject();
-	GameObject(GameObject* parent, const char* iName = "noName",float3 transf = float3::zero,float3 scale = float3::one, Quat rot = Quat::identity);
+	GameObject(GameObject* parent, const char* iName = "noName",float3 transf = float3::zero,float3 scale = float3::one, Quat rot = Quat::identity, bool active = true);
 	~GameObject();
 
 	//	add	a	new	component	to	this	game	object
@@ -34,11 +34,14 @@ public:
 private:
 	GameObject* parent = nullptr;
 	std::string name;
+
+	bool active;
 	
 	//TODO: Change children to private
 public:
 	std::vector<Component*> components;
 	std::vector<GameObject*> children;
+
 };
 
 
