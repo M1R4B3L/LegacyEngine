@@ -634,6 +634,8 @@ void ModuleEditor::WindowHierarchy()
 
 void ModuleEditor::InspectorComponents(GameObject* selectedGameObject)
 {
+	ImGui::Checkbox("##", &selectedGameObject->activeGameObject);
+	ImGui::SameLine();
 	static char name[128];
 	strcpy_s(name, 128, selectedGameObject->GetName());
 	if (ImGui::InputText("Name", name, 128, ImGuiInputTextFlags_EnterReturnsTrue))
@@ -701,7 +703,9 @@ void ModuleEditor::InspectorShowTransform(ComponentTransform* componentTransform
 void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 {
 	bool active = true;
-	ImGui::Checkbox("", &active);
+	
+	ImGui::Checkbox("##Mesh", &((ComponentMesh*)componentMesh)->activeMesh);
+
 	ImGui::SameLine();
 	if (ImGui::CollapsingHeader("Mesh", &active, ImGuiTreeNodeFlags_DefaultOpen))
 	{

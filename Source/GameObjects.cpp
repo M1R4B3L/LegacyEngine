@@ -11,7 +11,7 @@ GameObject::GameObject() : parent(nullptr), name("No name")
 {
 }
 
-GameObject::GameObject(GameObject * iParent, const char* iName, float3 transf, float3 scale, Quat rot, bool active) : parent(iParent), name(iName) 
+GameObject::GameObject(GameObject * iParent, const char* iName, float3 transf, float3 scale, Quat rot) : parent(iParent), name(iName)
 {
 	if (parent) 
 	{
@@ -51,7 +51,7 @@ void GameObject::Update(float dt)
 	std::vector<GameObject*>::iterator itr = children.begin();
 	for (itr; itr != children.end(); itr++) 
 	{
-		if ((*itr)->active)
+		if ((*itr)->activeGameObject)
 		{
 			(*itr)->Update(dt);
 			(*itr)->Draw();
@@ -74,7 +74,6 @@ void GameObject::Draw()
 		if (materialComponent)
 			material = materialComponent->GetID();
 		
-
 		App->renderer3D->Draw(transformComponent->GetGlobalTransform().Transposed(), mesh, meshComponent->GetNumIndices(), material);
 	}
 }
@@ -87,6 +86,19 @@ GameObject* GameObject::GetParent() const
 void GameObject::SetParent(GameObject* newParent)
 {
 	parent = newParent;
+}
+
+bool GameObject::IsActive() const
+{
+	if(parent != nullptr)
+	{
+		return parent->IsActive();
+	}
+
+	if (activeGameObject == false)
+		return false;
+
+	return activeGameObject;
 }
 
 const Component* GameObject::GetComponent(ComponentType type) const
@@ -120,3 +132,4 @@ void GameObject::SetName(char* newName)
 {
 	name = newName;
 }
+

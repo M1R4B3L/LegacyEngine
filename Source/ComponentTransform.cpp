@@ -4,13 +4,13 @@
 #include "Application.h"
 #include "scene.h"
 
-ComponentTransform::ComponentTransform(GameObject* go) : Component(go,ComponentType::Transform, true), translation(float3::zero), scale(float3::one), rotation(Quat::identity),globalFlag(false) 
+ComponentTransform::ComponentTransform(GameObject* go) : Component(go,ComponentType::Transform), translation(float3::zero), scale(float3::one), rotation(Quat::identity),globalFlag(false) 
 { 
 	localTransform.SetIdentity();
 	globalTransform.SetIdentity();
 }
 
-ComponentTransform::ComponentTransform(GameObject* go, float3 iTranslate, float3 iScale, Quat iRotation) : Component(go, ComponentType::Transform, true), 
+ComponentTransform::ComponentTransform(GameObject* go, float3 iTranslate, float3 iScale, Quat iRotation) : Component(go, ComponentType::Transform), 
 translation(iTranslate), scale(iScale), rotation(iRotation), globalFlag(false)
 {
 	localTransform.SetIdentity();

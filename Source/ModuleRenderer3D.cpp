@@ -15,7 +15,7 @@
 #include "ComponentMesh.h"
 #include "Shader.h"
 #include "physfs.h"
-#include "MathGeoLib.h"
+#include "Dependencies/MathGeolib/MathGeoLib.h"
 
 ModuleRenderer3D::ModuleRenderer3D(bool startEnable) : Module(startEnable),
 wireframes(false)

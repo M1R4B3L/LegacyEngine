@@ -1,15 +1,17 @@
 #pragma once
 
 #include "Component.h"
-
-#include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
+#include "Dependencies/MathGeolib/Geometry/Frustum.h"
 
 class ComponentCamera : public Component
 {
-
-
+public:
+	ComponentCamera(GameObject* gameObject);
+	~ComponentCamera();
 
 public:
-	Frustum frustumCamera;
+	Frustum frustum;
+	bool culling;
+	bool active;
 
 };

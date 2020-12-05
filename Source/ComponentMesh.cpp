@@ -20,3 +20,13 @@ const unsigned int ComponentMesh::GetNumVertex() const
 {
 	return numVertices;
 }
+
+bool ComponentMesh::IsActive() const
+{
+	return activeMesh;
+}
+
+void ComponentMesh::SetActive(bool active)
+{
+	activeMesh = active;
+}
