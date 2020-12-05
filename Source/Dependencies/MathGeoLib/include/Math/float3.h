@@ -36,10 +36,11 @@
 #ifdef MATH_OGRE_INTEROP
 #include <OgreVector3.h>
 #endif
-
+/*
 #ifdef MATH_BULLET_INTEROP
-#include "LinearMath/btVector3.h"
+#include "../../../Bullet/include/LinearMath/btVector3.h"
 #endif
+*/
 
 MATH_BEGIN_NAMESPACE
 
@@ -282,6 +283,7 @@ public:
 	/// Sets all elements of this vector.
 	/** @see x, y, z, At(). */
 	void Set(float x, float y, float z);
+	void Set(float* v);
 
 	/// Converts the given vector represented in spherical coordinates to an euclidean float3 (x,y,z) triplet.
 	/** @param azimuth The direction, or yaw, of the vector. This function uses the convention that the X-Z plane is
@@ -687,10 +689,12 @@ public:
 	static float3 FromQVector3D(const QVector3D &v) { return (float3)v; }
 	static float3 FromString(const QString &str) { return FromString(str.toStdString()); }
 #endif
+	/*
 #ifdef MATH_BULLET_INTEROP
 	float3(const btVector3 &other) { x = other.x(); y = other.y(); z = other.z(); }
 	operator btVector3() const { return btVector3(x, y, z); }
 #endif
+*/
 };
 
 /// Prints this float3 to the given stream.
