@@ -429,5 +429,6 @@ Mesh LoadMesh(char* buffer)
 	memcpy(ourMesh.normalsData, cursor, bytes);
 	cursor += bytes;
 
+	return ourMesh;
 	//App->renderer3D->VAOFromMesh(ourMesh);
 }
