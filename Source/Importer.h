@@ -27,3 +27,5 @@ namespace Importer {
 
 void SaveMesh(aiMesh* mesh);
 void LoadMesh(char* buffer);
+
+void SaveTexture();

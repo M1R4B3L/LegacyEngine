@@ -6,6 +6,7 @@
 #include "ModuleCamera3D.h"
 #include "ModuleScene.h"
 #include "ModuleEditor.h"
+#include "ModuleFileSystem.h"
 
 #include <list>
 
@@ -18,6 +19,7 @@ closeApp(false)
 	renderer3D = new ModuleRenderer3D(this);
 	camera = new ModuleCamera3D(this);
 	editor = new ModuleEditor(this);
+	fileSystem = new ModuleFileSystem(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -27,7 +29,7 @@ closeApp(false)
 	AddModule(window);
 	AddModule(camera);
 	AddModule(input);
-	
+	AddModule(fileSystem);
 	// Scenes
 	AddModule(scene);
 	AddModule(editor);

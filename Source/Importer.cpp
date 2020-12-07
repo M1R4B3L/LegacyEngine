@@ -95,7 +95,7 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 
 			//Create and attach all the components this node will need (using the scene check if it has a texture for adding a component material and add the transform and mesh component)
 			aiMesh* nodeMesh = scene->mMeshes[node->mMeshes[i]];
-			ImportMesh(nodeMesh);
+			//SaveMesh(nodeMesh);
 			Mesh ourMesh;
 			ourMesh.texturecoords = 0;
 			//Loading Vertex Positions
@@ -393,4 +393,24 @@ void SaveMesh(aiMesh* mesh)
 void LoadMesh(char* buffer)
 {
 
+}
+
+void SaveTexture(char** fileBuffer)
+{
+	ILuint size;
+	ILubyte* data;
+
+	ilSetInteger(IL_DXTC_DATA_FORMAT, IL_DXT5);
+
+	size = ilSaveL(IL_DDS, nullptr, 0);
+
+	if (size < 0)
+	{
+		data = new ILubyte[size];
+
+		if (ilSaveL(IL_DDS, data, size) > 0)
+			*fileBuffer = (char*)data;
+
+		RELEASE_ARRAY(data);
+	}
 }

@@ -165,6 +165,7 @@
     <ClInclude Include="Source\Dependencies\MathGeolib\Math\TransformOps.h" />
     <ClInclude Include="Source\Dependencies\MathGeolib\Math\vec2d.h" />
     <ClInclude Include="Source\Dependencies\MathGeolib\Time\Clock.h" />
+    <ClInclude Include="Source\ModuleFileSystem.h" />
     <ClInclude Include="Source\ModuleScene.h" />
     <ClInclude Include="Source/ModuleWindow.h" />
     <ClInclude Include="Source/Primitive.h" />
@@ -239,6 +240,7 @@
     <ClCompile Include="Source\Dependencies\MathGeolib\Math\SSEMath.cpp" />
     <ClCompile Include="Source\Dependencies\MathGeolib\Math\TransformOps.cpp" />
     <ClCompile Include="Source\Dependencies\MathGeolib\Time\Clock.cpp" />
+    <ClCompile Include="Source\ModuleFileSystem.cpp" />
     <ClCompile Include="Source\ModuleScene.cpp" />
     <ClCompile Include="Source/ModuleWindow.cpp" />
     <ClCompile Include="Source/Primitive.cpp" />
