@@ -10,15 +10,15 @@ class Component;
 struct Mesh {
     uint VAO; //vertex array object
     uint VBO; //vertex buffer object
-    uint numVertex;
+    uint numVertices;
     uint numTexcoords;
     uint numNormals;
     uint EBO; //element buffer object
     uint numIndices;
-    uint* index = nullptr; //TODO: S'han de borrar els buffers !!!
-    float* vertex = nullptr;
-    float* normals;
-    float* texturecoords;
+    uint* indexData = nullptr; //TODO: S'han de borrar els buffers !!!
+    float* vertexData = nullptr;
+    float* normalsData = nullptr;
+    float* texturecoordsData = nullptr;
     uint difuseTexture = 0;
 
     AABB aabb;

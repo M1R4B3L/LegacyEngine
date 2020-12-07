@@ -26,4 +26,4 @@ namespace Importer {
 }
 
 void SaveMesh(aiMesh* mesh);
-void LoadMesh(char* buffer);
+Mesh LoadMesh(char* buffer);

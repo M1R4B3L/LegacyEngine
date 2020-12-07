@@ -95,40 +95,42 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 
 			//Create and attach all the components this node will need (using the scene check if it has a texture for adding a component material and add the transform and mesh component)
 			aiMesh* nodeMesh = scene->mMeshes[node->mMeshes[i]];
-			ImportMesh(nodeMesh);
+
+			//SaveMesh(nodeMesh);
+
 			Mesh ourMesh;
-			ourMesh.texturecoords = 0;
+			ourMesh.numTexcoords = 0;
 			//Loading Vertex Positions
-			ourMesh.numVertex = nodeMesh->mNumVertices;
-			ourMesh.vertex = new float[ourMesh.numVertex * 3];
-			memcpy(ourMesh.vertex, nodeMesh->mVertices, sizeof(float) * ourMesh.numVertex * 3);
-			LOG("New Mesh with %d vertices", ourMesh.numVertex);
+			ourMesh.numVertices = nodeMesh->mNumVertices;
+			ourMesh.vertexData = new float[ourMesh.numVertices * 3];
+			memcpy(ourMesh.vertexData, nodeMesh->mVertices, sizeof(float) * ourMesh.numVertices * 3);
+			LOG("New Mesh with %d vertices", ourMesh.numVertices);
 			//load indices
 			if (nodeMesh->HasFaces()) {
 				ourMesh.numIndices = nodeMesh->mNumFaces * 3;
-				ourMesh.index = new uint[ourMesh.numIndices];
+				ourMesh.indexData = new uint[ourMesh.numIndices];
 				for (int j = 0; j < nodeMesh->mNumFaces; ++j) {
 					if (nodeMesh->mFaces[j].mNumIndices != 3) {
 						LOG("WARNING, geometry face with != 3 indices!");
 					}
 					else
-						memcpy(&ourMesh.index[j * 3], nodeMesh->mFaces[j].mIndices, 3 * sizeof(uint));
+						memcpy(&ourMesh.indexData[j * 3], nodeMesh->mFaces[j].mIndices, 3 * sizeof(uint));
 				}
 			}
 			//Loading Normals
 			if (nodeMesh->HasNormals()) {
-				ourMesh.numNormals = ourMesh.numVertex * 3;
-				ourMesh.normals = new float[ourMesh.numNormals];
-				memcpy(ourMesh.normals, nodeMesh->mNormals, sizeof(float) * ourMesh.numNormals);
+				ourMesh.numNormals = ourMesh.numVertices * 3;
+				ourMesh.normalsData = new float[ourMesh.numNormals];
+				memcpy(ourMesh.normalsData, nodeMesh->mNormals, sizeof(float) * ourMesh.numNormals);
 			}
 			if (nodeMesh->HasTextureCoords(0)) {
-				ourMesh.numTexcoords = ourMesh.numVertex * 2;
-				ourMesh.texturecoords = new float[ourMesh.numTexcoords];
+				ourMesh.numTexcoords = ourMesh.numVertices * 2;
+				ourMesh.texturecoordsData = new float[ourMesh.numTexcoords];
 
-				for (int j = 0; j < ourMesh.numVertex; j++)
+				for (int j = 0; j < ourMesh.numVertices; j++)
 				{
-					ourMesh.texturecoords[j * 2] = nodeMesh->mTextureCoords[0][j].x;
-					ourMesh.texturecoords[j * 2 + 1] = nodeMesh->mTextureCoords[0][j].y;
+					ourMesh.texturecoordsData[j * 2] = nodeMesh->mTextureCoords[0][j].x;
+					ourMesh.texturecoordsData[j * 2 + 1] = nodeMesh->mTextureCoords[0][j].y;
 				}
 			}
 
@@ -136,7 +138,7 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 			LOG("SettingUp %s transform", go->GetName());
 
 
-			ComponentMesh* meshComponent = new ComponentMesh(App->renderer3D->VAOFromMesh(ourMesh), ourMesh.numVertex, ourMesh.numIndices);
+			ComponentMesh* meshComponent = new ComponentMesh(App->renderer3D->VAOFromMesh(ourMesh), ourMesh.numVertices, ourMesh.numIndices);
 			go->AddComponent(meshComponent);
 
 			//Adding Materials
@@ -358,6 +360,7 @@ void SaveMesh(aiMesh* mesh)
 		memcpy(cursor, udata, bytes);
 		cursor += bytes;
 		delete[] udata;
+		udata = nullptr;
 	}
 
 	//save vertices
@@ -380,6 +383,7 @@ void SaveMesh(aiMesh* mesh)
 		memcpy(cursor, fdata, bytes);
 		cursor += bytes;
 		delete[] fdata;
+		fdata = nullptr;
 	}
 
 	//save normals
@@ -390,7 +394,40 @@ void SaveMesh(aiMesh* mesh)
 	}
 }
 
-void LoadMesh(char* buffer)
+Mesh LoadMesh(char* buffer)
 {
+	Mesh ourMesh;
+	char* cursor = buffer;
 
+	uint ranges[4];
+	uint bytes = sizeof(ranges);
+	memcpy(ranges, cursor, bytes);
+	cursor += bytes;
+
+	ourMesh.numIndices = ranges[0];
+	ourMesh.numVertices = ranges[1];
+	ourMesh.numTexcoords = ranges[2];
+	ourMesh.numNormals = ranges[3];
+
+	bytes = sizeof(uint) * ourMesh.numIndices;
+	ourMesh.indexData = new uint[ourMesh.numIndices];
+	memcpy(ourMesh.indexData, cursor, bytes);
+	cursor += bytes;
+
+	bytes = sizeof(float) * ourMesh.numVertices * 3;
+	ourMesh.vertexData = new float[ourMesh.numVertices];
+	memcpy(ourMesh.vertexData, cursor, bytes);
+	cursor += bytes;
+
+	bytes = sizeof(float) * ourMesh.numTexcoords;
+	ourMesh.texturecoordsData = new float[ourMesh.numTexcoords];
+	memcpy(ourMesh.texturecoordsData, cursor, bytes);
+	cursor += bytes;
+
+	bytes = sizeof(float) * ourMesh.numNormals;
+	ourMesh.texturecoordsData = new float[ourMesh.numNormals];
+	memcpy(ourMesh.normalsData, cursor, bytes);
+	cursor += bytes;
+
+	//App->renderer3D->VAOFromMesh(ourMesh);
 }

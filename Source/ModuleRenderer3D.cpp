@@ -257,10 +257,10 @@ unsigned int ModuleRenderer3D::VAOFromMesh(Mesh mesh)
 	glGenBuffers(1, &mesh.EBO);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
 
-	glBufferData(GL_ARRAY_BUFFER, mesh.numVertex * sizeof(float) * 3, mesh.vertex, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, mesh.numVertices * sizeof(float) * 3, mesh.vertexData, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.numIndices * sizeof(unsigned int), mesh.index, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.numIndices * sizeof(unsigned int), mesh.indexData, GL_STATIC_DRAW);
 
 	// vertex positions
 	glEnableVertexAttribArray(0);
@@ -270,7 +270,7 @@ unsigned int ModuleRenderer3D::VAOFromMesh(Mesh mesh)
 		uint TexCoordBuffer;
 		glGenBuffers(1, &TexCoordBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, TexCoordBuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.numTexcoords, mesh.texturecoords, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.numTexcoords, mesh.texturecoordsData, GL_STATIC_DRAW);
 		//glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
 		// vertex texture coords
