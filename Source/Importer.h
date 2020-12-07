@@ -6,6 +6,7 @@ struct Mesh;
 class GameObject;
 class aiNode;
 class aiScene;
+class aiMesh;
 
 namespace Importer {
     bool ImportDroped(const char* filepath);
@@ -23,3 +24,6 @@ namespace Importer {
     }
     void ImportTransform(aiNode* node, GameObject* gameObject);
 }
+
+void SaveMesh(aiMesh* mesh);
+void LoadMesh(char* buffer);

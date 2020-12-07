@@ -95,6 +95,7 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 
 			//Create and attach all the components this node will need (using the scene check if it has a texture for adding a component material and add the transform and mesh component)
 			aiMesh* nodeMesh = scene->mMeshes[node->mMeshes[i]];
+			ImportMesh(nodeMesh);
 			Mesh ourMesh;
 			ourMesh.texturecoords = 0;
 			//Loading Vertex Positions
@@ -315,4 +316,81 @@ bool Importer::ImportDroped(const char* absFilepath)
 	}
 
 	return false;
+}
+
+void SaveMesh(aiMesh* mesh)
+{
+	uint numVertices = mesh->mNumVertices;
+	uint numIndices = 0;
+	uint numTextureCoordinates = 0;
+	uint numNormals = 0;
+	
+	if (mesh->HasFaces())
+		numIndices = mesh->mNumFaces * 3;
+	if (mesh->HasTextureCoords(0))
+		uint numTextureCoordinates = numVertices * 2;
+	if (mesh->HasNormals())
+		numNormals = numVertices * 3;
+
+	uint ranges[4] = { numIndices, numVertices, numTextureCoordinates, numNormals };
+	uint size = sizeof(ranges) + sizeof(uint) * numIndices + sizeof(float) * numVertices * 3 + sizeof(float) * numTextureCoordinates + sizeof(float) * numNormals;
+
+	char* fileBuffer = new char[size];
+	char* cursor = fileBuffer;
+
+	//save ranges
+	uint bytes = sizeof(ranges);
+	memcpy(cursor, ranges, bytes);
+	cursor += bytes;
+
+	uint* udata = nullptr;
+	//save indices
+	if (numIndices) {
+		uint * data = new uint[numIndices];
+		for (int j = 0; j < mesh->mNumFaces; ++j) {
+			if (mesh->mFaces[j].mNumIndices != 3) {
+				LOG("WARNING, geometry face with != 3 indices!");
+			}
+			else
+				memcpy(&udata[j * 3], mesh->mFaces[j].mIndices, 3 * sizeof(uint));
+		}
+		bytes = sizeof(uint) * numIndices;
+		memcpy(cursor, udata, bytes);
+		cursor += bytes;
+		delete[] udata;
+	}
+
+	//save vertices
+	bytes = sizeof(float) * numVertices * 3;
+	memcpy(cursor, mesh->mVertices, bytes);
+	cursor += bytes;
+
+	//save textcoords
+	float* fdata = nullptr;
+	if (numTextureCoordinates) {
+
+		fdata = new float[numTextureCoordinates];
+
+		for (int j = 0; j < numVertices; j++)
+		{
+			fdata[j * 2] = mesh->mTextureCoords[0][j].x;
+			fdata[j * 2 + 1] = mesh->mTextureCoords[0][j].y;
+		}
+		bytes = sizeof(float) * numTextureCoordinates;
+		memcpy(cursor, fdata, bytes);
+		cursor += bytes;
+		delete[] fdata;
+	}
+
+	//save normals
+	if (numNormals) {
+		bytes = sizeof(float) * numNormals;
+		memcpy(cursor, mesh->mNormals, bytes);
+		cursor += bytes;
+	}
+}
+
+void LoadMesh(char* buffer)
+{
+
 }
