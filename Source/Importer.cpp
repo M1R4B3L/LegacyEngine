@@ -448,7 +448,19 @@ void SaveTexture(char** fileBuffer)
 
 		if (ilSaveL(IL_DDS, data, size) > 0)
 			*fileBuffer = (char*)data;
+		else
+		{
+			*fileBuffer = nullptr;
+		}
 
 		RELEASE_ARRAY(data);
 	}
+}
+
+void LoadTexture(char* buffer)
+{
+	ILuint il_image = 0;
+	ilGenImages(1, &il_image);
+	ilBindImage(il_image);
+
 }

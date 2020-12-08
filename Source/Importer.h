@@ -29,5 +29,8 @@ void SaveMesh(aiMesh* mesh);
 
 Mesh LoadMesh(char* buffer);
 
-void SaveTexture();
+void SaveTexture(char** fileBuffer);
+
+void LoadTexture(char* buffer);
+
 

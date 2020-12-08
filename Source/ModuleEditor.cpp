@@ -332,8 +332,7 @@ void ModuleEditor::WindowAbout()
 void ModuleEditor::WindowConfig()
 {
 	if (configWindow) {
-		//ImGuiCond_Once;
-		//ImGui::SetNextWindowPos()
+		
 		if (ImGui::Begin("Configuration", &configWindow, ImGuiWindowFlags_MenuBar)) {
 
 			ImGui::BeginMenuBar();
@@ -355,7 +354,7 @@ void ModuleEditor::WindowConfig()
 			if (ImGui::BeginTabBar(""))
 			{
 				if (ImGui::BeginTabItem("Display")) {
-					if (ImGui::CollapsingHeader("Window"))
+					if (ImGui::CollapsingHeader("Window", ImGuiTreeNodeFlags_DefaultOpen))
 					{
 
 						static float brightness = App->window->GetBrightness();
@@ -489,7 +488,7 @@ void ModuleEditor::WindowConfig()
 
 				if (ImGui::BeginTabItem("Controls"))
 				{
-					if (ImGui::CollapsingHeader("Input"))
+					if (ImGui::CollapsingHeader("Input", ImGuiTreeNodeFlags_DefaultOpen))
 					{
 
 					}
@@ -570,10 +569,12 @@ void ModuleEditor::WindowConfig()
 
 					ImGui::EndTabItem();
 				}
+			
 				ImGui::EndTabBar();
 			}
-			ImGui::End();
+			
 		}
+		ImGui::End();
 	}
 
 }
@@ -595,8 +596,9 @@ void ModuleEditor::WindowConsole()
 
 				scroll = false;
 			}
-			ImGui::End();
+			
 		}
+		ImGui::End();
 	}
 }
 
@@ -609,9 +611,8 @@ void ModuleEditor::WindowInspector()
 			if (App->scene->GetSelectedObject() != nullptr) {
 				InspectorComponents(App->scene->GetSelectedObject());
 			}
-
-			ImGui::End();
 		}
+		ImGui::End();
 	}
 }
 
@@ -626,9 +627,9 @@ void ModuleEditor::WindowHierarchy()
 
 				HierarchyNodes(App->scene->GetRootObject());
 
-			}
-			ImGui::End();
+			}	
 		}
+		ImGui::End();
 	}
 }
 
