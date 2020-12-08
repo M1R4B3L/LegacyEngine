@@ -117,3 +117,14 @@ void ModuleScene::SetGameObjectUnselected()
 {
 	selectedObject = nullptr;
 }
+
+void ModuleScene::DeleteGameObject(GameObject* gameObject)
+{
+	if (selectedObject == gameObject)
+	{
+		selectedObject = nullptr;
+	}
+
+	gameObject->~GameObject();
+
+}

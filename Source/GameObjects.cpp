@@ -77,7 +77,7 @@ void GameObject::Draw()
 		App->renderer3D->Draw(transformComponent->GetGlobalTransform().Transposed(), mesh, meshComponent->GetNumIndices(), material);
 	}
 }
-
+ 
 GameObject* GameObject::GetParent() const
 {
 	return parent;

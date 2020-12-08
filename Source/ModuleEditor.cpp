@@ -20,7 +20,7 @@
 
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
-aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true),
+aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true),
 org("CITM"), scroll(true)
 {}
 
@@ -73,6 +73,7 @@ update_status ModuleEditor::Update(float dt)
 	WindowConsole();
 	WindowInspector();
 	WindowHierarchy();
+	WindowProject();
 	WindowDemo();
 
 	ImGui::Render();
@@ -611,6 +612,13 @@ void ModuleEditor::WindowInspector()
 			if (App->scene->GetSelectedObject() != nullptr) {
 				InspectorComponents(App->scene->GetSelectedObject());
 			}
+
+			ImGui::Separator();
+			if (ImGui::Button("Add Component"))
+			{
+
+			}
+		
 		}
 		ImGui::End();
 	}
@@ -757,6 +765,22 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 				App->scene->SetGameObjectSelected(gameObject);
 			}
 
+			if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+				ImGui::OpenPopup("Delete");
+				
+			}
+			if (ImGui::BeginPopup("Delete"))
+			{
+				if (ImGui::Selectable("Delete"))
+				{
+					const char* temp = gameObject->GetName();
+					//Deleteame esto
+					App->scene->DeleteGameObject(gameObject);
+					LOG("Succesfully deleted %s", temp);
+				}
+				ImGui::EndPopup();
+			}
+
 			if (ImGui::BeginDragDropSource()) {
 				ImGui::SetDragDropPayload("_TREENODE", &gameObject, sizeof(GameObject));
 				
@@ -780,6 +804,18 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 		}
 		
 		ImGui::TreePop();
+	}
+}
+
+void ModuleEditor::WindowProject()
+{
+	if (projectWindow)
+	{
+		if (ImGui::Begin("Project", &projectWindow))
+		{
+
+		}
+		ImGui::End();
 	}
 }
 

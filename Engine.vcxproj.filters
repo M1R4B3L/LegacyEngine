@@ -40,6 +40,9 @@
     <Filter Include="Deps\MathGeoLib\Algorithm\Random">
       <UniqueIdentifier>{9d9dfa56-f1e9-4710-a891-3c66a3714ff1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Deps\ImGuizmos">
+      <UniqueIdentifier>{fc9ee7a1-4d0b-465d-bd9b-511ca5f8179c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source/Application.h" />
@@ -352,6 +355,21 @@
     <ClInclude Include="Source\ModuleFileSystem.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Dependencies\ImGuizmo-master\ImCurveEdit.h">
+      <Filter>Deps\ImGuizmos</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\ImGuizmo-master\ImGradient.h">
+      <Filter>Deps\ImGuizmos</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\ImGuizmo-master\ImGuizmo.h">
+      <Filter>Deps\ImGuizmos</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\ImGuizmo-master\ImSequencer.h">
+      <Filter>Deps\ImGuizmos</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\ImGuizmo-master\ImZoomSlider.h">
+      <Filter>Deps\ImGuizmos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source/Application.cpp" />
@@ -558,6 +576,18 @@
     </ClCompile>
     <ClCompile Include="Source\ModuleFileSystem.cpp">
       <Filter>Sources\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\ImGuizmo-master\ImCurveEdit.cpp">
+      <Filter>Deps\ImGuizmos</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\ImGuizmo-master\ImGradient.cpp">
+      <Filter>Deps\ImGuizmos</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\ImGuizmo-master\ImGuizmo.cpp">
+      <Filter>Deps\ImGuizmos</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\ImGuizmo-master\ImSequencer.cpp">
+      <Filter>Deps\ImGuizmos</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -46,6 +46,7 @@ public:
 	bool consoleWindow;
 	bool inspectorWindow;
 	bool hierarchyWindow;
+	bool projectWindow;
 	bool demoWindow;
 
 	char org[128];
@@ -59,6 +60,7 @@ public:
 	void WindowConsole();
 	void WindowInspector();
 	void WindowHierarchy();
+	void WindowProject();
 	void WindowDemo();
 
 	void AddLog(const char*);

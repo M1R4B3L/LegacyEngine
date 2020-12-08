@@ -22,6 +22,7 @@ public:
 	void Update(float dt);
 	void Draw();
 
+
 	GameObject* GetParent() const;
 	void SetParent(GameObject* newParent);
 	bool IsActive() const;

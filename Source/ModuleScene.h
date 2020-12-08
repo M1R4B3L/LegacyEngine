@@ -29,6 +29,8 @@ public:
 	GameObject* GetSelectedObject() const;
 	void SetGameObjectSelected(GameObject* gameObject);
 	void SetGameObjectUnselected();
+	
+	void DeleteGameObject(GameObject* gameObject);
 
 
 private:
