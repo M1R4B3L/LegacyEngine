@@ -348,22 +348,22 @@ char* SaveMesh(aiMesh* mesh)
 	memcpy(cursor, ranges, bytes);
 	cursor += bytes;
 
-	//uint* udata = nullptr;
+	uint* udata = nullptr;
 	//save indices
 	if (numIndices) {
-		//uint * udata = new uint[numIndices];
+		uint * udata = new uint[numIndices];
 		for (int j = 0; j < mesh->mNumFaces; ++j) {
 			if (mesh->mFaces[j].mNumIndices != 3) {
 				LOG("WARNING, geometry face with != 3 indices!");
 			}
 			else
-				memcpy(&cursor[j * 3], mesh->mFaces[j].mIndices, 3 * sizeof(uint));
+				memcpy(&udata[j * 3], mesh->mFaces[j].mIndices, 3 * sizeof(uint));
 		}
 		bytes = sizeof(uint) * numIndices;
-		//memcpy(cursor, udata, bytes);
+		memcpy(cursor, udata, bytes);
 		cursor += bytes;
-		//delete[] udata;
-		//udata = nullptr;
+		delete[] udata;
+		udata = nullptr;
 	}
 
 	//save vertices
@@ -372,21 +372,21 @@ char* SaveMesh(aiMesh* mesh)
 	cursor += bytes;
 
 	//save textcoords
-	//float* fdata = nullptr;
+	float* fdata = nullptr;
 	if (numTextureCoordinates) {
 
-		//fdata = new float[numTextureCoordinates];
+		fdata = new float[numTextureCoordinates];
 
 		for (int j = 0; j < numVertices; j++)
 		{
-			cursor[j * 2] = mesh->mTextureCoords[0][j].x;
-			cursor[j * 2 + 1] = mesh->mTextureCoords[0][j].y;
+			fdata[j * 2] = mesh->mTextureCoords[0][j].x;
+			fdata[j * 2 + 1] = mesh->mTextureCoords[0][j].y;
 		}
 		bytes = sizeof(float) * numTextureCoordinates;
-		//memcpy(cursor, fdata, bytes);
+		memcpy(cursor, fdata, bytes);
 		cursor += bytes;
-		//delete[] fdata;
-		//fdata = nullptr;
+		delete[] fdata;
+		fdata = nullptr;
 	}
 
 	//save normals
