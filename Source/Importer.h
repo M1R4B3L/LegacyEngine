@@ -29,8 +29,8 @@ char* SaveMesh(aiMesh* mesh);
 
 Mesh LoadMesh(char* buffer);
 
-void SaveTexture(char** fileBuffer);
+uint SaveTexture(const char * imagePath, char** fileBuffer);
 
-void LoadTexture(char* buffer);
+uint LoadTexture(char* buffer, uint size);
 
 

@@ -159,7 +159,9 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 					std::string newfilePath = filePath.substr(0,filePath.find_last_of("/") + 1);
 					newfilePath = newfilePath + fileName;
 
-					uint textureID = Textures::Import(newfilePath.c_str());
+					//uint textureID = Textures::Import(newfilePath.c_str());
+					char* buffer = nullptr;
+					uint textureID = LoadTexture(buffer,SaveTexture(newfilePath.c_str(), &buffer));
 
 					if (textureID)
 					{
@@ -444,8 +446,20 @@ Mesh LoadMesh(char* buffer)
 	return ourMesh;
 }
 
-void SaveTexture(char** fileBuffer)
+ILuint SaveTexture(const char * imagePath, char** fileBuffer)
 {
+	uint ImageName;
+	ilGenImages(1, &ImageName);
+	ilBindImage(ImageName);
+
+	if (!ilLoadImage(imagePath)) {
+		LOG("Error loading the image");
+		ILenum Error;
+		while ((Error = ilGetError()) != IL_NO_ERROR) {
+			LOG("Importing image error %d: %s", Error, iluErrorString(Error));
+		}
+	}
+	
 	ILuint size;
 	ILubyte* data;
 
@@ -453,7 +467,7 @@ void SaveTexture(char** fileBuffer)
 
 	size = ilSaveL(IL_DDS, nullptr, 0);
 
-	if (size < 0)
+	if (size > 0)
 	{
 		data = new ILubyte[size];
 
@@ -463,15 +477,19 @@ void SaveTexture(char** fileBuffer)
 		{
 			*fileBuffer = nullptr;
 		}
-
-		RELEASE_ARRAY(data);
 	}
+	return size;
 }
 
-void LoadTexture(char* buffer)
+uint LoadTexture(char* buffer, uint size)
 {
 	ILuint il_image = 0;
 	ilGenImages(1, &il_image);
 	ilBindImage(il_image);
+	ilLoadL(IL_DDS, buffer, size);
+	uint texture = ilutGLBindTexImage();
+	ilutGLBindMipmaps();
+	ilDeleteImages(1, &il_image);
+	return texture;
 
 }
