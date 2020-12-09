@@ -25,7 +25,7 @@ namespace Importer {
     void ImportTransform(aiNode* node, GameObject* gameObject);
 }
 
-void SaveMesh(aiMesh* mesh);
+char* SaveMesh(aiMesh* mesh);
 
 Mesh LoadMesh(char* buffer);
 
