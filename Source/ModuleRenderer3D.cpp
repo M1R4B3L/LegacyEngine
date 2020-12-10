@@ -287,3 +287,13 @@ unsigned int ModuleRenderer3D::VAOFromMesh(Mesh mesh)
 	glBindVertexArray(0);
 	return mesh.VAO;
 }
+
+void ModuleRenderer3D::DeleteBuffer(unsigned int * VAO)
+{
+	glDeleteBuffers(1, VAO);
+}
+
+void ModuleRenderer3D::DeleteTexture(unsigned int* texture)
+{
+	glDeleteTextures(1, texture);
+}

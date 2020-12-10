@@ -100,6 +100,18 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 			ourMesh = LoadMesh(file);
 			ComponentMesh* meshComponent = new ComponentMesh(App->renderer3D->VAOFromMesh(ourMesh), ourMesh.numVertices, ourMesh.numIndices);
 			go->AddComponent(meshComponent);
+			//TODO: Mesh buffer data is not used after the Vao is initialized but it doesen't seem to affect the memory usage
+			delete[] ourMesh.indexData;
+			delete[] ourMesh.vertexData;
+			delete[] ourMesh.texturecoordsData;
+			delete[] ourMesh.normalsData;
+			ourMesh.indexData = nullptr;
+			ourMesh.vertexData = nullptr;
+			ourMesh.texturecoordsData = nullptr;
+			ourMesh.normalsData = nullptr;
+			delete[] file;
+			file = nullptr;
+
 			/*Mesh ourMesh;
 			ourMesh.numTexcoords = 0;
 			//Loading Vertex Positions

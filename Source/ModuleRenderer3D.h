@@ -36,6 +36,8 @@ public:
 	void SetglEnbleFlags(GLenum flag, bool activate);
 
 	unsigned int VAOFromMesh(Mesh mesh);
+	void DeleteBuffer(unsigned int* VAO);
+	void DeleteTexture(unsigned int* texture);
 
 
 public:

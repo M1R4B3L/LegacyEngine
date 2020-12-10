@@ -30,7 +30,7 @@ public:
 	void SetGameObjectSelected(GameObject* gameObject);
 	void SetGameObjectUnselected();
 	
-	void DeleteGameObject(GameObject* gameObject);
+	void DeleteGameObject(GameObject* gameObject, bool root = true);
 
 
 private:
