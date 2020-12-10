@@ -1,7 +1,9 @@
-#pragma once
+#ifndef __PRIMITIVE_H__
+#define __PRIMITIVE_H__
 
 #include "glmath.h"
 #include "Color.h"
+
 
 enum PrimitiveTypes
 {
@@ -101,8 +103,11 @@ public:
 	void RenderDirect();
 	void RenderArrayBuffer();
 	void RenderIndexBuffer();
+
 private:
 	uint myArrayId;
 	uint myIndexArrayId;
 	uint IndexBuffer;
 };
+
+#endif //__PRIMITIVE_H__

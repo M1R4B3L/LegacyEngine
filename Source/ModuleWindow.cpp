@@ -239,5 +239,5 @@ bool ModuleWindow::GetBrightness()
 
 void ModuleWindow::SetBrightness(float brightness)
 {
-	SDL_SetWindowBrightness(window, brightness);	
+	SDL_SetWindowBrightness(window, brightness);
 }

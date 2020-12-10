@@ -209,6 +209,9 @@ void ModuleEditor::MenuBar()
 				if (ImGui::MenuItem("Console", NULL, consoleWindow)) {
 					consoleWindow = !consoleWindow;
 				}
+				if (ImGui::MenuItem("Assets", NULL, projectWindow)) {
+					projectWindow = !projectWindow;
+				}
 				ImGui::EndMenu();
 			}
 			ImGui::Spacing();
@@ -362,9 +365,9 @@ void ModuleEditor::WindowConfig()
 						ImGui::Text("Brightness: ");
 						ImGui::SameLine();
 						ImGui::TextColored(ImVec4(255, 0, 255, 255), "%.3f", brightness);
-						ImGui::SliderFloat("Brightness", &brightness, 0, 1, "%.3f");
-						App->window->SetBrightness(brightness);
-
+						if (ImGui::SliderFloat("Brightness", &brightness, 0, 1, "%.3f")) {
+							App->window->SetBrightness(brightness);
+						}
 						//static float gamma = App->window->GetGamma();
 
 						static int width = App->window->GetWidth();
@@ -742,7 +745,7 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 
 	const char* name = gameObject->GetName();
 
-	ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+	ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_DefaultOpen;
 
 	if (gameObject == App->scene->GetRootObject())
 	{
@@ -765,20 +768,22 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 				App->scene->SetGameObjectSelected(gameObject);
 			}
 
-			if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
-				ImGui::OpenPopup("Delete");
-				
-			}
-			if (ImGui::BeginPopup("Delete"))
-			{
-				if (ImGui::Selectable("Delete"))
-				{
-					const char* temp = gameObject->GetName();
-					//Deleteame esto
-					App->scene->DeleteGameObject(gameObject);
-					LOG("Succesfully deleted %s", temp);
+			if (gameObject != App->scene->GetRootObject()) {
+				if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+					ImGui::OpenPopup("Delete");
+
 				}
-				ImGui::EndPopup();
+				if (ImGui::BeginPopup("Delete"))
+				{
+					if (ImGui::Selectable("Delete"))
+					{
+						const char* temp = gameObject->GetName();
+						//Deleteame esto
+						App->scene->DeleteGameObject(gameObject);
+						LOG("Succesfully deleted %s", temp);
+					}
+					ImGui::EndPopup();
+				}
 			}
 
 			if (ImGui::BeginDragDropSource()) {

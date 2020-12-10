@@ -125,6 +125,23 @@ void ModuleScene::DeleteGameObject(GameObject* gameObject)
 		selectedObject = nullptr;
 	}
 
-	gameObject->~GameObject();
+	std::vector<GameObject*>::iterator it = gameObject->children.begin();
 
+	for (it; it != gameObject->children.end(); ++it)
+	{
+		delete (*it);
+	}
+
+	gameObject->children.clear();
+
+	for (std::vector<GameObject*>::iterator it = gameObject->GetParent()->children.begin(); it != gameObject->GetParent()->children.end(); ++it)
+	{
+		if ((*it) == gameObject) {
+			gameObject->GetParent()->children.erase(it);
+			break;
+		}
+	}
+
+	delete gameObject;
+	gameObject = nullptr;
 }
