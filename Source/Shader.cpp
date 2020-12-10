@@ -1,7 +1,8 @@
 #include "Shader.h"
-#include "physfs.h"
 #include "Globals.h"
 #include "GL/glew.h"
+#include "ModuleFileSystem.h"
+#include "Application.h"
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath)
 {
@@ -11,35 +12,11 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	//physfs_mkdir
 	//physfs_SET
 	//addpath and create dir
-	PHYSFS_File* vertexFile = PHYSFS_openRead(vertexPath);
-	PHYSFS_File* fragmentFile = PHYSFS_openRead(fragmentPath);
+	App->fileSystem->Load(vertexPath, &vertexCode);
+	App->fileSystem->Load(fragmentPath, &fragmentCode);
 
-	if (vertexFile != nullptr && fragmentFile != nullptr) {
-
-		PHYSFS_sint32 vertexSize = (PHYSFS_sint32)PHYSFS_fileLength(vertexFile);
-		if (vertexSize > 0) {
-			vertexCode = new char[vertexSize]; //TODO: ns pk al llegir el file m'afageix 4 characters "y"rara al final que no em deixen compilar el shader
-			unsigned int readedVertex = (unsigned int)PHYSFS_readBytes(vertexFile, vertexCode, vertexSize);
-			if (readedVertex != vertexSize)
-			{
-				LOG("Shader error while reading from vertex file %s: %s\n", vertexPath, PHYSFS_getLastError());
-			}
-		}
-
-		PHYSFS_sint32 fragmentSize = (PHYSFS_sint32)PHYSFS_fileLength(fragmentFile);
-		if (fragmentSize > 0) {
-			fragmentCode = new char[fragmentSize];
-			unsigned int readedFragment = (unsigned int)PHYSFS_readBytes(fragmentFile, fragmentCode, fragmentSize);
-			if (readedFragment != fragmentSize)
-			{
-				LOG("Shader error while reading from fragment file %s: %s\n", vertexPath, PHYSFS_getLastError());
-			}
-		}
-		if (PHYSFS_close(vertexFile) == 0)
-			LOG("Shader error while closing vertex file %s: %s\n", vertexPath, PHYSFS_getLastError());
-		if (PHYSFS_close(fragmentFile) == 0)
-			LOG("Shader error while closing fragment file %s: %s\n", fragmentPath, PHYSFS_getLastError());
-
+	if(vertexCode != nullptr && fragmentCode != nullptr)
+	{
 		unsigned int vertex, fragment;
 		int success;
 		char infoLog[512];

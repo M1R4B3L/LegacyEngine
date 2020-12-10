@@ -14,7 +14,6 @@
 #include "ilut.h"
 #include "ComponentMesh.h"
 #include "Shader.h"
-#include "physfs.h"
 #include "Dependencies/MathGeolib/MathGeoLib.h"
 
 ModuleRenderer3D::ModuleRenderer3D(bool startEnable) : Module(startEnable),
@@ -114,10 +113,6 @@ bool ModuleRenderer3D::Init()
 		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
 
-		//TODO: where do I init physfs library ???
-		PHYSFS_init(nullptr);
-		if(!PHYSFS_mount("Assets/Shaders/",nullptr,1))
-			LOG("Error while setting path: %s\n", PHYSFS_getLastError());
 		defaultShader = new Shader("DefaultVertexShader.vs", "DefaultFragmentShader.fs");
 	}
 
