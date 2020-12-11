@@ -79,8 +79,16 @@ void GameObject::Draw()
 			material = materialComponent->GetID();
 		
 		App->renderer3D->Draw(transformComponent->GetGlobalTransform().Transposed(), mesh, meshComponent->GetNumIndices(), material);
-		App->renderer3D->DrawAABB(aabb);
-		App->renderer3D->DrawOBB(obb);
+
+		if (showAABB)
+		{
+			App->renderer3D->DrawAABB(aabb);
+		}
+		
+		if (showOBB)
+		{
+			App->renderer3D->DrawOBB(obb);
+		}	
 	}
 }
  

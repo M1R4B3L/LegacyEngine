@@ -45,6 +45,8 @@ private:
 
 	//TODO: Change children to private
 public:
+	bool showAABB = true;
+	bool showOBB = true;
 	bool activeGameObject = true;
 	std::vector<Component*> components;
 	std::vector<GameObject*> children;

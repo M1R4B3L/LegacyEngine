@@ -742,6 +742,9 @@ void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 		ImGui::Text("Number of vertex: ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u", componentMesh->GetNumVertex());
+
+		ImGui::Checkbox("AABB",&App->scene->GetSelectedObject()->showAABB);
+		ImGui::Checkbox("OBB", &App->scene->GetSelectedObject()->showOBB);
 	}
 }
 
