@@ -2,25 +2,27 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "ModuleCamera3D.h"
+#include "ModuleRenderer3D.h"
+#include "ComponentCamera.h"
 
 ModuleCamera3D::ModuleCamera3D(bool startEnable) : Module(startEnable)
 {
-	CalculateViewMatrix();
+	cameraMain = new ComponentCamera();
 
-	X = vec3(1.0f, 0.0f, 0.0f);
-	Y = vec3(0.0f, 1.0f, 0.0f);
-	Z = vec3(0.0f, 0.0f, 1.0f);
+	cameraMain->frustum.SetViewPlaneDistances(1.0f, 2000.0f);
+	cameraMain->frustum.SetPerspective(0.1f, 1.0f);
+	cameraMain->frustum.SetFrame(float3(5, 5, 5), float3(0, 0, 1), float3(0, 1, 0));
+	cameraMain->frustum.GetPlanes(cameraMain->frustumPlanes);
 
-	moveSpeed = 5.0f;
-	rotateSpeed = 10.0f;
-	zoomSpeed = 30.0f;
+	LookAt(float3(0, 0, 0));
 
-	Position = vec3(0.0f, 0.0f, 5.0f);
-	Reference = vec3(0.0f, 0.0f, 0.0f);
+	cameraMain->updatePMatrix = true;
 }
 
 ModuleCamera3D::~ModuleCamera3D()
-{}
+{
+	RELEASE(cameraMain);
+}
 
 // -----------------------------------------------------------------
 bool ModuleCamera3D::Start()
@@ -39,6 +41,11 @@ bool ModuleCamera3D::CleanUp()
 	return true;
 }
 
+ComponentCamera* ModuleCamera3D::GetCamera() const
+{
+	return cameraMain;
+}
+
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {
@@ -50,48 +57,54 @@ update_status ModuleCamera3D::Update(float dt)
 	//Mouse Movement
 	if (App->input->GetMouseButton(SDL_BUTTON_MIDDLE) == KEY_REPEAT)
 	{
-		WorldTranslation(dt);
+		//WorldTranslation(dt);
 	}
 
 	//Mouse Rotation & Keyboard Movement
 	if ((App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT) && (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_IDLE))
 	{
-		WASDMovement(dt);
-		WorldRotation(dt);
+		//WASDMovement(dt);
+		//WorldRotation(dt);
 	}
 
 	//Mouse Zoom
 	if (App->input->GetMouseZ() != 0)
 	{
-		Zoom(dt);
+		//Zoom(dt);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
 	{
 		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 		{
-			ReferenceRotation(dt);
+			//ReferenceRotation(dt);
 		}
 		else if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 		{
 			if (App->input->GetMouseYMotion() > 0)
 			{
-				Position -= Z * zoomSpeed * dt;
+				//Position -= Z * zoomSpeed * dt;
 			}
 			else if (App->input->GetMouseYMotion() < 0)
 			{
-				Position += Z * zoomSpeed * dt;
+				//Position += Z * zoomSpeed * dt;
 			}
 		}
 	}
 
 	// Recalculate matrix -------------
-	CalculateViewMatrix();
 
 	return UPDATE_CONTINUE;
 }
 
-void ModuleCamera3D::WASDMovement(float dt)
+// -----------------------------------------------------------------
+void ModuleCamera3D::LookAt(const float3& pos)
+{
+	cameraMain->Look(pos);
+	reference = pos;
+}
+
+/*void ModuleCamera3D::WASDMovement(float dt)
 {
 	vec3 newPos(0,0,0);
 
@@ -296,4 +309,4 @@ void ModuleCamera3D::CalculateViewMatrix()
 {
 	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
 	ViewMatrixInverse = inverse(ViewMatrix);
-}
+}*/

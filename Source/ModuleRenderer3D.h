@@ -3,7 +3,6 @@
 
 #include "Module.h"
 #include "Globals.h"
-#include "glmath.h"
 #include "Light.h"
 #include "Importer.h"
 #include "Dependencies/MathGeolib/MathGeoLib.h"
@@ -12,6 +11,7 @@
 
 typedef unsigned int GLenum;
 class Shader;
+class ComponentCamera;
 
 class ModuleRenderer3D : public Module
 {
@@ -41,16 +41,16 @@ public:
 
 	void DrawAABB(AABB& aabb);
 	void DrawOBB(OBB& obb);
+	void DrawFrustum(Frustum& frustum);
 
 	void DrawWireCube(float3* vertex);
 
 
 public:
 
+	ComponentCamera* camera = nullptr;
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
-	mat3x3 NormalMatrix;
-	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
 	Shader* defaultShader = nullptr;
 	unsigned int dropedTexture = 0;

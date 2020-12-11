@@ -83,7 +83,6 @@
   <ItemGroup>
     <ClInclude Include="Source/Application.h" />
     <ClInclude Include="Source/Color.h" />
-    <ClInclude Include="Source/glmath.h" />
     <ClInclude Include="Source/Globals.h" />
     <ClInclude Include="Source/Light.h" />
     <ClInclude Include="Source/ModuleCamera3D.h" />
@@ -198,7 +197,6 @@
   <ItemGroup>
     <ClCompile Include="Source/Application.cpp" />
     <ClCompile Include="Source/Color.cpp" />
-    <ClCompile Include="Source/glmath.cpp" />
     <ClCompile Include="Source/Light.cpp" />
     <ClCompile Include="Source/log.cpp" />
     <ClCompile Include="Source/Main.cpp" />

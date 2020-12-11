@@ -13,13 +13,14 @@
 Application::Application() : title("Legacy Engine"),
 closeApp(false)
 {
+	fileSystem = new ModuleFileSystem(this);
 	window = new ModuleWindow(this);
 	input = new ModuleInput(this);
 	scene = new ModuleScene(this);
 	renderer3D = new ModuleRenderer3D(this);
 	camera = new ModuleCamera3D(this);
 	editor = new ModuleEditor(this);
-	fileSystem = new ModuleFileSystem(this);
+	
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -72,8 +73,7 @@ bool Application::Init()
 
 	for(it; it != modules.end() && ret == true; it++)
 	{
-		ret = (*it)->Start();
-		
+		ret = (*it)->Start();	
 	}
 
 	msTimer.Start();

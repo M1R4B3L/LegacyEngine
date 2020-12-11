@@ -16,6 +16,7 @@
 #include "Shader.h"
 #include "Dependencies/MathGeolib/MathGeoLib.h"
 #include "ModuleScene.h"
+#include "ComponentCamera.h"
 
 ModuleRenderer3D::ModuleRenderer3D(bool startEnable) : Module(startEnable),
 wireframes(false)
@@ -99,7 +100,8 @@ bool ModuleRenderer3D::Init()
 		lights[0].diffuse.Set(0.75f, 0.75f, 0.75f, 1.0f);
 		lights[0].SetPos(0.0f, 0.0f, 2.5f);
 		lights[0].Init();
-		
+		lights[0].Active(true);
+
 		//Contains four integer or floating-point values that specify the ambient RGBA reflectance of the material
 		GLfloat MaterialAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
@@ -109,7 +111,6 @@ bool ModuleRenderer3D::Init()
 		
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
-		lights[0].Active(true);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
@@ -126,14 +127,30 @@ bool ModuleRenderer3D::Init()
 // PreUpdate: clear buffer
 update_status ModuleRenderer3D::PreUpdate(float dt)
 {
+
+	if (camera->updatePMatrix)
+	{
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+
+		glLoadMatrixf((GLfloat*)camera->GetGLProjectionMatrix().ptr());
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+
+		camera->updatePMatrix = false;
+	}
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(App->camera->GetViewMatrix());
+	glLoadMatrixf(camera->GetGLViewMatrix().ptr());
 
 	// light 0 on cam pos
-	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
+	lights[0].SetPos(App->camera->GetCamera()->frustum.Pos().x, 
+					 App->camera->GetCamera()->frustum.Pos().y, 
+					 App->camera->GetCamera()->frustum.Pos().z);
 
 	for(uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
@@ -170,8 +187,9 @@ void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint t
 		//ilutGLBindTexImage();
 		//ilutGLBindMipmaps
 	}
-	defaultShader->setMat4("projection", ProjectionMatrix.M);
-	defaultShader->setMat4("view", App->camera->GetViewMatrix());
+
+	defaultShader->setMat4("projection",App->camera->GetCamera()->GetGLProjectionMatrix().ptr());
+	defaultShader->setMat4("view", App->camera->GetCamera()->GetGLViewMatrix().ptr());
 	defaultShader->setMat4("model", modelMatrix.ptr());
 	glBindVertexArray(VAO);
 	/*glEnableClientState(GL_VERTEX_ARRAY);
@@ -192,12 +210,15 @@ void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint t
 
 void ModuleRenderer3D::OnResize(int width, int height)
 {
-	glViewport(0, 0, width, height);
 
+	glViewport(0, 0, width, height);
+	camera = App->camera->GetCamera();
+	camera->SetHoritzontalAspectRatio((float)width / (float)height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	ProjectionMatrix = perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
-	glLoadMatrixf(&ProjectionMatrix);
+
+	glLoadMatrixf((GLfloat*)camera->GetGLProjectionMatrix().ptr());
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -310,6 +331,13 @@ void ModuleRenderer3D::DrawOBB(OBB& obb)
 {
 	float3 corners[8];
 	obb.GetCornerPoints(corners);
+	DrawWireCube(corners);
+}
+
+void ModuleRenderer3D::DrawFrustum(Frustum& frustum)
+{
+	float3 corners[8];
+	frustum.GetCornerPoints(corners);
 	DrawWireCube(corners);
 }
 
