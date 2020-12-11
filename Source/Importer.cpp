@@ -184,6 +184,7 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 
 						ComponentMaterial* materialComponent = new ComponentMaterial(textureID);
 						go->AddComponent(materialComponent);
+						delete[] buffer;
 					}
 				}
 				
