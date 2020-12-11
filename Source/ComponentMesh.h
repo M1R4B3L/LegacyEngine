@@ -29,7 +29,7 @@ struct Mesh {
 class ComponentMesh : public Component
 {
 public:
-    ComponentMesh() = delete;
+    ComponentMesh();
     ComponentMesh(unsigned int iVAO, unsigned int vertices, unsigned int indices, AABB aabb);
     ~ComponentMesh();
 
@@ -41,6 +41,9 @@ public:
  
     bool IsActive()const override;
     void SetActive(bool active) override;
+
+    void Save(JSON_Array* componentsArry)const override;
+    void Load(JSON_Object* componentObj) override;
     
 private:
     unsigned int VAO;

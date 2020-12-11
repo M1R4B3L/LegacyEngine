@@ -43,6 +43,12 @@
     <Filter Include="Deps\ImGuizmos">
       <UniqueIdentifier>{fc9ee7a1-4d0b-465d-bd9b-511ca5f8179c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{9df7cd8b-e707-4b51-bb98-bc4ad3883243}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parson">
+      <UniqueIdentifier>{5ac15ab8-dbaa-4d7d-b2b4-fcca68ecea46}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source/Application.h" />
@@ -370,6 +376,12 @@
     <ClInclude Include="Source\Dependencies\ImGuizmo-master\ImZoomSlider.h">
       <Filter>Deps\ImGuizmos</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ModuleResources.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\parson\include\parson.h">
+      <Filter>Parson</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source/Application.cpp" />
@@ -588,6 +600,12 @@
     </ClCompile>
     <ClCompile Include="Source\Dependencies\ImGuizmo-master\ImSequencer.cpp">
       <Filter>Deps\ImGuizmos</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ModuleResources.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\parson\src\parson.c">
+      <Filter>Parson</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

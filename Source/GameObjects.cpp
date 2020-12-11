@@ -7,19 +7,24 @@
 #include "ModuleRenderer3D.h"
 #include "Globals.h"
 #include "Dependencies/MathGeolib/MathGeoLib.h"
+#include "ModuleScene.h"
 
 
-GameObject::GameObject() : parent(nullptr), name("No name")
+GameObject::GameObject() : parent(nullptr), name("No name"), uid(App->scene->GetRandomInt())
 {
+
 }
 
-GameObject::GameObject(GameObject * iParent, const char* iName, float3 transf, float3 scale, Quat rot) : parent(iParent), name(iName)
+GameObject::GameObject(GameObject* iParent, unsigned int UID, const char* iName, float3 transf, float3 scale, Quat rot) : parent(iParent), name(iName), uid(UID)
+{
+	if (parent)
+		parent->children.push_back(this);
+}
+
+GameObject::GameObject(GameObject * iParent, const char* iName, float3 transf, float3 scale, Quat rot) : parent(iParent), name(iName), uid(App->scene->GetRandomInt())
 {
 	if (parent) 
-	{
 		parent->children.push_back(this);
-	}
-
 }
 
 GameObject::~GameObject()
@@ -166,5 +171,29 @@ void GameObject::GenerateAABB()
 	}
 }
 
+void GameObject::Save(JSON_Array* GOsarry) const
+{
+	json_array_append_value(GOsarry, json_value_init_object());
+	JSON_Object* jsonGO = json_array_get_object(GOsarry, json_array_get_count(GOsarry) - 1);
+	json_object_set_number(jsonGO, "UID", uid);
+	//TODO: workaround to avoid the if?
+	GameObject* parent = GetParent();
+	if(parent != nullptr)
+		json_object_set_number(jsonGO, "parentUID", parent->GetID());
+	else
+		json_object_set_number(jsonGO, "parentUID", 0);
+	json_object_set_string(jsonGO, "Name", name.c_str());
+	json_object_set_value(jsonGO, "Components", json_value_init_array());
+	JSON_Array* componentsArry = json_object_get_array(jsonGO, "Components");
 
+	for (std::vector<Component*>::const_iterator cit = components.cbegin(); cit != components.cend(); ++cit)
+		(*cit)->Save(componentsArry);
 
+	for (std::vector<GameObject*>::const_iterator cit = children.cbegin(); cit != children.cend(); ++cit)
+		(*cit)->Save(GOsarry);
+}
+
+unsigned int GameObject::GetID() const
+{
+	return uid;
+}

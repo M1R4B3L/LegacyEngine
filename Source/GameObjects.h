@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "Dependencies/MathGeolib/MathGeoLib.h"
+#include "parson.h"
 
 class Component;
 enum class ComponentType;
@@ -12,6 +13,7 @@ class GameObject
 {
 public:
 	GameObject();
+	GameObject(GameObject* parent, unsigned int UID, const char* iName = "noName", float3 transf = float3::zero, float3 scale = float3::one, Quat rot = Quat::identity);
 	GameObject(GameObject* parent, const char* iName = "noName",float3 transf = float3::zero,float3 scale = float3::one, Quat rot = Quat::identity);
 	~GameObject();
 
@@ -36,12 +38,18 @@ public:
 
 	void GenerateAABB();
 
+	void Save(JSON_Array*GOarry) const;
+	void Load();
+
+	unsigned int GetID()const;
+
 private:
 	GameObject* parent = nullptr;
 	std::string name;
 
 	AABB aabb;
 	OBB obb;
+	unsigned int uid;
 
 	//TODO: Change children to private
 public:

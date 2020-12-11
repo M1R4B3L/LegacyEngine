@@ -79,3 +79,48 @@ const float4x4 ComponentTransform::GetGlobalTransform() const
 	return globalTransform;
 }
 
+void ComponentTransform::Save(JSON_Array* componentsArry) const
+{
+	json_array_append_value(componentsArry, json_value_init_object());
+	JSON_Object* jsonCT = json_array_get_object(componentsArry, json_array_get_count(componentsArry) - 1);
+	json_object_set_number(jsonCT, "Type", (int)ComponentType::Transform);
+	float3 translation, scale;
+	Quat rotation;
+	localTransform.Decompose(translation, rotation, scale);
+
+	json_object_set_value(jsonCT, "Translation", json_value_init_array());
+	JSON_Array* currArry = json_object_get_array(jsonCT, "Translation");
+	json_array_append_number(currArry, translation.x);
+	json_array_append_number(currArry, translation.y);
+	json_array_append_number(currArry, translation.z);
+
+	json_object_set_value(jsonCT, "Rotation", json_value_init_array());
+	currArry = json_object_get_array(jsonCT, "Rotation");
+	json_array_append_number(currArry, rotation.x);
+	json_array_append_number(currArry, rotation.y);
+	json_array_append_number(currArry, rotation.z);
+	json_array_append_number(currArry, rotation.w);
+
+	json_object_set_value(jsonCT, "Scale", json_value_init_array());
+	currArry = json_object_get_array(jsonCT, "Scale");
+	json_array_append_number(currArry, scale.x);
+	json_array_append_number(currArry, scale.y);
+	json_array_append_number(currArry, scale.z);
+}
+
+void ComponentTransform::Load(JSON_Object* componentObj)
+{
+	JSON_Array* translationArry = json_object_get_array(componentObj,"Translation");
+	float3 translation(json_array_get_number(translationArry, 0), json_array_get_number(translationArry, 1), json_array_get_number(translationArry, 2));
+	JSON_Array* rotationArry = json_object_get_array(componentObj, "Translation");
+	Quat rotation(json_array_get_number(translationArry, 0), json_array_get_number(rotationArry, 1), json_array_get_number(rotationArry, 2), json_array_get_number(rotationArry, 3));
+	JSON_Array* scaleArry = json_object_get_array(componentObj, "Scale");
+	float3 scale(json_array_get_number(scaleArry, 0), json_array_get_number(scaleArry, 1), json_array_get_number(scaleArry, 2));
+
+	localTransform.Set(float4x4::FromTRS(translation, rotation, scale));
+	this->translation = translation;
+	this->scale = scale;
+	this->rotation = rotation;
+	globalFlag = true;
+}
+

@@ -1,5 +1,6 @@
 #ifndef __Components_H__
 #define __Components_H__
+#include "parson.h"
 
 class GameObject;
 enum class ComponentType {
@@ -22,6 +23,8 @@ public:
 
 	virtual void Start() {}
 	virtual void Update(float dt) {}
+	virtual void Save(JSON_Array* componentsArry) const {}
+	virtual void Load(JSON_Object* componentObj) {}
 
 	GameObject& GetGameObject();
 	const GameObject& GetGameObject() const;

@@ -4,6 +4,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "Primitive.h"
+#include "Dependencies/MathGeoLib/MathGeoLib.h"
 
 #define MAX_SNAKE 2
 
@@ -32,10 +33,17 @@ public:
 	
 	void DeleteGameObject(GameObject* gameObject, bool root = true);
 
+	void SaveScene();
+	bool LoadScene(const char * fileName);
+
+	unsigned int GetRandomInt();
+	GameObject* FindGOFromUID(GameObject* currGO, unsigned int UID);
 
 private:
 
 	GameObject* root = nullptr;
 	GameObject* selectedObject = nullptr;
+
+	LCG random;
 };
 #endif // __ModuleSceneIntro_H__

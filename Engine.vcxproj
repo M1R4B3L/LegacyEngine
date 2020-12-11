@@ -54,8 +54,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>$(ProjectDir)Source\Dependencies\glew-2.1.0\lib\libWin32;$(ProjectDir)Source\Dependencies\SDL2\libx86;$(ProjectDir)Source\Dependencies\Assimp\libx86;$(ProjectDir)Source\Dependencies\Devil\libx86;$(ProjectDir)Source\Dependencies\physfs-3.0.2\lib;$(ProjectDir)Source\Dependencies\parson\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>parson.lib;physfs.lib;DevIL.lib;ILU.lib;ILUT.lib;assimp.lib;SDL2main.lib;SDL2.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Source\Dependencies\glew-2.1.0\lib\libWin32;$(ProjectDir)Source\Dependencies\SDL2\libx86;$(ProjectDir)Source\Dependencies\Assimp\libx86;$(ProjectDir)Source\Dependencies\Devil\libx86;$(ProjectDir)Source\Dependencies\physfs-3.0.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>physfs.lib;DevIL.lib;ILU.lib;ILUT.lib;assimp.lib;SDL2main.lib;SDL2.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -76,8 +76,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>$(ProjectDir)Source\Dependencies\glew-2.1.0\lib\libWin32;$(ProjectDir)Source\Dependencies\SDL2\libx86;$(ProjectDir)Source\Dependencies\Assimp\libx86;$(ProjectDir)Source\Dependencies\Devil\libx86;$(ProjectDir)Source\Dependencies\physfs-3.0.2\lib;$(ProjectDir)Source\Dependencies\parson\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>parson.lib;physfs.lib;DevIL.lib;ILU.lib;ILUT.lib;assimp.lib;SDL2main.lib;SDL2.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Source\Dependencies\glew-2.1.0\lib\libWin32;$(ProjectDir)Source\Dependencies\SDL2\libx86;$(ProjectDir)Source\Dependencies\Assimp\libx86;$(ProjectDir)Source\Dependencies\Devil\libx86;$(ProjectDir)Source\Dependencies\physfs-3.0.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>physfs.lib;DevIL.lib;ILU.lib;ILUT.lib;assimp.lib;SDL2main.lib;SDL2.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -170,6 +170,8 @@
     <ClInclude Include="Source\Dependencies\MathGeolib\Math\TransformOps.h" />
     <ClInclude Include="Source\Dependencies\MathGeolib\Math\vec2d.h" />
     <ClInclude Include="Source\Dependencies\MathGeolib\Time\Clock.h" />
+    <ClInclude Include="Source\Dependencies\parson\include\parson.h" />
+    <ClInclude Include="Source\ModuleResources.h" />
     <ClInclude Include="Source\ModuleFileSystem.h" />
     <ClInclude Include="Source\ModuleScene.h" />
     <ClInclude Include="Source/ModuleWindow.h" />
@@ -249,7 +251,9 @@
     <ClCompile Include="Source\Dependencies\MathGeolib\Math\SSEMath.cpp" />
     <ClCompile Include="Source\Dependencies\MathGeolib\Math\TransformOps.cpp" />
     <ClCompile Include="Source\Dependencies\MathGeolib\Time\Clock.cpp" />
+    <ClCompile Include="Source\Dependencies\parson\src\parson.c" />
     <ClCompile Include="Source\ModuleFileSystem.cpp" />
+    <ClCompile Include="Source\ModuleResources.cpp" />
     <ClCompile Include="Source\ModuleScene.cpp" />
     <ClCompile Include="Source/ModuleWindow.cpp" />
     <ClCompile Include="Source/Primitive.cpp" />
