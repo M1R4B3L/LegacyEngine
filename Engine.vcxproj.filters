@@ -121,9 +121,6 @@
     <ClInclude Include="Source/Timer.h">
       <Filter>Sources\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="Source/glmath.h">
-      <Filter>Sources\Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ModuleScene.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
@@ -440,9 +437,6 @@
       <Filter>Sources\Tools</Filter>
     </ClCompile>
     <ClCompile Include="Source/Timer.cpp">
-      <Filter>Sources\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Source/glmath.cpp">
       <Filter>Sources\Tools</Filter>
     </ClCompile>
     <ClCompile Include="Source\ModuleScene.cpp">

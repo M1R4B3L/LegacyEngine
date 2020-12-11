@@ -30,8 +30,7 @@ bool ModuleScene::Start()
 	bool ret = true;
 	root = new GameObject(nullptr, "Scene");
 
-	App->camera->Move(vec3(5.0f, 5.0f, 5.0f));
-	App->camera->LookAt(vec3(0, 0, 0));
+
 
 	Importer::ImportDroped("Assets/Baker_house/BakerHouse.fbx");
 
@@ -58,7 +57,7 @@ void ModuleScene::DrawAllGameObjects()
 // Update
 update_status ModuleScene::Update(float dt)
 {
-	plane p(0, 1, 0, 0);
+	PPlane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
 

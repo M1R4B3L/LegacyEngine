@@ -3,7 +3,7 @@
 
 #include "Module.h"
 #include "Globals.h"
-#include "glmath.h"
+#include "Dependencies/MathGeolib/Math/float3.h"
 
 class ComponentCamera;
 
@@ -17,24 +17,26 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
-	void WASDMovement(float dt);
+	ComponentCamera* GetCamera() const;
+
+	void LookAt(const float3& Spot);
+
+	/*void WASDMovement(float dt);
 	void WorldTranslation(float dt);
 	void WorldRotation(float dt);
 	void ReferenceRotation(float dt);
 	void Zoom(float dt);
 
 	void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
-	void LookAt(const vec3 &Spot);
+	
 	void Move(const vec3 &Movement);
 	float* GetViewMatrix();
 
 private:
 
-	void CalculateViewMatrix();
+	void CalculateViewMatrix();*/
 
 public:
-	
-	vec3 X, Y, Z, Position, Reference;
 
 	float moveSpeed;
 	float rotateSpeed;
@@ -42,7 +44,8 @@ public:
 
 private:
 
-	mat4x4 ViewMatrix, ViewMatrixInverse;
+	float3 reference;
+	ComponentCamera* cameraMain = nullptr;
 };
 
 #endif //__ModuleCamera3D_H__

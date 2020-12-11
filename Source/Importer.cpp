@@ -24,7 +24,8 @@ void Importer::Meshes::ImportFbx(const char* fbxPath)
 	}
 	else
 		LOG("Error opening file: %s ", fbxPath);
-	//TODO: Destroy the FBX
+
+	aiReleaseImport(scene);
 }
 
 void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const char* fbxPath, GameObject*parentGo) 
