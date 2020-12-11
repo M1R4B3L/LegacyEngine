@@ -2,9 +2,10 @@
 
 #include "Component.h"
 #include "Globals.h"
-#include "Dependencies/MathGeolib/MathGeoLib.h"
+#include "Dependencies/MathGeolib/Geometry/AABB.h"
 
 class Component;
+
 
 
 struct Mesh {
@@ -22,20 +23,22 @@ struct Mesh {
     uint difuseTexture = 0;
 
     AABB aabb;
+
 };
 
 class ComponentMesh : public Component
 {
 public:
     ComponentMesh() = delete;
-    ComponentMesh(unsigned int iVAO, unsigned int vertices, unsigned int indices);
+    ComponentMesh(unsigned int iVAO, unsigned int vertices, unsigned int indices, AABB aabb);
     ~ComponentMesh();
 
     const unsigned int GetVAO() const;
     const unsigned int GetNumIndices() const;
     const unsigned int GetNumVertex() const;
+    const AABB& GetAABB() const;
 
-
+ 
     bool IsActive()const override;
     void SetActive(bool active) override;
     
@@ -43,8 +46,8 @@ private:
     unsigned int VAO;
     unsigned int numIndices;
     unsigned int numVertices;
-
     
+    AABB aabb;
 
 public:
     bool activeMesh = true;

@@ -58,7 +58,6 @@ void ModuleScene::DrawAllGameObjects()
 // Update
 update_status ModuleScene::Update(float dt)
 {
-
 	plane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();

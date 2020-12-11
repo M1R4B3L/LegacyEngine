@@ -15,6 +15,7 @@
 #include "ComponentMesh.h"
 #include "Shader.h"
 #include "Dependencies/MathGeolib/MathGeoLib.h"
+#include "ModuleScene.h"
 
 ModuleRenderer3D::ModuleRenderer3D(bool startEnable) : Module(startEnable),
 wireframes(false)
@@ -181,7 +182,7 @@ void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint t
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawElements(GL_TRIANGLES, indices, GL_UNSIGNED_INT, 0);
 	/*glDisableClientState(GL_VERTEX_ARRAY);
-	//glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);*/
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -297,3 +298,61 @@ void ModuleRenderer3D::DeleteTexture(unsigned int* texture)
 {
 	glDeleteTextures(1, texture);
 }
+
+void ModuleRenderer3D::DrawAABB(AABB& aabb)
+{
+	float3 corners[8];
+	aabb.GetCornerPoints(corners);
+	DrawWireCube(corners);
+}
+
+void ModuleRenderer3D::DrawOBB(OBB& obb)
+{
+	float3 corners[8];
+	obb.GetCornerPoints(corners);
+	DrawWireCube(corners);
+}
+
+void ModuleRenderer3D::DrawWireCube(float3* vertex)
+{
+	glBegin(GL_LINES);
+
+	//Between-planes right
+	glVertex3fv((GLfloat*)&vertex[1]);
+	glVertex3fv((GLfloat*)&vertex[5]);
+	glVertex3fv((GLfloat*)&vertex[7]);
+	glVertex3fv((GLfloat*)&vertex[3]);
+
+	//Between-planes left
+	glVertex3fv((GLfloat*)&vertex[4]);
+	glVertex3fv((GLfloat*)&vertex[0]);
+	glVertex3fv((GLfloat*)&vertex[2]);
+	glVertex3fv((GLfloat*)&vertex[6]);
+						
+	//Far plane horizontal 
+	glVertex3fv((GLfloat*)&vertex[5]);
+	glVertex3fv((GLfloat*)&vertex[4]);
+	glVertex3fv((GLfloat*)&vertex[6]);
+	glVertex3fv((GLfloat*)&vertex[7]);
+						
+	//Near plane horizontal
+	glVertex3fv((GLfloat*)&vertex[0]);
+	glVertex3fv((GLfloat*)&vertex[1]);
+	glVertex3fv((GLfloat*)&vertex[3]);
+	glVertex3fv((GLfloat*)&vertex[2]);
+						
+	//Near plane vertical  
+	glVertex3fv((GLfloat*)&vertex[1]);
+	glVertex3fv((GLfloat*)&vertex[3]);
+	glVertex3fv((GLfloat*)&vertex[0]);
+	glVertex3fv((GLfloat*)&vertex[2]);
+						
+	//Far plane vertical   
+	glVertex3fv((GLfloat*)&vertex[5]);
+	glVertex3fv((GLfloat*)&vertex[7]);
+	glVertex3fv((GLfloat*)&vertex[4]);
+	glVertex3fv((GLfloat*)&vertex[6]);
+
+	glEnd();
+}
+

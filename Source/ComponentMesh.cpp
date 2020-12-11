@@ -1,10 +1,11 @@
 #include "ComponentMesh.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
-#include "GL/glew.h"
 #include "Application.h"
+#include "Dependencies/MathGeolib/MathGeoLib.h"
 
-ComponentMesh::ComponentMesh(unsigned int iVAO, unsigned int vertices, unsigned int indices) : Component(ComponentType::Mesh), VAO(iVAO), numIndices(indices), numVertices(vertices) {}
+
+ComponentMesh::ComponentMesh(unsigned int iVAO, unsigned int vertices, unsigned int indices,AABB _aabb) : Component(ComponentType::Mesh), VAO(iVAO), numIndices(indices), numVertices(vertices), aabb(_aabb){}
 
 ComponentMesh::~ComponentMesh() { App->renderer3D->DeleteBuffer(&VAO); }
 
@@ -21,6 +22,11 @@ const unsigned int ComponentMesh::GetNumIndices() const
 const unsigned int ComponentMesh::GetNumVertex() const
 {
 	return numVertices;
+}
+
+const AABB& ComponentMesh::GetAABB() const
+{
+	return aabb;
 }
 
 bool ComponentMesh::IsActive() const

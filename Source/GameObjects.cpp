@@ -6,6 +6,8 @@
 #include "Application.h"
 #include "ModuleRenderer3D.h"
 #include "Globals.h"
+#include "Dependencies/MathGeolib/MathGeoLib.h"
+
 
 GameObject::GameObject() : parent(nullptr), name("No name")
 {
@@ -57,6 +59,8 @@ void GameObject::Update(float dt)
 			(*itr)->Draw();
 		}
 	}
+
+	GenerateAABB();
 }
 
 void GameObject::Draw()
@@ -75,6 +79,8 @@ void GameObject::Draw()
 			material = materialComponent->GetID();
 		
 		App->renderer3D->Draw(transformComponent->GetGlobalTransform().Transposed(), mesh, meshComponent->GetNumIndices(), material);
+		App->renderer3D->DrawAABB(aabb);
+		App->renderer3D->DrawOBB(obb);
 	}
 }
  
@@ -137,4 +143,20 @@ void GameObject::SetName(char* newName)
 {
 	name = newName;
 }
+
+void GameObject::GenerateAABB()
+{
+	ComponentMesh* mesh = ((ComponentMesh*)GetComponent(ComponentType::Mesh));
+
+	if (mesh)
+	{
+		obb = mesh->GetAABB();
+		obb.Transform(((ComponentTransform*)GetComponent(ComponentType::Transform))->GetGlobalTransform());
+
+		aabb.SetNegativeInfinity();
+		aabb.Enclose(obb);
+	}
+}
+
+
 

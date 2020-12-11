@@ -34,6 +34,8 @@ public:
 	const char* GetName() const;
 	void SetName(char* newName);
 
+	void GenerateAABB();
+
 private:
 	GameObject* parent = nullptr;
 	std::string name;
