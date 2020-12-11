@@ -39,6 +39,11 @@ public:
 	void DeleteBuffer(unsigned int* VAO);
 	void DeleteTexture(unsigned int* texture);
 
+	void DrawAABB(AABB& aabb);
+	void DrawOBB(OBB& obb);
+
+	void DrawWireCube(float3* vertex);
+
 
 public:
 

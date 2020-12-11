@@ -126,6 +126,24 @@ void ModuleEditor::WindowDocking()
 			ImGuiID dockspace_id = ImGui::GetID("DockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 			MenuBar();
+
+			/*if(ImGui::BeginChild("##Drag&Drop",viewport->Size))
+			{
+				if (ImGui::BeginDragDropSource()) {
+					ImGui::SetDragDropPayload("_TREENODE", &gameObject, sizeof(GameObject));
+
+					ImGui::Text("%s", gameObject->GetName());
+					dragDropObject = gameObject;
+					ImGui::EndDragDropSource();
+				}
+				if (ImGui::BeginDragDropTarget()) {
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_TREENODE")) {
+						App->scene->SetParent(dragDropObject, gameObject);
+					}
+					ImGui::EndDragDropTarget();
+				}
+			}
+			ImGui::EndChild();*/
 		}
 		ImGui::End();
 	}
@@ -724,6 +742,9 @@ void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 		ImGui::Text("Number of vertex: ");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u", componentMesh->GetNumVertex());
+
+		ImGui::Checkbox("AABB",&App->scene->GetSelectedObject()->showAABB);
+		ImGui::Checkbox("OBB", &App->scene->GetSelectedObject()->showOBB);
 	}
 }
 
