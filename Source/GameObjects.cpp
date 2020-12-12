@@ -72,6 +72,7 @@ void GameObject::Draw()
 {
 	const ComponentTransform* transformComponent = (ComponentTransform*)GetComponent(ComponentType::Transform);
 	const ComponentMesh* meshComponent = (ComponentMesh*)GetComponent(ComponentType::Mesh);
+	const ComponentCamera* cameraComponent = (ComponentCamera*)GetComponent(ComponentType::Camera);
 
 	if (meshComponent && transformComponent)
 	{
@@ -94,6 +95,12 @@ void GameObject::Draw()
 		{
 			App->renderer3D->DrawOBB(obb);
 		}	
+		
+	}
+
+	if (cameraComponent)
+	{
+		//App->renderer3D->DrawFrustum();
 	}
 }
  

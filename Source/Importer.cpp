@@ -8,6 +8,7 @@
 #include "ComponentMesh.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
+#include "ComponentCamera.h"
 #include "GameObjects.h"
 #include "il.h"
 #include "ilu.h"
@@ -80,9 +81,13 @@ void Importer::Meshes::ParseFbxNode(aiNode * node, const aiScene * scene, const 
 		//LOG("Draw: %s", this->name.c_str());
 	}
 
-	if (scene->mNumCameras > 0)
+	//DEtectar si es una camera
+	aiCamera camera;
+
+	camera.mName.C_Str();
+	if((strstr(node->mName.C_Str(), "Camera") != nullptr))
 	{
-		//Componen
+		ComponentCamera* cameraComponent = new ComponentCamera(go);
 	}
 
 	if (node->mNumMeshes > 0) {

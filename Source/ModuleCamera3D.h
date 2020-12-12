@@ -21,9 +21,11 @@ public:
 
 	void LookAt(const float3& Spot);
 
-	/*void WASDMovement(float dt);
+	void WASDMovement(float dt);
 	void WorldTranslation(float dt);
-	void WorldRotation(float dt);
+	/*void WorldRotation(float dt);
+
+	
 	void ReferenceRotation(float dt);
 	void Zoom(float dt);
 

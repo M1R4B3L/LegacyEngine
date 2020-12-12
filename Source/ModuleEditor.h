@@ -8,6 +8,7 @@ enum class ComponentType;
 class ComponentTransform;
 class ComponentMesh;
 class ComponentMaterial;
+class ComponentCamera;
 
 struct Hardware {
 
@@ -72,6 +73,7 @@ public:
 	void InspectorShowTransform(ComponentTransform* componentTransform);
 	void InspectorShowMesh(ComponentMesh* componentMesh);
 	void InspectorShowMaterial(ComponentMaterial* componentMaterial);
+	void InspectorShowCamera(ComponentCamera* componentCamera);
 
 private:
 

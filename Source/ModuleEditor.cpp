@@ -17,7 +17,7 @@
 #include "ComponentMesh.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
-
+#include "ComponentCamera.h"
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
 aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true),
@@ -679,16 +679,25 @@ void ModuleEditor::InspectorComponents(GameObject* selectedGameObject)
 		{
 			switch (currentComponent->GetType())
 			{
-			case ComponentType::Transform: {
-				InspectorShowTransform((ComponentTransform*)currentComponent);
-			} break;
-			case ComponentType::Mesh: {
-				InspectorShowMesh((ComponentMesh*)currentComponent);
-			} break;
-			case ComponentType::Material: {
-				InspectorShowMaterial((ComponentMaterial*)currentComponent);
-			} break;
+				case ComponentType::Transform:
+				{
+					InspectorShowTransform((ComponentTransform*)currentComponent);
+				} break;
 
+				case ComponentType::Mesh: 
+				{
+					InspectorShowMesh((ComponentMesh*)currentComponent);
+				} break;
+
+				case ComponentType::Material: 
+				{
+					InspectorShowMaterial((ComponentMaterial*)currentComponent);
+				} break;
+
+				case ComponentType::Camera:
+				{
+					InspectorShowCamera((ComponentCamera*)currentComponent);
+				} break;
 			}
 
 			if (currentComponent->GetType() == ComponentType::Unknown)
@@ -758,6 +767,15 @@ void ModuleEditor::InspectorShowMaterial(ComponentMaterial* componentMaterial)
 		ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u x %u");
 
 		ImGui::Image((ImTextureID)componentMaterial->GetID(), ImVec2(100, 100));
+	}
+}
+
+void ModuleEditor::InspectorShowCamera(ComponentCamera* componentCamera)
+{
+	bool active = true;
+	if (ImGui::CollapsingHeader("Camera", &active, ImGuiTreeNodeFlags_DefaultOpen))
+	{
+
 	}
 }
 
