@@ -33,8 +33,6 @@ bool ModuleScene::Start()
 	bool ret = true;
 	root = new GameObject(nullptr, "Scene");
 
-
-
 	Importer::ImportDroped("Assets/Baker_house/BakerHouse.fbx");
 
 	return ret;

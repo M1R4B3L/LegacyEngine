@@ -5,13 +5,13 @@
 #include "ModuleRenderer3D.h"
 #include "ComponentCamera.h"
 
-ModuleCamera3D::ModuleCamera3D(bool startEnable) : Module(startEnable), moveSpeed(10),rotateSpeed(0.01)
+ModuleCamera3D::ModuleCamera3D(bool startEnable) : Module(startEnable), moveSpeed(10),rotateSpeed(0.05),zoomSpeed(10)
 {
 	cameraMain = new ComponentCamera();
 
-	cameraMain->frustum.SetViewPlaneDistances(1.0f, 2000.0f);
+	cameraMain->frustum.SetViewPlaneDistances(0.1f, 10000.0f);
 	cameraMain->frustum.SetPerspective(0.1f, 1.0f);
-	cameraMain->frustum.SetFrame(float3(50, 50, 50), float3(0, 0, 1), float3(0, 1, 0));
+	cameraMain->frustum.SetFrame(float3(50, 100, 200), float3(0, 0, 1), float3(0, 1, 0));
 	cameraMain->frustum.GetPlanes(cameraMain->frustumPlanes);
 
 	LookAt(float3(0, 0, 0));
@@ -57,20 +57,20 @@ update_status ModuleCamera3D::Update(float dt)
 	//Mouse Movement
 	if (App->input->GetMouseButton(SDL_BUTTON_MIDDLE) == KEY_REPEAT)
 	{
-		WorldTranslation(dt);
+		DragCamera(dt);
 	}
 
 	//Mouse Rotation & Keyboard Movement
 	if ((App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT) && (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_IDLE))
 	{
 		WASDMovement(dt);
-		//WorldRotation(dt);
+		WorldRotation(dt);
 	}
 
 	//Mouse Zoom
 	if (App->input->GetMouseZ() != 0)
 	{
-		//Zoom(dt);
+		Zoom(dt);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
@@ -126,22 +126,22 @@ void ModuleCamera3D::WASDMovement(float dt)
 	{
 		speed = speed * 2;
 
-		if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT) newPos.y += speed;
-		if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT) newPos.y -= speed;
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos.y += speed;
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos.y -= speed;
 
-		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= front * speed;
-		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += front * speed;
+		if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT) newPos -= front * speed;
+		if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT) newPos += front * speed;
 
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= right * speed;
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += right * speed;
 	}
 	else 
 	{
-		if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT) newPos.y += speed;
-		if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT) newPos.y -= speed;
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos.y += speed;
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos.y -= speed;
 
-		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= front * speed;
-		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += front * speed;
+		if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT) newPos -= front * speed;
+		if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT) newPos += front * speed;
 
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= right * speed;
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += right * speed;
@@ -151,7 +151,7 @@ void ModuleCamera3D::WASDMovement(float dt)
 	cameraMain->frustum.GetPlanes(cameraMain->frustumPlanes);
 }
 
-void ModuleCamera3D::WorldTranslation(float dt)
+void ModuleCamera3D::DragCamera(float dt)
 {
 	float3 newPos(0, 0, 0);
 	float3 x_pos(0, 0, 0);
@@ -195,7 +195,8 @@ void ModuleCamera3D::WorldTranslation(float dt)
 	cameraMain->frustum.SetPos(cameraMain->frustum.Pos() + newPos);
 	cameraMain->frustum.GetPlanes(cameraMain->frustumPlanes);
 }
-/*
+
+
 void ModuleCamera3D::WorldRotation(float dt)
 {
 		int dx = -App->input->GetMouseXMotion();
@@ -207,23 +208,36 @@ void ModuleCamera3D::WorldRotation(float dt)
 		{
 			float DeltaX = (float)dx * Sensitivity;
 
-			X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+			Quat q = Quat::RotateY(DeltaX);
+
+			cameraMain->frustum.SetFront(q.Mul(cameraMain->frustum.Front()).Normalized());
+			cameraMain->frustum.SetUp(q.Mul(cameraMain->frustum.Up()).Normalized());
+			/*X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
 			Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-			Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+			Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));*/
 		}
 
 		if(dy != 0)
 		{
 			float DeltaY = (float)dy * Sensitivity;
 
-			Y = rotate(Y, DeltaY, X);
+			Quat q = Quat::RotateAxisAngle(cameraMain->frustum.WorldRight(), DeltaY);
+
+			vec vecY = q.Mul(cameraMain->frustum.Up().Normalized());
+
+			if (vecY.y > 0.0f)
+			{
+				cameraMain->frustum.SetUp(vecY);
+				cameraMain->frustum.SetFront(q.Mul(cameraMain->frustum.Front()).Normalized());
+			}
+			/*Y = rotate(Y, DeltaY, X);
 			Z = rotate(Z, DeltaY, X);
 
 			if(Y.y < 0.0f)
 			{
 				Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
 				Y = cross(Z, X);
-			}
+			}*/
 		}
 }
 
@@ -261,18 +275,28 @@ void ModuleCamera3D::ReferenceRotation(float dt)
 	}
 	Position = Reference + Z * length(Position);
 }
+*/
 void ModuleCamera3D::Zoom(float dt)
 {
+	float distance = reference.Distance(cameraMain->frustum.Pos());
+	float3 currentPos = cameraMain->frustum.Pos();
+	float3 newPos = currentPos;
+
 	if (App->input->GetMouseZ() > 0)
 	{
-		Position -= Z * zoomSpeed * dt;
+		newPos = currentPos + cameraMain->frustum.Front() * zoomSpeed *distance* dt;
+		//Position -= Z * zoomSpeed * dt;
 	}
 	else
 	{
-		Position += Z * zoomSpeed * dt;
+		newPos = currentPos - cameraMain->frustum.Front() * zoomSpeed * distance * dt;
+		//Position += Z * zoomSpeed * dt;
 	}
+
+	cameraMain->frustum.SetPos(newPos);
 }
 
+/*
 // -----------------------------------------------------------------
 void ModuleCamera3D::Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference)
 {

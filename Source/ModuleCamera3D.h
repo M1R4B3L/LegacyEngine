@@ -22,14 +22,14 @@ public:
 	void LookAt(const float3& Spot);
 
 	void WASDMovement(float dt);
-	void WorldTranslation(float dt);
-	/*void WorldRotation(float dt);
+	void DragCamera(float dt);
+	void WorldRotation(float dt);
 
 	
-	void ReferenceRotation(float dt);
+	//void ReferenceRotation(float dt);
 	void Zoom(float dt);
 
-	void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
+	/*void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
 	
 	void Move(const vec3 &Movement);
 	float* GetViewMatrix();
