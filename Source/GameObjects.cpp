@@ -43,6 +43,13 @@ void GameObject::AddComponent(Component* c)
 	components.emplace_back(c);
 }
 
+bool GameObject::RemoveComponent(Component* c)
+{
+	bool succes = false;
+	c->RemoveGameObjectComponent(*this, c->GetType());
+	return succes;
+}
+
 /*void GameObject::Start()
 {
 	std::vector<Component*>::iterator it = components.begin();

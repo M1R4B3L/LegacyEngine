@@ -22,16 +22,6 @@ ComponentCamera::ComponentCamera(GameObject* gameObject) : Component(gameObject,
 	updatePMatrix = true;
 }
 
-/*ComponentCamera::ComponentCamera(float3 position, float3 look)
-{
-	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
-	frustum.SetViewPlaneDistances(0.0f, 200.0f);
-	frustum.SetFrame(position, float3(0, 0, 1), float3(0, 1, 0));
-	frustum.SetPerspective(1.f, 1.f);
-	frustum.GetPlanes(frustumPlanes);
-	updatePMatrix = true;
-}*/
-
 ComponentCamera::~ComponentCamera()
 {
 }

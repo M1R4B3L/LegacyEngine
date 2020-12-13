@@ -85,6 +85,12 @@ private:
 	bool scroll;
 	bool dragDrop;
 
+	int component;
+
+	bool removeMaterial;
+	bool removeMesh;
+	bool removeCamera;
+
 	GameObject* dragDropObject = nullptr;
 
 };

@@ -21,7 +21,8 @@
 #include "ComponentCamera.h"
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
-aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(true),
+aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(false), 
+component(0), removeMaterial(true), removeMesh(true), removeCamera(true),
 org("CITM"), scroll(true)
 {}
 
@@ -218,8 +219,8 @@ void ModuleEditor::MenuBar()
 			ImGui::Separator();
 			ImGui::Spacing();
 			if (ImGui::BeginMenu("General")) {
-				if (ImGui::MenuItem("Scene")) {
-
+				if (ImGui::MenuItem("Scene", NULL, sceneWindow)) {
+					sceneWindow = !sceneWindow;
 				}
 				if (ImGui::MenuItem("Insperctor", NULL, inspectorWindow)) {
 					inspectorWindow = !inspectorWindow;
@@ -633,16 +634,85 @@ void ModuleEditor::WindowInspector()
 	{
 		if (ImGui::Begin("Inspector", &inspectorWindow))
 		{
-			if (App->scene->GetSelectedObject() != nullptr) {
+			if (App->scene->GetSelectedObject() != nullptr && (App->scene->GetSelectedObject() != App->scene->GetRootObject())) {
 				InspectorComponents(App->scene->GetSelectedObject());
+
+				ImGui::Separator();
+				
+				ImGui::Combo("##Select", &component, "Unkown\0Transform\0Mesh\0Material\0Camera\0");
+				ImGui::SameLine();
+				if (ImGui::Button("Add"))
+				{
+					Component* tmp = nullptr;
+					switch (component)
+					{
+						case 0:
+						{
+							LOG("This is not a valid component");
+							break;
+						}
+						case 1:
+						{
+							if (!App->scene->GetSelectedObject()->HasComponent(ComponentType::Transform))
+							{
+								tmp = new ComponentTransform(App->scene->GetSelectedObject());
+								App->scene->GetSelectedObject()->AddComponent(tmp);
+								LOG("Successful added a Component Transform");
+							}
+							else
+							{
+								LOG("This Game Object already has a Component Transform");
+							}
+							break;
+						}
+						case 2:
+						{
+							if (!App->scene->GetSelectedObject()->HasComponent(ComponentType::Mesh))
+							{
+								tmp = new ComponentMesh();
+								App->scene->GetSelectedObject()->AddComponent(tmp);
+								LOG("Successful added a Component Mesh");
+							}
+							else
+							{
+								LOG("This Game Object already has a Component Mesh");
+							}
+							break;
+						}
+						case 3:
+						{
+							if (!App->scene->GetSelectedObject()->HasComponent(ComponentType::Material))
+							{
+								tmp = new ComponentMaterial();
+								App->scene->GetSelectedObject()->AddComponent(tmp);
+								LOG("Successful added a Component Material");
+							}
+							else
+							{
+								LOG("This Game Object already has a Component Material");
+							}
+							break;
+						}
+						case 4:
+						{
+							if (!App->scene->GetSelectedObject()->HasComponent(ComponentType::Camera))
+							{
+								tmp = new ComponentCamera();
+								App->scene->GetSelectedObject()->AddComponent(tmp);
+								LOG("Successful added a Component Camera");
+							}
+							else
+							{
+								LOG("This Game Object already has a Component Camera");
+							}
+							break;
+						}
+
+					}
+				}
+			
 			}
 
-			ImGui::Separator();
-			if (ImGui::Button("Add Component"))
-			{
-
-			}
-		
 		}
 		ImGui::End();
 	}
@@ -744,12 +814,11 @@ void ModuleEditor::InspectorShowTransform(ComponentTransform* componentTransform
 
 void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 {
-	bool active = true;
-	
+
 	ImGui::Checkbox("##Mesh", &((ComponentMesh*)componentMesh)->activeMesh);
 
 	ImGui::SameLine();
-	if (ImGui::CollapsingHeader("Mesh", &active, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Mesh", &removeMesh, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Text("Vertex:");
 		ImGui::SameLine();
@@ -761,25 +830,39 @@ void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 		ImGui::SameLine();
 		ImGui::Checkbox("OBB", &App->scene->GetSelectedObject()->showOBB);
 	}
+	
+	if (removeMesh == false)
+	{
+		App->scene->GetSelectedObject()->RemoveComponent(componentMesh);
+		LOG("Removed Component Mesh");
+		removeMesh = true;
+	}
+
 }
 
 void ModuleEditor::InspectorShowMaterial(ComponentMaterial* componentMaterial)
 {
-	bool active = true;
-	if (ImGui::CollapsingHeader("Material", &active, ImGuiTreeNodeFlags_DefaultOpen))
+
+	if (ImGui::CollapsingHeader("Material", &removeMaterial, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Text("Texture Size ");
-		ImGui::SameLine();
+		//ImGui::SameLine();
 		//ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u x %u");
 
 		ImGui::Image((ImTextureID)componentMaterial->GetID(), ImVec2(100, 100));
+	}
+
+	if (removeMaterial == false)
+	{
+		App->scene->GetSelectedObject()->RemoveComponent(componentMaterial);
+		LOG("Removed Component Material");
+		removeMaterial = true;
 	}
 }
 
 void ModuleEditor::InspectorShowCamera(ComponentCamera* componentCamera)
 {
-	bool active = true;
-	if (ImGui::CollapsingHeader("Camera", &active, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Camera", &removeCamera, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		float nearPlane = componentCamera->GetNearPlaneDistance();
 		if (ImGui::DragFloat("Near Plane", &nearPlane, 1.0f,0.1f,componentCamera->GetFarPlaneDistance(),"%.2f"))
@@ -799,6 +882,13 @@ void ModuleEditor::InspectorShowCamera(ComponentCamera* componentCamera)
 			componentCamera->SetHoritzontalFOV(fov);
 		}
 
+	}
+
+	if (removeCamera == false)
+	{
+		App->scene->GetSelectedObject()->RemoveComponent(componentCamera);
+		LOG("Removed Component Camera");
+		removeCamera = true;
 	}
 }
 
@@ -843,6 +933,11 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 					App->scene->DeleteGameObject(gameObject);
 					LOG("Succesfully deleted %s", temp);
 				}
+				if (ImGui::Selectable("Create Child"))
+				{
+					App->scene->CreateGameObject("GameObject 1", gameObject);
+				}
+
 				ImGui::EndPopup();
 			}
 
@@ -950,7 +1045,10 @@ void ModuleEditor::WindowScene()
 	{
 		if (ImGui::Begin("Scene", &sceneWindow))
 		{
-			ImGui::Image((ImTextureID)App->renderer3D->sceneText, { 500,500 });
+			ImGui::BeginChild("Scene Texture");
+
+			ImGui::Image((ImTextureID)App->renderer3D->sceneTextureBuffer, { ImGui::GetWindowWidth(),ImGui::GetWindowHeight() }, ImVec2(0,1), ImVec2(1,0));
+			ImGui::EndChild();
 		}
 		ImGui::End();
 	}

@@ -9,7 +9,6 @@ class ComponentCamera : public Component
 public:
 	ComponentCamera();
 	ComponentCamera(GameObject* gameObject);
-	ComponentCamera(float3 position, float3 look);
 	~ComponentCamera();
 
 	float GetNearPlaneDistance() const;

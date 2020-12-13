@@ -408,7 +408,5 @@ void ModuleRenderer3D::CreateFrameBuffer()
 		LOG("Error creating frame buffer");
 	}
 
-	sceneText = sceneTextureBuffer;
-
 }
 

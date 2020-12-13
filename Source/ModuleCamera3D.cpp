@@ -10,8 +10,8 @@ ModuleCamera3D::ModuleCamera3D(bool startEnable) : Module(startEnable), moveSpee
 	cameraMain = new ComponentCamera();
 
 	cameraMain->frustum.SetViewPlaneDistances(0.1f, 10000.0f);
-	cameraMain->frustum.SetPerspective(0.1f, 1.0f);
-	cameraMain->frustum.SetFrame(float3(1000, 1000, 1000), float3(0, 0, 1), float3(0, 1, 0));
+	cameraMain->frustum.SetPerspective(1.0f, 1.0f);
+	cameraMain->frustum.SetFrame(float3(100, 100, 100), float3(0, 0, 1), float3(0, 1, 0));
 	cameraMain->frustum.GetPlanes(cameraMain->frustumPlanes);
 
 	LookAt(float3(0, 0, 0));

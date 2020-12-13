@@ -38,3 +38,16 @@ void Component::SetGameObject(GameObject& go)
 {
 	gameObject = &go;
 }
+
+void Component::RemoveGameObjectComponent(GameObject& go, ComponentType type)
+{
+	std::vector<Component*>::iterator it = go.components.begin();
+	for (it; it != go.components.end(); ++it)
+	{
+		if ((*it)->type == type)
+		{
+			go.components.erase(it);
+			break;
+		}
+	}
+}

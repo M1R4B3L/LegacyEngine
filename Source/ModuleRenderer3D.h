@@ -54,8 +54,6 @@ public:
 	uint sceneTextureBuffer;
 	uint sceneRboDepthStencil;
 
-	uint sceneText;
-
 	ComponentCamera* camera = nullptr;
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
