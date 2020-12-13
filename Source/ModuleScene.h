@@ -41,7 +41,7 @@ public:
 
 	void ImGuizmoUpdate();
 
-	void CreateCamera(const char* name, float3 position, float3 looking);
+	void CreateCamera(const char* name);
 
 private:
 

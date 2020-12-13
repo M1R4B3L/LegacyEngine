@@ -46,6 +46,7 @@ public:
 	void DrawWireCube(float3* vertex, Color color);
 
 	void CreateFrameBuffer();
+	void DeleteBuffers();
 
 public:
 

@@ -59,6 +59,7 @@ bool GameObject::RemoveComponent(Component* c)
 
 void GameObject::Update(float dt)
 {
+
 	std::vector<Component*>::iterator it = components.begin();
 	for (it; it != components.end(); it++)
 	{
@@ -90,6 +91,7 @@ void GameObject::Update(float dt)
 	}
 
 	GenerateAABB();
+
 }
 
 void GameObject::Draw()

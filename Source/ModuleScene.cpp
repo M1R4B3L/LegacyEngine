@@ -266,10 +266,11 @@ void ModuleScene::ImGuizmoUpdate()
 	}
 }
 
-void ModuleScene::CreateCamera(const char* name, float3 position, float3 looking)
+void ModuleScene::CreateCamera(const char* name)
 {
-	GameObject* camera = new GameObject(root, name, float3(float3::zero), float3(float3::one), Quat(Quat::identity));
-	
+
+	GameObject* camera = new GameObject(root, name);
+	ComponentTransform* componentTransform = new ComponentTransform(camera);
 	ComponentCamera* componentCamera = new ComponentCamera(camera);
 
 }

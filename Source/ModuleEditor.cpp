@@ -157,7 +157,6 @@ void ModuleEditor::WindowDocking()
 
 void ModuleEditor::MenuBar()
 {
-
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
 			if (ImGui::MenuItem("New Scene", "")) {
@@ -193,6 +192,22 @@ void ModuleEditor::MenuBar()
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Create")) {
+			if (ImGui::BeginMenu("GameObject"))
+			{
+				if (ImGui::MenuItem("Empty")) {
+					App->scene->CreateGameObject("Empty", App->scene->GetRootObject());
+					LOG("An Empty Game Object has been created");
+				}
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Camera"))
+			{
+				if (ImGui::MenuItem("Camera")) {
+					App->scene->CreateCamera("Camera");
+					LOG("Camera has been created");
+				}
+				ImGui::EndMenu();
+			}
 			if (ImGui::BeginMenu("Primitives")) {
 				if (ImGui::MenuItem("Cube")) {
 					
@@ -738,6 +753,7 @@ void ModuleEditor::WindowHierarchy()
 
 void ModuleEditor::InspectorComponents(GameObject* selectedGameObject)
 {
+
 	ImGui::Checkbox("##", &selectedGameObject->activeGameObject);
 	ImGui::SameLine();
 	static char name[128];
@@ -834,9 +850,24 @@ void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 	
 	if (removeMesh == false)
 	{
-		App->scene->GetSelectedObject()->RemoveComponent(componentMesh);
-		LOG("Removed Component Mesh");
-		removeMesh = true;
+		ImGui::OpenPopup("Are you sure?");
+
+		if (ImGui::BeginPopupModal("Are you sure?"))
+		{
+			if(ImGui::Button("Delete", ImVec2(80,0)))
+			{
+				App->scene->GetSelectedObject()->RemoveComponent(componentMesh);
+				LOG("Removed Component Mesh");
+				removeMesh = true;
+			}
+			
+			if (ImGui::Button("Cancel", ImVec2(80, 0)))
+			{
+				ImGui::CloseCurrentPopup();
+				removeMesh = true;
+			}
+			ImGui::EndPopup();
+		}
 	}
 
 }
@@ -855,9 +886,26 @@ void ModuleEditor::InspectorShowMaterial(ComponentMaterial* componentMaterial)
 
 	if (removeMaterial == false)
 	{
-		App->scene->GetSelectedObject()->RemoveComponent(componentMaterial);
-		LOG("Removed Component Material");
-		removeMaterial = true;
+		ImGui::OpenPopup("Are you sure?");
+
+		if (ImGui::BeginPopupModal("Are you sure?"))
+		{
+			if (ImGui::Button("Delete", ImVec2(80, 0)))
+			{
+
+				App->scene->GetSelectedObject()->RemoveComponent(componentMaterial);
+				LOG("Removed Component Material");
+				removeMaterial = true;
+			}
+
+			if (ImGui::Button("Cancel", ImVec2(80, 0)))
+			{
+				ImGui::CloseCurrentPopup();
+				removeMaterial = true;
+			}
+			ImGui::EndPopup();
+		}
+
 	}
 }
 
@@ -887,9 +935,25 @@ void ModuleEditor::InspectorShowCamera(ComponentCamera* componentCamera)
 
 	if (removeCamera == false)
 	{
-		App->scene->GetSelectedObject()->RemoveComponent(componentCamera);
-		LOG("Removed Component Camera");
-		removeCamera = true;
+		ImGui::OpenPopup("Are you sure?");
+
+		if (ImGui::BeginPopupModal("Are you sure?"))
+		{
+			if (ImGui::Button("Delete", ImVec2(80, 0)))
+			{
+				App->scene->GetSelectedObject()->RemoveComponent(componentCamera);
+				LOG("Removed Component Camera");
+				removeCamera = true;
+			}
+
+			if (ImGui::Button("Cancel", ImVec2(80, 0)))
+			{
+				ImGui::CloseCurrentPopup();
+				removeCamera = true;
+			}
+			ImGui::EndPopup();
+		}
+		
 	}
 }
 
@@ -1061,9 +1125,22 @@ void ModuleEditor::WindowTime()
 	{
 		if (ImGui::Begin("Time", &timeWindow, ImGuiWindowFlags_NoDecoration)) {
 
+			Timer timer;
+			timer.Start();
+
+			if (ImGui::Button("Play"))
+			{
+				LOG("Game Mode Activated");
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Pause"))
+			{
+				LOG("Pause Game Mode");
+			}
+			ImGui::SameLine();
 			ImGui::Text("Time Since Start: ");
 			ImGui::SameLine();
-			float time = SDL_GetTicks()/1000.0f;
+			float time = SDL_GetTicks()/1000.f;
 			ImGui::TextColored(ImVec4(0,1,1,1), "%.3f", time);
 		}
 		ImGui::End();
