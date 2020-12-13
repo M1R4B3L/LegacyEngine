@@ -27,7 +27,7 @@ void Primitive::Render() const
 
 		glBegin(GL_LINES);
 
-		glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+		glColor4f(1.0f, 0.0f, 0.0f, 0.25f);
 
 		glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);
 		glVertex3f(1.0f, 0.1f, 0.0f); glVertex3f(1.1f, -0.1f, 0.0f);
@@ -255,9 +255,9 @@ void PPlane::InnerRender() const
 
 	glBegin(GL_LINES);
 
-	float d = 100.0f;
+	float d = 1000.0f;
 
-	for(float i = -d; i <= d; i += 1.0f)
+	for(float i = -d; i <= d; i += 5.0f)
 	{
 		glVertex3f(i, 0.0f, -d);
 		glVertex3f(i, 0.0f, d);

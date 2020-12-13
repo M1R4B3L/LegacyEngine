@@ -210,7 +210,6 @@ void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint t
 
 void ModuleRenderer3D::OnResize(int width, int height)
 {
-
 	glViewport(0, 0, width, height);
 	camera = App->camera->GetCamera();
 	camera->SetHoritzontalAspectRatio((float)width / (float)height);
@@ -324,26 +323,28 @@ void ModuleRenderer3D::DrawAABB(AABB& aabb)
 {
 	float3 corners[8];
 	aabb.GetCornerPoints(corners);
-	DrawWireCube(corners);
+	DrawWireCube(corners, Green);
 }
 
 void ModuleRenderer3D::DrawOBB(OBB& obb)
 {
 	float3 corners[8];
 	obb.GetCornerPoints(corners);
-	DrawWireCube(corners);
+	DrawWireCube(corners, Red);
 }
 
 void ModuleRenderer3D::DrawFrustum(Frustum& frustum)
 {
 	float3 corners[8];
 	frustum.GetCornerPoints(corners);
-	DrawWireCube(corners);
+	DrawWireCube(corners, Blue);
 }
 
-void ModuleRenderer3D::DrawWireCube(float3* vertex)
+void ModuleRenderer3D::DrawWireCube(float3* vertex, Color color )
 {
 	glBegin(GL_LINES);
+
+	glColor4f(color.r, color.g, color.b, color.a);
 
 	//Between-planes right
 	glVertex3fv((GLfloat*)&vertex[1]);
@@ -382,5 +383,32 @@ void ModuleRenderer3D::DrawWireCube(float3* vertex)
 	glVertex3fv((GLfloat*)&vertex[6]);
 
 	glEnd();
+}
+
+void ModuleRenderer3D::CreateFrameBuffer()
+{
+	glGenFramebuffers(1, &sceneFrameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, sceneFrameBuffer);
+	
+	//Texture Buffer
+	glGenTextures(1, &sceneTextureBuffer);
+	glBindTexture(GL_TEXTURE_2D, sceneTextureBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->window->GetWidth(), App->window->GetHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sceneTextureBuffer, 0);
+	
+	//Object Buffer
+	glGenRenderbuffers(1, &sceneRboDepthStencil);
+	glBindRenderbuffer(GL_RENDERBUFFER, sceneRboDepthStencil);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, App->window->GetWidth(), App->window->GetHeight());
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, sceneRboDepthStencil);
+
+	if (glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		LOG("Error creating frame buffer");
+	}
+
+	sceneText = sceneTextureBuffer;
+
 }
 

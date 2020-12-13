@@ -5,13 +5,13 @@
 #include "ModuleRenderer3D.h"
 #include "ComponentCamera.h"
 
-ModuleCamera3D::ModuleCamera3D(bool startEnable) : Module(startEnable), moveSpeed(10),rotateSpeed(0.05),zoomSpeed(10)
+ModuleCamera3D::ModuleCamera3D(bool startEnable) : Module(startEnable), moveSpeed(10),rotateSpeed(0.025),zoomSpeed(10)
 {
 	cameraMain = new ComponentCamera();
 
 	cameraMain->frustum.SetViewPlaneDistances(0.1f, 10000.0f);
 	cameraMain->frustum.SetPerspective(0.1f, 1.0f);
-	cameraMain->frustum.SetFrame(float3(50, 100, 200), float3(0, 0, 1), float3(0, 1, 0));
+	cameraMain->frustum.SetFrame(float3(1000, 1000, 1000), float3(0, 0, 1), float3(0, 1, 0));
 	cameraMain->frustum.GetPlanes(cameraMain->frustumPlanes);
 
 	LookAt(float3(0, 0, 0));
@@ -340,3 +340,4 @@ void ModuleCamera3D::CalculateViewMatrix()
 	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
 	ViewMatrixInverse = inverse(ViewMatrix);
 }*/
+

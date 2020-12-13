@@ -49,6 +49,7 @@ public:
 	bool hierarchyWindow;
 	bool projectWindow;
 	bool demoWindow;
+	bool sceneWindow;
 
 	char org[128];
 
@@ -63,6 +64,7 @@ public:
 	void WindowHierarchy();
 	void WindowProject();
 	void WindowDemo();
+	void WindowScene();
 
 	void AddLog(const char*);
 	void ClearLog();
@@ -74,6 +76,8 @@ public:
 	void InspectorShowMesh(ComponentMesh* componentMesh);
 	void InspectorShowMaterial(ComponentMaterial* componentMaterial);
 	void InspectorShowCamera(ComponentCamera* componentCamera);
+
+	void DrawAssetDirectory(const char* directory, const char* extension);
 
 private:
 

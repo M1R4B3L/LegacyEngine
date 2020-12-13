@@ -9,6 +9,7 @@
 #include "Primitive.h"
 #include "ModuleScene.h"
 #include "imgui.h"
+#include "Dependencies/ImGuizmo-master/ImGuizmo.h"
 #include "examples\imgui_impl_sdl.h"
 #include "examples\imgui_impl_opengl3.h"
 #include "Importer.h"
@@ -20,7 +21,7 @@
 #include "ComponentCamera.h"
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
-aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true),
+aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(true),
 org("CITM"), scroll(true)
 {}
 
@@ -66,8 +67,10 @@ update_status ModuleEditor::Update(float dt)
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 
 	WindowDocking();
+	WindowScene();
 	WindowAbout();
 	WindowConfig();
 	WindowConsole();
@@ -748,11 +751,14 @@ void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 	ImGui::SameLine();
 	if (ImGui::CollapsingHeader("Mesh", &active, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Text("Number of vertex: ");
+		ImGui::Text("Vertex:");
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u", componentMesh->GetNumVertex());
+		ImGui::Text("Triangles:");
+		ImGui::Separator();
 
 		ImGui::Checkbox("AABB",&App->scene->GetSelectedObject()->showAABB);
+		ImGui::SameLine();
 		ImGui::Checkbox("OBB", &App->scene->GetSelectedObject()->showOBB);
 	}
 }
@@ -764,7 +770,7 @@ void ModuleEditor::InspectorShowMaterial(ComponentMaterial* componentMaterial)
 	{
 		ImGui::Text("Texture Size ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u x %u");
+		//ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u x %u");
 
 		ImGui::Image((ImTextureID)componentMaterial->GetID(), ImVec2(100, 100));
 	}
@@ -775,6 +781,23 @@ void ModuleEditor::InspectorShowCamera(ComponentCamera* componentCamera)
 	bool active = true;
 	if (ImGui::CollapsingHeader("Camera", &active, ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		float nearPlane = componentCamera->GetNearPlaneDistance();
+		if (ImGui::DragFloat("Near Plane", &nearPlane, 1.0f,0.1f,componentCamera->GetFarPlaneDistance(),"%.2f"))
+		{
+			componentCamera->SetNearPlaneDistance(nearPlane);
+		}
+	
+		float farPlane = componentCamera->GetFarPlaneDistance();
+		if (ImGui::DragFloat("Far Plane", &farPlane, 1.0f, componentCamera->GetNearPlaneDistance(), 10000.0f, "%.2f"))
+		{
+			componentCamera->SetFarPlaneDistance(farPlane);
+		}
+	
+		float fov = componentCamera->GetHoritzontalFOV();
+		if (ImGui::DragFloat("FOV", &fov, 1.0f, 0.0f))
+		{
+			componentCamera->SetHoritzontalFOV(fov);
+		}
 
 	}
 }
@@ -801,43 +824,46 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 
 	if (ImGui::TreeNodeEx(name, treeFlags)) {
 
-		
-			if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
+		if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
 
-				App->scene->SetGameObjectSelected(gameObject);
+			App->scene->SetGameObjectSelected(gameObject);
+		}
+
+		if (gameObject != App->scene->GetRootObject()) {
+			if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+				ImGui::OpenPopup("Delete");
+
 			}
-
-			if (gameObject != App->scene->GetRootObject()) {
-				if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
-					ImGui::OpenPopup("Delete");
-
-				}
-				if (ImGui::BeginPopup("Delete"))
+			if (ImGui::BeginPopup("Delete"))
+			{
+				if (ImGui::Selectable("Delete"))
 				{
-					if (ImGui::Selectable("Delete"))
-					{
-						const char* temp = gameObject->GetName();
-						//Deleteame esto
-						App->scene->DeleteGameObject(gameObject);
-						LOG("Succesfully deleted %s", temp);
-					}
-					ImGui::EndPopup();
+					const char* temp = gameObject->GetName();
+					//Deleteame esto
+					App->scene->DeleteGameObject(gameObject);
+					LOG("Succesfully deleted %s", temp);
 				}
+				ImGui::EndPopup();
 			}
+
 
 			if (ImGui::BeginDragDropSource()) {
 				ImGui::SetDragDropPayload("_TREENODE", &gameObject, sizeof(GameObject));
-				
+
 				ImGui::Text("%s", gameObject->GetName());
 				dragDropObject = gameObject;
 				ImGui::EndDragDropSource();
 			}
+
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_TREENODE")) {
+
 					App->scene->SetParent(dragDropObject, gameObject);
+					dragDropObject = nullptr;
 				}
 				ImGui::EndDragDropTarget();
 			}
+		}
 
 		if (!gameObject->children.empty())
 		{
@@ -855,12 +881,58 @@ void ModuleEditor::WindowProject()
 {
 	if (projectWindow)
 	{
-		if (ImGui::Begin("Project", &projectWindow))
+		if (ImGui::Begin("Assets", &projectWindow))
 		{
+			//char* extension = "png";
 
+			//DrawAssetDirectory(ASSETS_PATH, extension);
 		}
 		ImGui::End();
 	}
+}
+
+void ModuleEditor::DrawAssetDirectory(const char* directory, const char* extension)
+{
+	/*std::vector<std::string> files;
+	std::vector<std::string> dirs;
+
+	std::string dir((directory) ? directory : "");
+	dir += "/";
+
+	App->fs->DiscoverFiles(dir.c_str(), files, dirs);
+
+	for (vector<string>::const_iterator it = dirs.begin(); it != dirs.end(); ++it)
+	{
+		if (ImGui::TreeNodeEx((dir + (*it)).c_str(), 0, "%s/", (*it).c_str()))
+		{
+			DrawAssetDirectory((dir + (*it)).c_str(), filter_extension);
+			ImGui::TreePop();
+		}
+	}
+
+	std::sort(files.begin(), files.end());
+
+	for (vector<string>::const_iterator it = files.begin(); it != files.end(); ++it)
+	{
+		const string& str = *it;
+
+		bool ok = true;
+
+		if (filter_extension && str.substr(str.find_last_of(".") + 1) != filter_extension)
+			ok = false;
+
+		if (ok && ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Leaf))
+		{
+			if (ImGui::IsItemClicked()) {
+				sprintf_s(selected_file, FILE_MAX, "%s%s", dir.c_str(), str.c_str());
+
+				if (ImGui::IsMouseDoubleClicked(0))
+					file_dialog = ready_to_close;
+			}
+
+			ImGui::TreePop();
+		}
+	}*/
 }
 
 void ModuleEditor::WindowDemo()
@@ -869,6 +941,18 @@ void ModuleEditor::WindowDemo()
 	{
 		//our state (depenent de si el bool que pasem a la window es true o false s'ensenya la window i si la tanquem imgui posa el bool directament a false)
 		ImGui::ShowDemoWindow(&demoWindow);
+	}
+}
+
+void ModuleEditor::WindowScene()
+{
+	if (sceneWindow)
+	{
+		if (ImGui::Begin("Scene", &sceneWindow))
+		{
+			ImGui::Image((ImTextureID)App->renderer3D->sceneText, { 500,500 });
+		}
+		ImGui::End();
 	}
 }
 

@@ -9,6 +9,7 @@ class ComponentCamera : public Component
 public:
 	ComponentCamera();
 	ComponentCamera(GameObject* gameObject);
+	ComponentCamera(float3 position, float3 look);
 	~ComponentCamera();
 
 	float GetNearPlaneDistance() const;
@@ -29,6 +30,8 @@ public:
 	float4x4 GetGLViewMatrix() const;
 	float4x4 GetGLProjectionMatrix() const;
 
+	void FrustumUpdateTransform(const float4x4& global);
+	bool ContainsAABB(const AABB& aabb);
 
 public:
 
@@ -37,5 +40,6 @@ public:
 	bool active;
 	bool updatePMatrix;
 
+	bool horitzontalFOV;
 	Plane frustumPlanes[6];
 };

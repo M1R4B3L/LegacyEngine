@@ -43,10 +43,18 @@ public:
 	void DrawOBB(OBB& obb);
 	void DrawFrustum(Frustum& frustum);
 
-	void DrawWireCube(float3* vertex);
+	void DrawWireCube(float3* vertex, Color color);
 
+	void CreateFrameBuffer();
 
 public:
+
+	//draw scene buffers
+	uint sceneFrameBuffer;
+	uint sceneTextureBuffer;
+	uint sceneRboDepthStencil;
+
+	uint sceneText;
 
 	ComponentCamera* camera = nullptr;
 	Light lights[MAX_LIGHTS];

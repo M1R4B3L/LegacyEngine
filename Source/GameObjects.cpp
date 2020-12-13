@@ -3,6 +3,7 @@
 #include "ComponentMaterial.h"
 #include "ComponentMesh.h"
 #include "ComponentTransform.h"
+#include "ComponentCamera.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
 #include "Globals.h"
@@ -53,7 +54,9 @@ void GameObject::Update(float dt)
 {
 	std::vector<Component*>::iterator it = components.begin();
 	for (it; it != components.end(); it++)
+	{
 		(*it)->Update(dt);
+	}
 
 	std::vector<GameObject*>::iterator itr = children.begin();
 	for (itr; itr != children.end(); itr++) 
@@ -61,8 +64,22 @@ void GameObject::Update(float dt)
 		if ((*itr)->activeGameObject)
 		{
 			(*itr)->Update(dt);
-			(*itr)->Draw();
+
+			if (App->renderer3D->camera->ContainsAABB((*itr)->aabb) == true)
+			{
+				(*itr)->Draw();
+			}
 		}
+	}
+
+	if (HasComponent(ComponentType::Transform))
+	{
+		((ComponentTransform*)GetComponent(ComponentType::Transform))->GetGlobalTransform();
+	}
+
+	if (HasComponent(ComponentType::Camera))
+	{
+		((ComponentCamera*)GetComponent(ComponentType::Camera))->FrustumUpdateTransform(((ComponentTransform*)GetComponent(ComponentType::Transform))->GetGlobalTransform());
 	}
 
 	GenerateAABB();
@@ -72,8 +89,7 @@ void GameObject::Draw()
 {
 	const ComponentTransform* transformComponent = (ComponentTransform*)GetComponent(ComponentType::Transform);
 	const ComponentMesh* meshComponent = (ComponentMesh*)GetComponent(ComponentType::Mesh);
-	const ComponentCamera* cameraComponent = (ComponentCamera*)GetComponent(ComponentType::Camera);
-
+	ComponentCamera* cameraComponent = (ComponentCamera*)GetComponent(ComponentType::Camera);
 	if (meshComponent && transformComponent)
 	{
 		unsigned int mesh = 0;
@@ -83,24 +99,24 @@ void GameObject::Draw()
 		const ComponentMaterial* materialComponent = (ComponentMaterial*)GetComponent(ComponentType::Material);
 		if (materialComponent)
 			material = materialComponent->GetID();
-		
+
 		App->renderer3D->Draw(transformComponent->GetGlobalTransform().Transposed(), mesh, meshComponent->GetNumIndices(), material);
 
 		if (showAABB)
 		{
 			App->renderer3D->DrawAABB(aabb);
 		}
-		
+
 		if (showOBB)
 		{
 			App->renderer3D->DrawOBB(obb);
-		}	
-		
+		}
+
 	}
 
 	if (cameraComponent)
 	{
-		//App->renderer3D->DrawFrustum();
+		App->renderer3D->DrawFrustum(cameraComponent->frustum);
 	}
 }
  

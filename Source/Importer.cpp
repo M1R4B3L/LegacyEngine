@@ -336,7 +336,7 @@ bool Importer::ImportDroped(const char* absFilepath)
 		Meshes::ImportFbx(absPath.c_str());
 		return true;
 	}
-	else if (extension == "png" || extension == "tga") 
+	else if (extension == "png" || extension == "tga" || extension == "jpg") 
 	{
 		App->renderer3D->dropedTexture = Textures::Import(absPath.c_str());
 
