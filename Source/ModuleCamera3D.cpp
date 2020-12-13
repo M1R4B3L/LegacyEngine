@@ -3,7 +3,11 @@
 #include "ModuleInput.h"
 #include "ModuleCamera3D.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleScene.h"
+#include "GameObjects.h"
 #include "ComponentCamera.h"
+#include "ComponentTransform.h"
+#include "ComponentMesh.h"
 
 ModuleCamera3D::ModuleCamera3D(bool startEnable) : Module(startEnable), moveSpeed(10),rotateSpeed(0.025),zoomSpeed(10)
 {
@@ -77,19 +81,13 @@ update_status ModuleCamera3D::Update(float dt)
 	{
 		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 		{
-			//ReferenceRotation(dt);
+			ReferenceRotation(dt);
 		}
-		else if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
-		{
-			if (App->input->GetMouseYMotion() > 0)
-			{
-				//Position -= Z * zoomSpeed * dt;
-			}
-			else if (App->input->GetMouseYMotion() < 0)
-			{
-				//Position += Z * zoomSpeed * dt;
-			}
-		}
+	}
+
+	if ((App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) && (App->scene->GetSelectedObject() != nullptr))
+	{
+		Focus(App->scene->GetSelectedObject());
 	}
 
 	// Recalculate matrix -------------
@@ -104,13 +102,23 @@ void ModuleCamera3D::LookAt(const float3& pos)
 	reference = pos;
 }
 
-/*// -----------------------------------------------------------------
-void ModuleCamera3D::Move(const float3& Movement)
+// -----------------------------------------------------------------
+void ModuleCamera3D::MoveTo(const float3& pos)
 {
-	Position += Movement;
-	Reference += Movement;
+	float3 dist = pos - cameraMain->frustum.Pos();
+	cameraMain->frustum.SetPos(pos);
+	reference = cameraMain->frustum.Pos() + dist;
+}
 
-}*/
+// -----------------------------------------------------------------
+void ModuleCamera3D::Look(const float3& pos, float distance)
+{
+	reference = pos;
+	cameraMain->Look(reference);
+
+	if (distance > 0.f)
+		cameraMain->frustum.SetPos(reference - cameraMain->frustum.Front() * distance);
+}
 
 
 void ModuleCamera3D::WASDMovement(float dt)
@@ -241,41 +249,25 @@ void ModuleCamera3D::WorldRotation(float dt)
 		}
 }
 
-/*
+
 void ModuleCamera3D::ReferenceRotation(float dt)
 {
 	int dx = -App->input->GetMouseXMotion();
 	int dy = -App->input->GetMouseYMotion();
 
-	float Sensitivity = rotateSpeed * dt;
+	float3 focus = cameraMain->frustum.Pos() - reference;
 
-	Position -= Reference;
+	Quat qy(cameraMain->frustum.Up(), dx * dt);
+	Quat qx(cameraMain->frustum.WorldRight(), dy*dt);
 
-	if (dx != 0)
-	{
-		float DeltaX = (float)dx * Sensitivity;
+	focus = qx.Transform(focus);
+	focus = qy.Transform(focus);
 
-		X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-		Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-		Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-	}
+	cameraMain->frustum.SetPos(focus + reference);
 
-	if (dy != 0)
-	{
-		float DeltaY = (float)dy * Sensitivity;
-
-		Y = rotate(Y, DeltaY, X);
-		Z = rotate(Z, DeltaY, X);
-
-		if (Y.y < 0.0f)
-		{
-			Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
-			Y = cross(Z, X);
-		}
-	}
-	Position = Reference + Z * length(Position);
+	LookAt(reference);
 }
-*/
+
 void ModuleCamera3D::Zoom(float dt)
 {
 	float distance = reference.Distance(cameraMain->frustum.Pos());
@@ -296,48 +288,24 @@ void ModuleCamera3D::Zoom(float dt)
 	cameraMain->frustum.SetPos(newPos);
 }
 
-/*
-// -----------------------------------------------------------------
-void ModuleCamera3D::Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference)
+void ModuleCamera3D::Focus(GameObject* gameObject)
 {
-	this->Position = Position;
-	this->Reference = Reference;
-
-	Z = normalize(Position - Reference);
-	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
-	Y = cross(Z, X);
-
-	if(!RotateAroundReference)
+	if (gameObject != nullptr)
 	{
-		this->Reference = this->Position;
-		this->Position += Z * 0.05f;
+		float cameraDistance = Length({ 30.0f, 30.0f, 30.0f });
+
+		ComponentTransform* gameObjectTrasnform = (ComponentTransform*)gameObject->GetComponent(ComponentType::Transform);
+
+		float3 translation, scale;
+		Quat rotation;
+
+		gameObjectTrasnform->GetGlobalTransform().Decompose(translation, rotation, scale);
+
+		float3 pos = { translation.x, translation.y, translation.z };
+
+		reference = pos;
+
+		Look(reference, cameraDistance);
 	}
 
-	CalculateViewMatrix();
 }
-
-// -----------------------------------------------------------------
-void ModuleCamera3D::LookAt( const vec3 &Spot)
-{
-	Reference = Spot;
-
-	Z = normalize(Position - Reference);
-	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
-	Y = cross(Z, X);
-
-	CalculateViewMatrix();
-}
-
-// -----------------------------------------------------------------
-float* ModuleCamera3D::GetViewMatrix()
-{
-	return &ViewMatrix;
-}
-
-// -----------------------------------------------------------------
-void ModuleCamera3D::CalculateViewMatrix()
-{
-	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
-	ViewMatrixInverse = inverse(ViewMatrix);
-}*/
-
