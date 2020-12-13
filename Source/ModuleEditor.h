@@ -81,6 +81,9 @@ public:
 
 	void DrawAssetDirectory(const char* directory, const char* extension);
 
+	//Guizmos
+	void ImGuizmoUpdate();
+
 private:
 
 	std::vector<char*> stringLog;

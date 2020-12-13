@@ -801,6 +801,7 @@ void ModuleEditor::InspectorComponents(GameObject* selectedGameObject)
 
 void ModuleEditor::InspectorShowTransform(ComponentTransform* componentTransform)
 {
+
 	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		float3 translation, scale;
@@ -1165,4 +1166,26 @@ void ModuleEditor::ClearLog()
 	stringLog.clear();
 
 	scroll = true;
+}
+
+void ModuleEditor::ImGuizmoUpdate()
+{
+	/*GameObject* tmp = App->scene->GetSelectedObject();
+
+	if (tmp != nullptr)
+	{
+		ComponentTransform* selectedTransform = (ComponentTransform*)tmp;
+
+		float4x4 viewMatrix = App->camera->GetCamera()->GetGLViewMatrix();
+		float4x4 projectionMatrix = App->camera->GetCamera()->GetGLProjectionMatrix();
+		float4x4 selectedMatrix = selectedTransform->GetGlobalTransform().Transposed();
+
+		float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+		ImGuizmo::DecomposeMatrixToComponents(, matrixTranslation, matrixRotation, matrixScale);
+		ImGui::InputFloat3("Tr", matrixTranslation, 3);
+		ImGui::InputFloat3("Rt", matrixRotation, 3);
+		ImGui::InputFloat3("Sc", matrixScale, 3);
+		ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, ;
+
+	}*/
 }

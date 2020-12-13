@@ -256,16 +256,6 @@ GameObject* ModuleScene::FindGOFromUID(GameObject* currGO, unsigned int UID)
 	return nullptr;
 }
 
-void ModuleScene::ImGuizmoUpdate()
-{
-	if (selectedObject != nullptr)
-	{
-
-
-
-	}
-}
-
 void ModuleScene::CreateCamera(const char* name)
 {
 

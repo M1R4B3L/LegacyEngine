@@ -39,8 +39,6 @@ public:
 	unsigned int GetRandomInt();
 	GameObject* FindGOFromUID(GameObject* currGO, unsigned int UID);
 
-	void ImGuizmoUpdate();
-
 	void CreateCamera(const char* name);
 
 private:
