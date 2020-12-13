@@ -22,18 +22,33 @@ You can find our engine code in here:
 ### Keyboard & Mouse
 - LShift + Movement Action: Multiplies the speed. (No zoom or rotation)
 - Left Alt + LeftDrag: Rotates around reference.
-- Left Alt + RightDrag: Zoom IN -> Mouse Down Zoom OUT -> Mouse UP.
 
 ### Engine Info/Controls
-The Main Menu bar at the top has diferents submenus that will allow you open diferent windows, create primitives...
+- The Main Menu bar at the top 
+	- File 
+	- Edit (change engine configurations)
+	- Create (create objects, cameras...)
+	- Window (manage engine windows)
+	- Help (information about the engine)
 
-The Hierarchy menu creates a list of all the meshes in the scene, left click one, will open in the Inspector menu it's components.
+- Hierarchy (Shows the list of objects in the current scene)
+	- Left click (Select/Drag&Drop)
+	- Right click (Delete/Create child)
 
-The Console menu will tell you internal information of the process and some importing information.
+- Middle bar (Plays and Pauses the scene)
 
-Drag & drop different .fbx files, .png or .dds textures. All the accepted meshed must be triangulated (Made by triangles).
+- Inspector (Game object components, not all the objects have all the componets. You can remove/add them)
+	- Transform (Position, Rotation & Scale)
+	- Mesh
+	- Material (texture)
+	- Camera
+
+- Assets (List with all the assests save in the assets folder)
+
+- Console (Shows debug information)
 
 ### Special information
-The fish.fbx is small!!!!
 
-We don't have working textures.
+- City_building_10/City_building_16/City_building_17 we don't handle 2 meshes 
+
+

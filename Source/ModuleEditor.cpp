@@ -159,7 +159,7 @@ void ModuleEditor::MenuBar()
 {
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
-			if (ImGui::MenuItem("New Scene", "")) {
+			if (ImGui::MenuItem("New Scene")) {
 			}
 			if (ImGui::MenuItem("Load Scene", "")) {
 			}
@@ -167,15 +167,6 @@ void ModuleEditor::MenuBar()
 			ImGui::Separator();
 			ImGui::Spacing();
 			if (ImGui::MenuItem("Save Scene", "")) {
-			}
-			ImGui::Spacing();
-			ImGui::Separator();
-			ImGui::Spacing();
-			if (ImGui::MenuItem("New Project", "")) {
-			}
-			if (ImGui::MenuItem("Open Project", "")) {
-			}
-			if (ImGui::MenuItem("Save Project", "")) {
 			}
 			ImGui::Spacing();
 			ImGui::Separator();
@@ -833,9 +824,9 @@ void ModuleEditor::InspectorShowTransform(ComponentTransform* componentTransform
 void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 {
 
-	ImGui::Checkbox("##Mesh", &((ComponentMesh*)componentMesh)->activeMesh);
+	//ImGui::Checkbox("##Mesh", &((ComponentMesh*)componentMesh)->activeMesh);
 
-	ImGui::SameLine();
+	//ImGui::SameLine();
 	if (ImGui::CollapsingHeader("Mesh", &removeMesh, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Text("Vertex:");
