@@ -50,6 +50,7 @@ public:
 	bool projectWindow;
 	bool demoWindow;
 	bool sceneWindow;
+	bool timeWindow;
 
 	char org[128];
 
@@ -65,6 +66,7 @@ public:
 	void WindowProject();
 	void WindowDemo();
 	void WindowScene();
+	void WindowTime();
 
 	void AddLog(const char*);
 	void ClearLog();

@@ -21,7 +21,7 @@
 #include "ComponentCamera.h"
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
-aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(false), 
+aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(false), timeWindow(true),
 component(0), removeMaterial(true), removeMesh(true), removeCamera(true),
 org("CITM"), scroll(true)
 {}
@@ -71,6 +71,7 @@ update_status ModuleEditor::Update(float dt)
 	ImGuizmo::BeginFrame();
 
 	WindowDocking();
+	WindowTime();
 	WindowScene();
 	WindowAbout();
 	WindowConfig();
@@ -1049,6 +1050,21 @@ void ModuleEditor::WindowScene()
 
 			ImGui::Image((ImTextureID)App->renderer3D->sceneTextureBuffer, { ImGui::GetWindowWidth(),ImGui::GetWindowHeight() }, ImVec2(0,1), ImVec2(1,0));
 			ImGui::EndChild();
+		}
+		ImGui::End();
+	}
+}
+
+void ModuleEditor::WindowTime()
+{
+	if (timeWindow)
+	{
+		if (ImGui::Begin("Time", &timeWindow, ImGuiWindowFlags_NoDecoration)) {
+
+			ImGui::Text("Time Since Start: ");
+			ImGui::SameLine();
+			float time = SDL_GetTicks()/1000.0f;
+			ImGui::TextColored(ImVec4(0,1,1,1), "%.3f", time);
 		}
 		ImGui::End();
 	}
