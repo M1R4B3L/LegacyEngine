@@ -11,7 +11,7 @@ ComponentTransform::ComponentTransform(GameObject* go) : Component(go,ComponentT
 }
 
 ComponentTransform::ComponentTransform(GameObject* go, float3 iTranslate, float3 iScale, Quat iRotation) : Component(go, ComponentType::Transform), 
-translation(iTranslate), scale(iScale), rotation(iRotation), globalFlag(false)
+translation(iTranslate), scale(iScale), rotation(iRotation), globalFlag(true)
 {
 	localTransform.SetIdentity();
 	globalTransform.SetIdentity();
@@ -112,7 +112,7 @@ void ComponentTransform::Load(JSON_Object* componentObj)
 {
 	JSON_Array* translationArry = json_object_get_array(componentObj,"Translation");
 	float3 translation(json_array_get_number(translationArry, 0), json_array_get_number(translationArry, 1), json_array_get_number(translationArry, 2));
-	JSON_Array* rotationArry = json_object_get_array(componentObj, "Translation");
+	JSON_Array* rotationArry = json_object_get_array(componentObj, "Rotation");
 	Quat rotation(json_array_get_number(translationArry, 0), json_array_get_number(rotationArry, 1), json_array_get_number(rotationArry, 2), json_array_get_number(rotationArry, 3));
 	JSON_Array* scaleArry = json_object_get_array(componentObj, "Scale");
 	float3 scale(json_array_get_number(scaleArry, 0), json_array_get_number(scaleArry, 1), json_array_get_number(scaleArry, 2));

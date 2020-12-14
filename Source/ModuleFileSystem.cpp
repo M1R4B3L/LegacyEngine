@@ -3,6 +3,8 @@
 #include "physfs.h"
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <fstream>
 
 
 ModuleFileSystem::ModuleFileSystem(bool startEnable) : Module(startEnable)
@@ -11,7 +13,7 @@ ModuleFileSystem::ModuleFileSystem(bool startEnable) : Module(startEnable)
 
 	//Setting the working directory as the writing directory
 	if (PHYSFS_setWriteDir(".") == 0)
-		LOG("File System error while creating write dir: %s\n", PHYSFS_getLastError());
+		LOG("File System error while creating write dir: %s\n", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 
 	//Add the current working directory to the path
 	AddPath(".");
@@ -36,7 +38,7 @@ bool ModuleFileSystem::AddPath(const char * path)
 	bool ret = false;
 	if (!PHYSFS_mount(path, nullptr, 1)) 
 	{
-		LOG("Error while setting path (%s): %s\n", path, PHYSFS_getLastError());
+		LOG("Error while setting path (%s): %s\n", path, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 	}
 	else
 		ret = true;
@@ -55,15 +57,24 @@ bool ModuleFileSystem::CreateDir(const char* dir)
 }
 
 bool ModuleFileSystem::IsDirectory(const char * file) {
-	return PHYSFS_isDirectory(file) != 0;
+	PHYSFS_Stat stat;
+	if (!PHYSFS_stat(file, &stat))
+		LOG("Error obtaining file/dir stat: %s", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
+	return (stat.filetype == PHYSFS_FileType::PHYSFS_FILETYPE_DIRECTORY);
 }
 
 void ModuleFileSystem::CreateLibraryDirectories()
 {
 	CreateDir(LIBRARY_PATH);
+	CreateDir(MODELS_PATH);
 	CreateDir(MESHES_PATH);
 	CreateDir(TEXTURES_PATH);
 	CreateDir(SHADERS_PATH);
+}
+
+bool ModuleFileSystem::FileExists(const char* file)
+{
+	return PHYSFS_exists(file) != 0;
 }
 
 unsigned int ModuleFileSystem::Load(const char* path, const char* file, char** buffer) const
@@ -86,7 +97,7 @@ unsigned int ModuleFileSystem::Load(const char* file, char** buffer) const
 			readedSize = (unsigned int)PHYSFS_readBytes(fsFile, *buffer, fileSize);
 			if (readedSize != fileSize)
 			{
-				LOG("Error while reading from vertex file %s: %s\n", file, PHYSFS_getLastError());
+				LOG("Error while reading from vertex file %s: %s\n", file, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 				delete[] (*buffer);
 				*buffer = nullptr;
 			}
@@ -96,10 +107,10 @@ unsigned int ModuleFileSystem::Load(const char* file, char** buffer) const
 			}
 		}
 		if (PHYSFS_close(fsFile) == 0)
-			LOG("Error while closing vertex file %s: %s\n", file, PHYSFS_getLastError());
+			LOG("Error while closing vertex file %s: %s\n", file, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 	}
 	else {
-		LOG("Error opening  file %s: %s\n",file, PHYSFS_getLastError());
+		LOG("Error opening  file %s: %s\n",file, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 	}
 	
 	return readedSize;
@@ -114,10 +125,10 @@ unsigned int ModuleFileSystem::Save(const char* file, const void* buffer, unsign
 
 	if (fs_file != nullptr)
 	{
-		uint written = (uint)PHYSFS_write(fs_file, (const void*)buffer, 1, size);
+		uint written = (uint)PHYSFS_writeBytes(fs_file, (const void*)buffer,size);
 		if (written != size)
 		{
-			LOG("[error] File System error while writing to file %s: %s", file, PHYSFS_getLastError());
+			LOG("[error] File System error while writing to file %s: %s", file, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 		}
 		else
 		{
@@ -136,10 +147,10 @@ unsigned int ModuleFileSystem::Save(const char* file, const void* buffer, unsign
 		}
 
 		if (PHYSFS_close(fs_file) == 0)
-			LOG("[error] File System error while closing file %s: %s", file, PHYSFS_getLastError());
+			LOG("[error] File System error while closing file %s: %s", file, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 	}
 	else
-		LOG("[error] File System error while opening file %s: %s", file, PHYSFS_getLastError());
+		LOG("[error] File System error while opening file %s: %s", file, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 
 	return ret;
 }
@@ -167,8 +178,101 @@ bool ModuleFileSystem::Remove(const char* file)
 			ret = true;
 		}
 		else
-			LOG("File System error while trying to delete [%s]: %s", file, PHYSFS_getLastError());
+			LOG("File System error while trying to delete [%s]: %s", file, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 	}
 
 	return ret;
+}
+
+bool ModuleFileSystem::Start()
+{
+	return true;
+}
+
+update_status ModuleFileSystem::Update(float dt)
+{
+	return update_status::UPDATE_CONTINUE;
+}
+
+bool ModuleFileSystem::CleanUp()
+{
+	return true;
+}
+
+void ModuleFileSystem::SplitFilePath(const char* full_path, std::string* path, std::string* file, std::string* extension) const
+{
+	if (full_path != nullptr)
+	{
+		std::string full(full_path);
+		size_t pos_separator = full.find_last_of("\\/");
+		size_t pos_dot = full.find_last_of(".");
+
+		if (path != nullptr)
+		{
+			if (pos_separator < full.length())
+				*path = full.substr(0, pos_separator + 1);
+			else
+				path->clear();
+		}
+
+		if (file != nullptr)
+		{
+			if (pos_separator < full.length())
+				*file = full.substr(pos_separator + 1, pos_dot - pos_separator - 1);
+			else
+				*file = full.substr(0, pos_dot);
+		}
+
+		if (extension != nullptr)
+		{
+			if (pos_dot < full.length())
+				*extension = full.substr(pos_dot + 1);
+			else
+				extension->clear();
+		}
+	}
+}
+
+std::string ModuleFileSystem::NormalizePath(const char* path)
+{
+	std::string filePath = path;
+	std::replace(filePath.begin(), filePath.end(), '\\', '/');
+	return filePath;
+}
+
+bool ModuleFileSystem::DuplicateFile(const char* file, const char* dstFolder, std::string& relativePath)
+{
+	std::string fileStr, extensionStr;
+	SplitFilePath(file, nullptr, &fileStr, &extensionStr);
+
+	relativePath = relativePath.append(dstFolder).append("/") + fileStr.append(".") + extensionStr;
+	std::string finalPath = std::string(*PHYSFS_getSearchPath()).append("/") + relativePath;
+
+	return DuplicateFile(file, finalPath.c_str());
+}
+
+bool ModuleFileSystem::DuplicateFile(const char* srcFile, const char* dstFile)
+{
+	//TODO: Redo this function (maybe do it just using physfs?)
+	std::ifstream src;
+	src.open(srcFile, std::ios::binary);
+	bool srcOpen = src.is_open();
+	std::ofstream  dst(dstFile, std::ios::binary);
+	bool dstOpen = dst.is_open();
+
+	dst << src.rdbuf();
+
+	src.close();
+	dst.close();
+
+	if (srcOpen && dstOpen)
+	{
+		LOG("[success] File Duplicated Correctly");
+		return true;
+	}
+	else
+	{
+		LOG("[error] File could not be duplicated");
+		return false;
+	}
 }

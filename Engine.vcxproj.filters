@@ -379,6 +379,18 @@
     <ClInclude Include="Source\Dependencies\parson\include\parson.h">
       <Filter>Parson</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ResourceTexture.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ResourceMesh.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ResourceModel.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source/Application.cpp" />
@@ -600,6 +612,18 @@
     </ClCompile>
     <ClCompile Include="Source\Dependencies\parson\src\parson.c">
       <Filter>Parson</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Resource.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ResourceTexture.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ResourceMesh.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ResourceModel.cpp">
+      <Filter>Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

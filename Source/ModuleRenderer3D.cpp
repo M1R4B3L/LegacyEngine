@@ -17,6 +17,7 @@
 #include "Dependencies/MathGeolib/MathGeoLib.h"
 #include "ModuleScene.h"
 #include "ComponentCamera.h"
+#include "ResourceMesh.h"
 
 ModuleRenderer3D::ModuleRenderer3D(bool startEnable) : Module(startEnable),
 wireframes(false)
@@ -265,29 +266,29 @@ void ModuleRenderer3D::SetglEnbleFlags(GLenum flag, bool activate)
 	}
 }
 
-unsigned int ModuleRenderer3D::VAOFromMesh(Mesh mesh)
+unsigned int ModuleRenderer3D::VAOFromMesh(Mesh* mesh)
 {
-	glGenVertexArrays(1, &mesh.VAO);
-	glBindVertexArray(mesh.VAO);
+	glGenVertexArrays(1, &mesh->VAO);
+	glBindVertexArray(mesh->VAO);
 
-	glGenBuffers(1, &mesh.VBO);
-	glGenBuffers(1, &mesh.EBO);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
+	glGenBuffers(1, &mesh->VBO);
+	glGenBuffers(1, &mesh->EBO);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
 
-	glBufferData(GL_ARRAY_BUFFER, mesh.numVertices * sizeof(float) * 3, mesh.vertexData, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, mesh->numVertices * sizeof(float) * 3, mesh->vertexData, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.numIndices * sizeof(unsigned int), mesh.indexData, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->numIndices * sizeof(unsigned int), mesh->indexData, GL_STATIC_DRAW);
 
 	// vertex positions
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 
-	if (mesh.numTexcoords > 0) {
+	if (mesh->numTexcoords > 0) {
 		uint TexCoordBuffer;
 		glGenBuffers(1, &TexCoordBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, TexCoordBuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.numTexcoords, mesh.texturecoordsData, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->numTexcoords, mesh->texturecoordsData, GL_STATIC_DRAW);
 		//glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
 		// vertex texture coords
@@ -307,7 +308,7 @@ unsigned int ModuleRenderer3D::VAOFromMesh(Mesh mesh)
 	}*/
 
 	glBindVertexArray(0);
-	return mesh.VAO;
+	return mesh->VAO;
 }
 
 void ModuleRenderer3D::DeleteBuffer(unsigned int * VAO)

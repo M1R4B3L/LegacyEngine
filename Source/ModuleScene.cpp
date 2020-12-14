@@ -33,8 +33,8 @@ bool ModuleScene::Start()
 	bool ret = true;
 	root = new GameObject(nullptr, "Scene");
 
-	Importer::ImportDroped("Assets/Baker_house/BakerHouse.fbx");
-
+	Importer::ImportDroped("test/Baker_house/BakerHouse.fbx");
+	LoadScene("BakerHouse.meta");
 	return ret;
 }
 
@@ -170,8 +170,9 @@ void ModuleScene::SaveScene()
 
 bool ModuleScene::LoadScene(const char* fileName)
 {
+	//TODO: a assets hi ha d'haver el metafile k conte el uid del scene de library
 	char* buffer = nullptr;
-	App->fileSystem->Load("Assetes/", fileName, &buffer);
+	App->fileSystem->Load("Assets/", fileName, &buffer);
 	JSON_Value* rootValue = json_parse_string(buffer);
 	if (!rootValue)
 	{
@@ -188,19 +189,25 @@ bool ModuleScene::LoadScene(const char* fileName)
 	JSON_Array* goArray = json_object_get_array(node, "GameObjects");
 	JSON_Object* jsonRootGO = json_array_get_object(goArray, 0);
 	unsigned int rootID = json_object_get_number(jsonRootGO, "ParentUID");
+
 	if (rootID != 0)
 	{
 		LOG("Error loading the json scene: The first Game Object of the array is not the root");
 		json_value_free(rootValue);
 		return false;
 	}
-	//El root no li llegeixo el transform (ns ni si en te)
-	root = new GameObject(nullptr, json_object_get_number(jsonRootGO, "UID"), json_object_get_string(jsonRootGO, "Name"));
+	//El root no li llegeixo el transform (ns ni si en te)//TODO: !!!! CHANGE THE ROOTS LOADING SCENES
+	//root = new GameObject(nullptr, json_object_get_number(jsonRootGO, "UID"), json_object_get_string(jsonRootGO, "Name"));
+	GameObject * rootImport = new GameObject(root, json_object_get_number(jsonRootGO, "UID"), json_object_get_string(jsonRootGO, "Name"));
 	GameObject* currGO;
+
 	for (int i = 1; i < json_array_get_count(goArray); ++i) 
 	{
 		JSON_Object* jsonGO = json_array_get_object(goArray, i);
-		currGO = new GameObject(FindGOFromUID(root, json_object_get_number(jsonGO, "ParentUID")), json_object_get_number(jsonGO, "UID"), json_object_get_string(jsonGO, "Name"));
+		if(json_object_get_number(jsonGO, "ParentUID") != 0)
+			currGO = new GameObject(FindGOFromUID(root, json_object_get_number(jsonGO, "ParentUID")), json_object_get_number(jsonGO, "UID"), json_object_get_string(jsonGO, "Name"));
+		else
+			currGO = new GameObject(rootImport, json_object_get_number(jsonGO, "UID"), json_object_get_string(jsonGO, "Name"));
 		JSON_Array* compArray = json_object_get_array(jsonGO, "Components");
 		for (int j = 0; j < json_array_get_count(compArray); ++j) 
 		{

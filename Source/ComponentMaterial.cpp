@@ -1,18 +1,25 @@
 #include "ComponentMaterial.h"
 #include "Application.h"
-#include "ModuleRenderer3D.h"
+#include "ModuleResources.h"
 
-ComponentMaterial::ComponentMaterial():Component(ComponentType::Material),textureID(0)
+
+ComponentMaterial::ComponentMaterial() : Component(ComponentType::Material), resourceID(0)
 {
 }
 
-ComponentMaterial::ComponentMaterial(unsigned int texture): Component(ComponentType::Material), textureID(texture) {}
+ComponentMaterial::ComponentMaterial(unsigned int texture): Component(ComponentType::Material), resourceID(texture)
+{
+	App->resources->RequestResource(resourceID, Resource::Type::TEXTURE);
+}
 
-ComponentMaterial::~ComponentMaterial() { App->renderer3D->DeleteTexture(&textureID); }
+ComponentMaterial::~ComponentMaterial() {
+	if (resourceID != 0)
+		App->resources->UnrequestResource(resourceID);
+}
 
 const unsigned int ComponentMaterial::GetID() const
 {
-	return textureID;
+	return resourceID;
 }
 
 void ComponentMaterial::Save(JSON_Array* componentsArry) const
@@ -20,12 +27,12 @@ void ComponentMaterial::Save(JSON_Array* componentsArry) const
 	json_array_append_value(componentsArry, json_value_init_object());
 	JSON_Object* jsonCMa = json_array_get_object(componentsArry, json_array_get_count(componentsArry) - 1);
 	json_object_set_number(jsonCMa, "Type", (int)ComponentType::Material);
-	//TODO:FALTA EL RESOURCE MANAGER PER FER EL SAVE DEL UID
-	//json_object_set_number(jsonCMa, "ResourceUID", resourceUID);
+	json_object_set_number(jsonCMa, "ResourceUID", resourceID);
 }
 
 void ComponentMaterial::Load(JSON_Object* componentObj)
 {
-	//TODO:FALTA EL RESOURCE MANAGER PER FER EL GET DEL UID
-	//filesystem/Resources->json_object_get_number(componentObj, "ResourceUID");
+	resourceID = json_object_get_number(componentObj, "ResourceUID");
+	if (resourceID != 0)
+		App->resources->RequestResource(resourceID, Resource::Type::TEXTURE);
 }

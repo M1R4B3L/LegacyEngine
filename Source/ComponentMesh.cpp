@@ -1,37 +1,22 @@
 #include "ComponentMesh.h"
 #include "Application.h"
-#include "ModuleRenderer3D.h"
 #include "Application.h"
-#include "Dependencies/MathGeolib/MathGeoLib.h"
-#include "ModuleFileSystem.h"
+#include "ModuleResources.h"
 
 
-ComponentMesh::ComponentMesh(): Component(ComponentType::Mesh),VAO(0),numIndices(0),numVertices(0)
+ComponentMesh::ComponentMesh(): Component(ComponentType::Mesh), resourceID(0), activeMesh(true){}
+
+ComponentMesh::ComponentMesh(unsigned int uid) : Component(ComponentType::Mesh), resourceID(uid), activeMesh(true) { App->resources->RequestResource(resourceID, Resource::Type::MESH); }
+
+ComponentMesh::~ComponentMesh() 
 {
+	if (resourceID != 0)
+		App->resources->UnrequestResource(resourceID);
 }
 
-ComponentMesh::ComponentMesh(unsigned int iVAO, unsigned int vertices, unsigned int indices,AABB _aabb) : Component(ComponentType::Mesh), VAO(iVAO), numIndices(indices), numVertices(vertices), aabb(_aabb){}
-
-ComponentMesh::~ComponentMesh() { App->renderer3D->DeleteBuffer(&VAO); }
-
-const unsigned int ComponentMesh::GetVAO() const
+const unsigned int ComponentMesh::GetID() const
 {
-	return VAO;
-}
-
-const unsigned int ComponentMesh::GetNumIndices() const
-{
-	return numIndices;
-}
-
-const unsigned int ComponentMesh::GetNumVertex() const
-{
-	return numVertices;
-}
-
-const AABB& ComponentMesh::GetAABB() const
-{
-	return aabb;
+	return resourceID;
 }
 
 bool ComponentMesh::IsActive() const
@@ -49,12 +34,14 @@ void ComponentMesh::Save(JSON_Array* componentsArry) const
 	json_array_append_value(componentsArry, json_value_init_object());
 	JSON_Object* jsonCM = json_array_get_object(componentsArry, json_array_get_count(componentsArry) - 1);
 	json_object_set_number(jsonCM, "Type", (int)ComponentType::Mesh);
-	//TODO:!!!! SAVE DELS RESOURCES
-	//json_object_set_number(jsonCM, "ResourceUID", ResourceUID);
+	json_object_set_number(jsonCM, "ResourceUID", resourceID);
+	json_object_set_boolean(jsonCM, "Active", activeMesh);
 }
 
 void ComponentMesh::Load(JSON_Object* componentObj)
 {
-	//TODO:!!!! LOAD DELS RESOURCES
-	//Resource/filesystem->Load(json_object_get_number(componentObj, "ResourceUID"));
+	activeMesh = json_object_get_boolean(componentObj, "Active");
+	resourceID = json_object_get_number(componentObj, "ResourceUID");
+	if(resourceID != 0)
+		App->resources->RequestResource(resourceID, Resource::Type::MESH);
 }

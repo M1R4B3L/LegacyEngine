@@ -8,7 +8,7 @@ class ComponentMaterial : public Component
 {
 public:
     ComponentMaterial();
-    ComponentMaterial(unsigned int texture);
+    ComponentMaterial(unsigned int resourceID);
     ~ComponentMaterial();
 
     const unsigned int GetID() const;
@@ -17,5 +17,5 @@ public:
     void Load(JSON_Object* componentObj) override;
 
 private:
-    unsigned int textureID;
+    unsigned int resourceID;
 };

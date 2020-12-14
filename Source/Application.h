@@ -17,6 +17,7 @@ class ModuleRenderer3D;
 class ModuleCamera3D;
 class ModuleEditor;
 class ModuleFileSystem;
+class ModuleResources;
 
 class Application
 {
@@ -29,6 +30,7 @@ public:
 	ModuleCamera3D* camera = nullptr;
 	ModuleEditor* editor = nullptr;
 	ModuleFileSystem* fileSystem = nullptr;
+	ModuleResources* resources = nullptr;
 
 	std::array<float,50>fpsLog;
 	std::array<float,50>msLog;

@@ -18,6 +18,8 @@
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
 #include "ComponentCamera.h"
+#include "ModuleResources.h"
+#include "ResourceMesh.h"
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
 aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true),
@@ -750,7 +752,8 @@ void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 	{
 		ImGui::Text("Number of vertex: ");
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u", componentMesh->GetNumVertex());
+		ResourceMesh * resource = (ResourceMesh*)App->resources->GetResource(componentMesh->GetID());
+		ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u", resource->numVertices);
 
 		ImGui::Checkbox("AABB",&App->scene->GetSelectedObject()->showAABB);
 		ImGui::Checkbox("OBB", &App->scene->GetSelectedObject()->showOBB);

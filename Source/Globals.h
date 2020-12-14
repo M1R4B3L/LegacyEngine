@@ -10,7 +10,7 @@
 #define LIBRARY_PATH "Library/"
 #define MESHES_PATH "Library/Meshes/"
 #define TEXTURES_PATH "Library/Textures/"
-//#define MODELS_PATH "Library/Models/"
+#define MODELS_PATH "Library/Models/"
 #define SHADERS_PATH "Library/Shaders/"
 //#define SCENES_PATH "Library/Scenes/"
 

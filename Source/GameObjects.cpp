@@ -8,6 +8,9 @@
 #include "Globals.h"
 #include "Dependencies/MathGeolib/MathGeoLib.h"
 #include "ModuleScene.h"
+#include "ModuleResources.h"
+#include "ResourceMesh.h"
+#include "ResourceTexture.h"
 
 
 GameObject::GameObject() : parent(nullptr), name("No name"), uid(App->scene->GetRandomInt())
@@ -72,19 +75,22 @@ void GameObject::Draw()
 {
 	const ComponentTransform* transformComponent = (ComponentTransform*)GetComponent(ComponentType::Transform);
 	const ComponentMesh* meshComponent = (ComponentMesh*)GetComponent(ComponentType::Mesh);
+	const ComponentMaterial* materialComponent = (ComponentMaterial*)GetComponent(ComponentType::Material);
 	const ComponentCamera* cameraComponent = (ComponentCamera*)GetComponent(ComponentType::Camera);
 
 	if (meshComponent && transformComponent)
 	{
-		unsigned int mesh = 0;
-		unsigned int material = 0;
-		mesh = meshComponent->GetVAO();
+		ResourceMesh* meshResource = (ResourceMesh*)App->resources->GetResource(meshComponent->GetID());
 
 		const ComponentMaterial* materialComponent = (ComponentMaterial*)GetComponent(ComponentType::Material);
-		if (materialComponent)
-			material = materialComponent->GetID();
+		unsigned int material = 0;
+		if (materialComponent) 
+		{
+			ResourceTexture* textureResource = (ResourceTexture*)App->resources->GetResource(materialComponent->GetID());
+			material = textureResource->gpuID;
+		}
 		
-		App->renderer3D->Draw(transformComponent->GetGlobalTransform().Transposed(), mesh, meshComponent->GetNumIndices(), material);
+		App->renderer3D->Draw(transformComponent->GetGlobalTransform().Transposed(), meshResource->VAOID, meshResource->numIndices, material);
 
 		if (showAABB)
 		{
@@ -170,7 +176,8 @@ void GameObject::GenerateAABB()
 
 	if (mesh)
 	{
-		obb = mesh->GetAABB();
+		ResourceMesh* meshResource = (ResourceMesh*)App->resources->GetResource(mesh->GetID());
+		obb = meshResource->aabb;
 		obb.Transform(((ComponentTransform*)GetComponent(ComponentType::Transform))->GetGlobalTransform());
 
 		aabb.SetNegativeInfinity();

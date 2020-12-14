@@ -7,6 +7,7 @@
 #include "ModuleScene.h"
 #include "ModuleEditor.h"
 #include "ModuleFileSystem.h"
+#include "ModuleResources.h"
 
 #include <list>
 
@@ -17,6 +18,7 @@ closeApp(false)
 	window = new ModuleWindow(this);
 	input = new ModuleInput(this);
 	scene = new ModuleScene(this);
+	resources = new ModuleResources(this);
 	renderer3D = new ModuleRenderer3D(this);
 	camera = new ModuleCamera3D(this);
 	editor = new ModuleEditor(this);
@@ -31,6 +33,7 @@ closeApp(false)
 	AddModule(camera);
 	AddModule(input);
 	AddModule(fileSystem);
+	AddModule(resources);
 	// Scenes
 	AddModule(scene);
 	AddModule(editor);
