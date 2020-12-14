@@ -182,9 +182,9 @@ GameObject* Importer::Models::ParseFbxNode(aiNode* node, const aiScene* scene, c
 					path += file + ".meta";
 					if (!App->fileSystem->FileExists(path.c_str())) 
 					{
-
-						App->fileSystem->DuplicateFile(newfilePath.c_str(), "Assets/Textures/", path);
-						unsigned int resourceID = App->resources->ImportFile(path.c_str(), Resource::Type::TEXTURE);
+						std::string relativePath;
+						App->fileSystem->DuplicateFile(newfilePath.c_str(), "Assets/Textures/", relativePath);
+						unsigned int resourceID = App->resources->ImportFile(relativePath.c_str(), Resource::Type::TEXTURE);
 
 						ComponentMaterial* materialComponent = new ComponentMaterial(resourceID);
 						go->AddComponent(materialComponent);

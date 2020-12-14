@@ -6,7 +6,7 @@
 #include "Importer.h"
 #include "ModuleRenderer3D.h"
 
-ResourceTexture::ResourceTexture(unsigned int id) : Resource(id, type){}
+ResourceTexture::ResourceTexture(unsigned int id) : Resource(id, Resource::Type::TEXTURE){}
 
 ResourceTexture::~ResourceTexture() { App->renderer3D->DeleteTexture(&gpuID); }
 
