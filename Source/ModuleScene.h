@@ -17,7 +17,7 @@ public:
 	~ModuleScene();
 
 	bool Start();
-	update_status Update(float dt);
+	update_status Update(float dt);	
 	bool CleanUp();
 
 	void UpdateAllGameObjects(float dt);
@@ -38,6 +38,8 @@ public:
 
 	unsigned int GetRandomInt();
 	GameObject* FindGOFromUID(GameObject* currGO, unsigned int UID);
+
+	void CreateCamera(const char* name);
 
 private:
 

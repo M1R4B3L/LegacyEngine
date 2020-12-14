@@ -49,6 +49,8 @@ public:
 	bool hierarchyWindow;
 	bool projectWindow;
 	bool demoWindow;
+	bool sceneWindow;
+	bool timeWindow;
 
 	char org[128];
 
@@ -63,6 +65,8 @@ public:
 	void WindowHierarchy();
 	void WindowProject();
 	void WindowDemo();
+	void WindowScene();
+	void WindowTime();
 
 	void AddLog(const char*);
 	void ClearLog();
@@ -75,11 +79,22 @@ public:
 	void InspectorShowMaterial(ComponentMaterial* componentMaterial);
 	void InspectorShowCamera(ComponentCamera* componentCamera);
 
+	void DrawAssetDirectory(const char* directory, const char* extension);
+
+	//Guizmos
+	void ImGuizmoUpdate();
+
 private:
 
 	std::vector<char*> stringLog;
 	bool scroll;
 	bool dragDrop;
+
+	int component;
+
+	bool removeMaterial;
+	bool removeMesh;
+	bool removeCamera;
 
 	GameObject* dragDropObject = nullptr;
 

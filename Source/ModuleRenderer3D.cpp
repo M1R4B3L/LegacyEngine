@@ -171,6 +171,8 @@ bool ModuleRenderer3D::CleanUp()
 {
 	LOG("Destroying 3D Renderer");
 
+	DeleteBuffers();
+
 	glDeleteShader(defaultShader->ID); //TODO: maybe on the shader destructor
 	RELEASE(defaultShader);
 	SDL_GL_DeleteContext(context);
@@ -211,7 +213,6 @@ void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint t
 
 void ModuleRenderer3D::OnResize(int width, int height)
 {
-
 	glViewport(0, 0, width, height);
 	camera = App->camera->GetCamera();
 	camera->SetHoritzontalAspectRatio((float)width / (float)height);
@@ -222,6 +223,8 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	CreateFrameBuffer();
 }
 
 const bool ModuleRenderer3D::GetWireframes()
@@ -325,26 +328,28 @@ void ModuleRenderer3D::DrawAABB(AABB& aabb)
 {
 	float3 corners[8];
 	aabb.GetCornerPoints(corners);
-	DrawWireCube(corners);
+	DrawWireCube(corners, Green);
 }
 
 void ModuleRenderer3D::DrawOBB(OBB& obb)
 {
 	float3 corners[8];
 	obb.GetCornerPoints(corners);
-	DrawWireCube(corners);
+	DrawWireCube(corners, Red);
 }
 
 void ModuleRenderer3D::DrawFrustum(Frustum& frustum)
 {
 	float3 corners[8];
 	frustum.GetCornerPoints(corners);
-	DrawWireCube(corners);
+	DrawWireCube(corners, Blue);
 }
 
-void ModuleRenderer3D::DrawWireCube(float3* vertex)
+void ModuleRenderer3D::DrawWireCube(float3* vertex, Color color )
 {
 	glBegin(GL_LINES);
+
+	glColor4f(color.r, color.g, color.b, color.a);
 
 	//Between-planes right
 	glVertex3fv((GLfloat*)&vertex[1]);
@@ -383,5 +388,44 @@ void ModuleRenderer3D::DrawWireCube(float3* vertex)
 	glVertex3fv((GLfloat*)&vertex[6]);
 
 	glEnd();
+}
+
+void ModuleRenderer3D::DeleteBuffers()
+{
+	glDeleteFramebuffers(1, &sceneFrameBuffer);
+	glDeleteRenderbuffers(1, &sceneRboDepthStencil);
+	glDeleteFramebuffers(1, &sceneRboDepthStencil);
+}
+
+void ModuleRenderer3D::CreateFrameBuffer()
+{
+	DeleteBuffers();
+
+	glGenFramebuffers(1, &sceneFrameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, sceneFrameBuffer);
+	
+	//Texture Buffer
+	glGenTextures(1, &sceneTextureBuffer);
+	glBindTexture(GL_TEXTURE_2D, sceneTextureBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sceneTextureBuffer, 0);
+	
+	//Object Buffer
+	glGenRenderbuffers(1, &sceneRboDepthStencil);
+	glBindRenderbuffer(GL_RENDERBUFFER, sceneRboDepthStencil);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCREEN_WIDTH, SCREEN_HEIGHT);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, sceneRboDepthStencil);
+
+	if (glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		LOG("Error creating frame buffer");
+	}
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 

@@ -14,6 +14,7 @@
 #include "ComponentMesh.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
+#include "ComponentCamera.h"
 #include "parson.h"
 #include "ModuleFileSystem.h"
 
@@ -35,6 +36,7 @@ bool ModuleScene::Start()
 
 	Importer::ImportDroped("test/Baker_house/BakerHouse.fbx");
 	LoadScene("BakerHouse.meta");
+
 	return ret;
 }
 
@@ -58,9 +60,9 @@ void ModuleScene::DrawAllGameObjects()
 // Update
 update_status ModuleScene::Update(float dt)
 {
-	PPlane p(0, 1, 0, 0);
+	/*PPlane p(0, 1, 0, 0);
 	p.axis = true;
-	p.Render();
+	p.Render();*/
 
 	UpdateAllGameObjects(dt);
 
@@ -82,7 +84,7 @@ GameObject* ModuleScene::CreateGameObject(const char* name , GameObject* parent)
 void ModuleScene::SetParent(GameObject* gameObject, GameObject* newParent)
 {
 	GameObject* parent = gameObject->GetParent();
-
+	
 	for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); ++it)
 	{
 		if ((*it) == gameObject) {
@@ -95,6 +97,7 @@ void ModuleScene::SetParent(GameObject* gameObject, GameObject* newParent)
 	gameObject->SetParent(newParent);
 	((ComponentTransform*)gameObject->GetComponent(ComponentType::Transform))->SetFlag();
 	((ComponentTransform*)gameObject->GetComponent(ComponentType::Transform))->NewParentLocal(newParent);
+
 }
 
 GameObject* ModuleScene::GetRootObject() const
@@ -257,4 +260,13 @@ GameObject* ModuleScene::FindGOFromUID(GameObject* currGO, unsigned int UID)
 		FindGOFromUID((*cit),UID);
 	}
 	return nullptr;
+}
+
+void ModuleScene::CreateCamera(const char* name)
+{
+
+	GameObject* camera = new GameObject(root, name);
+	ComponentTransform* componentTransform = new ComponentTransform(camera);
+	ComponentCamera* componentCamera = new ComponentCamera(camera);
+
 }

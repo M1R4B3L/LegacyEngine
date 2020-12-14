@@ -17,8 +17,9 @@ public:
 	GameObject(GameObject* parent, const char* iName = "noName",float3 transf = float3::zero,float3 scale = float3::one, Quat rot = Quat::identity);
 	~GameObject();
 
-	//	add	a	new	component	to	this	game	object
+	// Add a new component to this game object
 	void AddComponent(Component* c);
+	bool RemoveComponent(Component* c);
 
 	//void Start();
 	void Update(float dt);

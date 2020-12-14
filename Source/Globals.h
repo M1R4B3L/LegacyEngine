@@ -7,6 +7,7 @@
 #include <windows.h>
 #include <stdio.h>
 
+#define ASSETS_PATH "Assets/"
 #define LIBRARY_PATH "Library/"
 #define MESHES_PATH "Library/Meshes/"
 #define TEXTURES_PATH "Library/Textures/"

@@ -5,6 +5,7 @@
 #include "Globals.h"
 #include "Dependencies/MathGeolib/Math/float3.h"
 
+class GameObject;
 class ComponentCamera;
 
 class ModuleCamera3D : public Module
@@ -19,24 +20,19 @@ public:
 
 	ComponentCamera* GetCamera() const;
 
-	void LookAt(const float3& Spot);
+	void LookAt(const float3& pos);
+	void MoveTo(const float3& pos);
+	void Look(const float3& pos, float distance);
 
 	void WASDMovement(float dt);
 	void DragCamera(float dt);
+
 	void WorldRotation(float dt);
+	void ReferenceRotation(float dt);
 
-	
-	//void ReferenceRotation(float dt);
 	void Zoom(float dt);
-
-	/*void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
+	void Focus(GameObject* gameObject);
 	
-	void Move(const vec3 &Movement);
-	float* GetViewMatrix();
-
-private:
-
-	void CalculateViewMatrix();*/
 
 public:
 

@@ -1,7 +1,7 @@
 #include "ComponentCamera.h"
 #include "Dependencies/MathGeolib/MathGeoLib.h"
 
-ComponentCamera::ComponentCamera() : Component (ComponentType::Camera), active(true), culling(false), updatePMatrix(true)
+ComponentCamera::ComponentCamera() : Component (ComponentType::Camera), active(true), culling(false), updatePMatrix(true), horitzontalFOV(true)
 {
 	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
 	frustum.SetViewPlaneDistances(0.0f, 200.0f);
@@ -11,7 +11,7 @@ ComponentCamera::ComponentCamera() : Component (ComponentType::Camera), active(t
 	updatePMatrix = true;
 }
 
-ComponentCamera::ComponentCamera(GameObject* gameObject) : Component(gameObject, ComponentType::Camera), active(true), culling(false),updatePMatrix(true)
+ComponentCamera::ComponentCamera(GameObject* gameObject) : Component(gameObject, ComponentType::Camera), active(true), culling(false),updatePMatrix(true), horitzontalFOV(true)
 {
 	//Basic Component Camera
 	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
@@ -25,6 +25,7 @@ ComponentCamera::ComponentCamera(GameObject* gameObject) : Component(gameObject,
 ComponentCamera::~ComponentCamera()
 {
 }
+
 
 float ComponentCamera::GetNearPlaneDistance() const
 {
@@ -54,9 +55,9 @@ float ComponentCamera::GetAspectRatio() const
 
 void ComponentCamera::SetNearPlaneDistance(float distance)
 {
-	if (distance > 0 && distance < GetFarPlaneDistance())
+	if (distance > 0 && distance < frustum.FarPlaneDistance())
 	{
-		frustum.SetViewPlaneDistances(distance, GetFarPlaneDistance());
+		frustum.SetViewPlaneDistances(distance, frustum.FarPlaneDistance());
 	}
 
 	frustum.GetPlanes(frustumPlanes);
@@ -65,9 +66,9 @@ void ComponentCamera::SetNearPlaneDistance(float distance)
 
 void ComponentCamera::SetFarPlaneDistance(float distance)
 {
-	if (distance > 0 && distance > GetNearPlaneDistance())
+	if (distance > 0 && distance > frustum.NearPlaneDistance()) 
 	{
-		frustum.SetViewPlaneDistances(GetNearPlaneDistance(), distance);
+		frustum.SetViewPlaneDistances(frustum.NearPlaneDistance(), distance);
 	}
 
 	frustum.GetPlanes(frustumPlanes);
@@ -132,5 +133,56 @@ float4x4 ComponentCamera::GetGLProjectionMatrix() const
 	return ((float4x4) frustum.ProjectionMatrix()).Transposed();
 }
 
+void ComponentCamera::FrustumUpdateTransform(const float4x4& global)
+{
+	frustum.SetFront(global.WorldZ());
+	frustum.SetUp(global.WorldY());
+
+	//Init just in case
+	float3 position = float3::zero;
+	float3 scale = float3::one;
+	Quat   rotation = Quat::identity;
+
+	global.Decompose(position, rotation, scale);
+
+	frustum.SetPos(position);
+}
+
+bool ComponentCamera::ContainsAABB(const AABB& aabb)
+{
+	int numInside = 0;
+
+	float3 corners[8];
+	aabb.GetCornerPoints(corners);
 
 
+	for (int p = 0; p < 6; ++p)
+	{
+		int count = 8;
+		for (int i = 0; i < 8; ++i)
+		{
+			if (frustum.GetPlane(p).IsOnPositiveSide(corners[i]))
+			{
+				--count;
+			}
+
+			if (count == 0)
+			{
+				return false;
+			}
+			else
+			{
+				numInside += 1;
+			}	
+		}
+
+		if (numInside == 6)
+		{
+			return true;
+		}
+		else
+		{
+			return true;
+		}
+	}
+}
