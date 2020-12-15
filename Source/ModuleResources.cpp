@@ -170,20 +170,29 @@ void ModuleResources::AddMeshResource(unsigned int uid, Resource* resource)
 Resource* ModuleResources::CreateNewResource(const char* assetsPath, Resource::Type type, std::string& libPath, std::string& metaPath)
 {
 	Resource* ret = nullptr;
+	std::string fileName;
 	unsigned int uid = GenerateNewUID();
 	switch (type) {
-	case Resource::Type::TEXTURE: ret = (Resource*) new ResourceTexture(uid); break;
+	case Resource::Type::TEXTURE: 
+		ret = (Resource*) new ResourceTexture(uid);
+		if (ret == nullptr)
+			break;
+		App->fileSystem->SplitFilePath(assetsPath, &metaPath, &fileName);
+		metaPath = ASSETS_TEXTURES + fileName + ".meta";
+		break;
 	//case Resource::Type::MESH: ret = (Resource*) new ResourceMesh(uid); break;
 	//case Resource::Type::SCENE: ret = (Resource*) new ResourceScene(uid); break;
-	case Resource::Type::MODEL: ret = (Resource*) new ResourceModel(uid); break;
+	case Resource::Type::MODEL: 
+		ret = (Resource*) new ResourceModel(uid);
+		if (ret == nullptr)
+			break;
+		App->fileSystem->SplitFilePath(assetsPath, &metaPath, &fileName);
+		metaPath = ASSETS_MODELS + fileName + ".meta";
+		break;
 	}
 	if (ret != nullptr)
 	{
 		resources[uid] = ret;
-		//Creating the meta file path
-		std::string fileName;
-		App->fileSystem->SplitFilePath(assetsPath, &metaPath, &fileName);
-		metaPath += fileName + ".meta";
 		libPath = GetLibFilePath(ret);//->fer el save en el library file o nomes crear el file amb el nom del uid?
 	}
 	return ret;

@@ -17,6 +17,7 @@ public:
 	bool CreateDir(const char* dir);
 	bool IsDirectory(const char* file);
 	void CreateLibraryDirectories();
+	void CreateAssetsDirectories();
 	bool FileExists(const char* file);
 	void SplitFilePath(const char* full_path, std::string* path, std::string* file = nullptr, std::string* extension = nullptr) const;
 	std::string NormalizePath(const char* path);

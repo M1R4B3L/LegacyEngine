@@ -25,25 +25,27 @@ bool Importer::ImportDroped(const char* absFilepath)
 {
 	//Todo: check that we are not importing a directory!!!!
 	std::string normalPath(App->fileSystem->NormalizePath(absFilepath));
+	std::string absPath;
 	std::string extension;
 	std::string fileName;
-	App->fileSystem->SplitFilePath(normalPath.c_str(), &normalPath, &fileName, &extension);
+	App->fileSystem->SplitFilePath(normalPath.c_str(), &absPath, &fileName, &extension);
 	std::string relativePath;
 
 	if (extension == "fbx" || extension == "FBX")
 	{
 		//TODO: define a macro for the "Assets"?c folder (order assets in assets/modle\texture\mesh...)
-		App->fileSystem->DuplicateFile(absFilepath, "Assets/", relativePath);
-		App->resources->ImportFile(relativePath.c_str(), Resource::Type::MODEL);
+		App->fileSystem->DuplicateFile(normalPath.c_str(), ASSETS_MODELS, relativePath);
+		//AKI !!!!!!!!! todo: Li passo el path del fitxer copiat o el del fitxer del que copio ?¿?¿?¿?
+		App->resources->ImportFile(normalPath.c_str(), Resource::Type::MODEL);
 		//Meshes::ImportFbx(relativePath.c_str());
 		return true;
 	}
 	else if (extension == "png" || extension == "tga")
 	{
-		std::string textureMeta = "Assets/Textures/"; textureMeta += fileName + ".meta";
+		std::string textureMeta = ASSETS_TEXTURES; textureMeta += fileName + ".meta";
 		if (App->fileSystem->FileExists(textureMeta.c_str()))
-			return true;
-		App->fileSystem->DuplicateFile(absFilepath, "Assets/Textures/", relativePath);
+			return true; //TODO: llegir el .meta i posar la textura al seleccionat?
+		App->fileSystem->DuplicateFile(normalPath.c_str(), ASSETS_TEXTURES, relativePath);
 		App->resources->ImportFile(relativePath.c_str(), Resource::Type::TEXTURE);
 		//App->renderer3D->dropedTexture = Textures::Import(normalPath.c_str());
 		return true;
@@ -142,6 +144,7 @@ GameObject* Importer::Models::ParseFbxNode(aiNode* node, const aiScene* scene, c
 	}
 
 	if (node->mNumMeshes > 0) {
+		//TODO: more than 1 mesh !!!! citybuilding 17
 		for (int i = 0; i < node->mNumMeshes; ++i)
 		{
 			//Create a game object with its name and the parent of the go is this node
@@ -168,31 +171,38 @@ GameObject* Importer::Models::ParseFbxNode(aiNode* node, const aiScene* scene, c
 				{
 					aiString name;
 					material->GetTexture(aiTextureType_DIFFUSE, 0, &name);
+					/*TODO: MES DE UNA TEXTURA EN UN MESH!!!!! (cal fer el shader tmbe i posarli 2 components material)
+					for (int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); ++i) {
+						material->GetTexture(aiTextureType_DIFFUSE, i, &name);
+						//processar cada textura !!!! 
+					}*/
 
-					std::string fileName = name.C_Str();
-					fileName = fileName.substr(fileName.find_last_of("/""\\") + 1);
-					std::string filePath = fbxPath;
-					std::string newfilePath = filePath.substr(0, filePath.find_last_of("/") + 1);
-					newfilePath = newfilePath + fileName;
+					std::string texturefbxRelativePath = App->fileSystem->NormalizePath(name.C_Str());
+					std::string fbxFilePath;
+					App->fileSystem->SplitFilePath(fbxPath, &fbxFilePath);
+					std::string texturePath = fbxFilePath + texturefbxRelativePath;
+
 
 					//uint textureID = Textures::Import(newfilePath.c_str());
-					std::string path;
-					std::string file;
-					App->fileSystem->SplitFilePath(newfilePath.c_str(), &path, &file);
-					path += file + ".meta";
-					if (!App->fileSystem->FileExists(path.c_str())) 
+					std::string assetsPath;
+					std::string fileName;
+					App->fileSystem->SplitFilePath(texturePath.c_str(), &assetsPath, &fileName);
+					assetsPath = ASSETS_TEXTURES + fileName + ".meta";
+					if (!App->fileSystem->FileExists(assetsPath.c_str()))
 					{
 						std::string relativePath;
-						App->fileSystem->DuplicateFile(newfilePath.c_str(), "Assets/Textures/", relativePath);
-						unsigned int resourceID = App->resources->ImportFile(relativePath.c_str(), Resource::Type::TEXTURE);
+						if (App->fileSystem->DuplicateFile(texturePath.c_str(), ASSETS_TEXTURES, relativePath)) 
+						{
+							unsigned int resourceID = App->resources->ImportFile(relativePath.c_str(), Resource::Type::TEXTURE);
 
-						ComponentMaterial* materialComponent = new ComponentMaterial(resourceID);
-						go->AddComponent(materialComponent);
+							ComponentMaterial* materialComponent = new ComponentMaterial(resourceID);
+							go->AddComponent(materialComponent);
+						}
 					}
 					else 
 					{
 						char* metafile = nullptr;
-						App->fileSystem->Load(path.c_str(), &metafile);
+						App->fileSystem->Load(assetsPath.c_str(), &metafile);
 						JSON_Value* rootValue = json_parse_string(metafile);
 						if (rootValue) {
 							JSON_Object* node = json_value_get_object(rootValue);
@@ -504,9 +514,8 @@ void Importer::Textures::Import(const char* imgPath, char** libBuffer,unsigned i
 	json_object_set_string(node, "DXT", "DXT5");
 	json_object_set_number(node, "DXTDefine", IL_DXT5);
 	metaSize = json_serialization_size_pretty(rootValue);
-	char* metabuffer = new char[metaSize];
-	json_serialize_to_buffer_pretty(rootValue, metabuffer, metaSize);
-	metaBuffer = &metabuffer;
+	*metaBuffer = new char[metaSize];
+	json_serialize_to_buffer_pretty(rootValue, *metaBuffer, metaSize);
 }
 
 ILuint Importer::Textures::SaveTexture(const char * imagePath, char** fileBuffer)

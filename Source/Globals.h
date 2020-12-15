@@ -8,6 +8,10 @@
 #include <stdio.h>
 
 #define ASSETS_PATH "Assets/"
+#define ASSETS_TEXTURES "Assets/Textures/"
+#define ASSETS_MODELS "Assets/Models/"
+#define ASSETS_SHADERS "Assets/Shaders/"
+#define ASSETS_SCENES "Assets/Scenes/"
 #define LIBRARY_PATH "Library/"
 #define MESHES_PATH "Library/Meshes/"
 #define TEXTURES_PATH "Library/Textures/"

@@ -17,8 +17,13 @@ ModuleFileSystem::ModuleFileSystem(bool startEnable) : Module(startEnable)
 
 	//Add the current working directory to the path
 	AddPath(".");
-	AddPath("Assets");
-	AddPath("Assets/Shaders/");
+	//TODO: Add the assets path ??
+	CreateAssetsDirectories();
+	AddPath(ASSETS_PATH);
+	AddPath(ASSETS_PATH);
+	AddPath(ASSETS_MODELS);
+	AddPath(ASSETS_TEXTURES);
+	AddPath(ASSETS_SHADERS);
 	CreateLibraryDirectories();
 }
 
@@ -70,6 +75,16 @@ void ModuleFileSystem::CreateLibraryDirectories()
 	CreateDir(MESHES_PATH);
 	CreateDir(TEXTURES_PATH);
 	CreateDir(SHADERS_PATH);
+}
+
+void ModuleFileSystem::CreateAssetsDirectories()
+{
+	CreateDir(ASSETS_PATH);
+	CreateDir(ASSETS_PATH);
+	CreateDir(ASSETS_MODELS);
+	CreateDir(ASSETS_TEXTURES);
+	CreateDir(ASSETS_SHADERS);
+	CreateDir(ASSETS_SCENES);
 }
 
 bool ModuleFileSystem::FileExists(const char* file)

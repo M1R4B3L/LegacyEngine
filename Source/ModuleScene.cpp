@@ -34,8 +34,8 @@ bool ModuleScene::Start()
 	bool ret = true;
 	root = new GameObject(nullptr, "Scene");
 
-	Importer::ImportDroped("test/Baker_house/BakerHouse.fbx");
-	LoadScene("BakerHouse.meta");
+	Importer::ImportDroped("test/street/Streetenvironment_V01.fbx");
+	LoadScene("Streetenvironment_V01.meta");
 
 	return ret;
 }
@@ -60,9 +60,9 @@ void ModuleScene::DrawAllGameObjects()
 // Update
 update_status ModuleScene::Update(float dt)
 {
-	/*PPlane p(0, 1, 0, 0);
+	PPlane p(0, 1, 0, 0);
 	p.axis = true;
-	p.Render();*/
+	p.Render();
 
 	UpdateAllGameObjects(dt);
 
@@ -165,7 +165,7 @@ void ModuleScene::SaveScene()
 	size_t size = json_serialization_size_pretty(rootValue);
 	char* buffer = new char[size];
 	json_serialize_to_buffer_pretty(rootValue, buffer, size);
-	//TODO:Scene name!!!
+	//TODO: Scene importer
 	App->fileSystem->Save("Assets/scene.json",buffer,size);
 	json_value_free(rootValue);
 	delete[] buffer;
@@ -175,11 +175,12 @@ bool ModuleScene::LoadScene(const char* fileName)
 {
 	//TODO: a assets hi ha d'haver el metafile k conte el uid del scene de library
 	char* buffer = nullptr;
-	App->fileSystem->Load("Assets/", fileName, &buffer);
+	App->fileSystem->Load(ASSETS_MODELS, fileName, &buffer);
 	JSON_Value* rootValue = json_parse_string(buffer);
 	if (!rootValue)
 	{
 		LOG("Could not parse json buffer from file: %s", fileName);
+		delete[] buffer;
 		return false;
 	}
 	JSON_Object* node = json_value_get_object(rootValue);
@@ -187,30 +188,42 @@ bool ModuleScene::LoadScene(const char* fileName)
 	{
 		LOG("json Array GameObjects not found");
 		json_value_free(rootValue);
+		delete[] buffer;
 		return false;
 	}
 	JSON_Array* goArray = json_object_get_array(node, "GameObjects");
 	JSON_Object* jsonRootGO = json_array_get_object(goArray, 0);
 	unsigned int rootID = json_object_get_number(jsonRootGO, "ParentUID");
+	
 
 	if (rootID != 0)
 	{
 		LOG("Error loading the json scene: The first Game Object of the array is not the root");
 		json_value_free(rootValue);
+		delete[] buffer;
 		return false;
 	}
 	//El root no li llegeixo el transform (ns ni si en te)//TODO: !!!! CHANGE THE ROOTS LOADING SCENES
 	//root = new GameObject(nullptr, json_object_get_number(jsonRootGO, "UID"), json_object_get_string(jsonRootGO, "Name"));
 	GameObject * rootImport = new GameObject(root, json_object_get_number(jsonRootGO, "UID"), json_object_get_string(jsonRootGO, "Name"));
+	JSON_Array* rootComponents = json_object_get_array(jsonRootGO, "Components");
+	JSON_Object* rootTransform = json_array_get_object(rootComponents, 0);
+	if (json_object_get_number(rootTransform, "Type") != (int)ComponentType::Transform)
+	{
+		LOG("The root object does'nt have a transform component");
+		json_value_free(rootValue);
+		delete[] buffer;
+		return false;
+	}
+	ComponentTransform* newComponentTransform = new ComponentTransform(rootImport);
+	newComponentTransform->Load(rootTransform);
+
 	GameObject* currGO;
 
 	for (int i = 1; i < json_array_get_count(goArray); ++i) 
 	{
 		JSON_Object* jsonGO = json_array_get_object(goArray, i);
-		if(json_object_get_number(jsonGO, "ParentUID") != 0)
-			currGO = new GameObject(FindGOFromUID(root, json_object_get_number(jsonGO, "ParentUID")), json_object_get_number(jsonGO, "UID"), json_object_get_string(jsonGO, "Name"));
-		else
-			currGO = new GameObject(rootImport, json_object_get_number(jsonGO, "UID"), json_object_get_string(jsonGO, "Name"));
+		currGO = new GameObject(rootImport, json_object_get_number(jsonGO, "UID"), json_object_get_string(jsonGO, "Name"));
 		JSON_Array* compArray = json_object_get_array(jsonGO, "Components");
 		for (int j = 0; j < json_array_get_count(compArray); ++j) 
 		{
@@ -222,7 +235,6 @@ bool ModuleScene::LoadScene(const char* fileName)
 			{
 				ComponentTransform* newComponentTransform = new ComponentTransform(currGO);
 				newComponentTransform->Load(compObj);
-				currGO->AddComponent((Component*)newComponentTransform);
 				break; 
 			}
 			case ComponentType::Mesh: 
@@ -244,6 +256,7 @@ bool ModuleScene::LoadScene(const char* fileName)
 	}
 	json_value_free(rootValue);
 	delete[] buffer;
+	return true;
 }
 
 unsigned int ModuleScene::GetRandomInt()

@@ -4,7 +4,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "Primitive.h"
-#include "Dependencies/MathGeoLib/MathGeoLib.h"
+#include "Dependencies/MathGeoLib/Algorithm/Random/LCG.h"
 
 #define MAX_SNAKE 2
 

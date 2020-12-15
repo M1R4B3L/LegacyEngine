@@ -195,6 +195,7 @@
     <ClInclude Include="Source\Resource.h" />
     <ClInclude Include="Source\ResourceMesh.h" />
     <ClInclude Include="Source\ResourceModel.h" />
+    <ClInclude Include="Source\ResourceScene.h" />
     <ClInclude Include="Source\ResourceTexture.h" />
     <ClInclude Include="Source\Shader.h" />
   </ItemGroup>
@@ -276,6 +277,7 @@
     <ClCompile Include="Source\ModuleEditor.cpp" />
     <ClCompile Include="Source\Resource.cpp" />
     <ClCompile Include="Source\ResourceModel.cpp" />
+    <ClCompile Include="Source\ResourceScene.cpp" />
     <ClCompile Include="Source\ResourceTexture.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ResourceMesh.cpp" />
