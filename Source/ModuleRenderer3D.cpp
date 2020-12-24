@@ -110,7 +110,7 @@ bool ModuleRenderer3D::Init()
 		GLfloat MaterialDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
 		
-		glEnable(GL_DEPTH_TEST);
+		//glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
@@ -128,6 +128,10 @@ bool ModuleRenderer3D::Init()
 // PreUpdate: clear buffer
 update_status ModuleRenderer3D::PreUpdate(float dt)
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, sceneFrameBuffer);
+	glEnable(GL_DEPTH_TEST);
+	//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	if (camera->updatePMatrix)
 	{
@@ -142,7 +146,6 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 		camera->updatePMatrix = false;
 	}
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
@@ -163,6 +166,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
 	SDL_GL_SwapWindow(App->window->window);
+
 	return UPDATE_CONTINUE;
 }
 
@@ -182,6 +186,7 @@ bool ModuleRenderer3D::CleanUp()
 
 void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint textureID)
 {
+
 	defaultShader->use();
 	// draw mesh
 	if (textureID != 0) {
@@ -209,11 +214,20 @@ void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint t
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glUseProgram(0);
 	//glDisable(GL_TEXTURE_2D);
+
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+	// clear all relevant buffers
+	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
+	//glClear(GL_COLOR_BUFFER_BIT);
+
+	//glBindTexture(GL_TEXTURE_2D, sceneTextureBuffer);
 }
 
 void ModuleRenderer3D::OnResize(int width, int height)
 {
 	glViewport(0, 0, width, height);
+	//CreateFrameBuffer();
 	camera = App->camera->GetCamera();
 	camera->SetHoritzontalAspectRatio((float)width / (float)height);
 	glMatrixMode(GL_PROJECTION);
@@ -222,9 +236,7 @@ void ModuleRenderer3D::OnResize(int width, int height)
 	glLoadMatrixf((GLfloat*)camera->GetGLProjectionMatrix().ptr());
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	CreateFrameBuffer();
+	glLoadIdentity();	
 }
 
 const bool ModuleRenderer3D::GetWireframes()
@@ -393,7 +405,7 @@ void ModuleRenderer3D::DrawWireCube(float3* vertex, Color color )
 void ModuleRenderer3D::DeleteBuffers()
 {
 	glDeleteFramebuffers(1, &sceneFrameBuffer);
-	glDeleteRenderbuffers(1, &sceneRboDepthStencil);
+	glDeleteRenderbuffers(1, &sceneTextureBuffer);
 	glDeleteFramebuffers(1, &sceneRboDepthStencil);
 }
 

@@ -6,6 +6,7 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
 #include "ModuleEditor.h"
+#include "ModuleFileSystem.h"
 #include "Primitive.h"
 #include "ModuleScene.h"
 #include "imgui.h"
@@ -21,6 +22,7 @@
 #include "ComponentCamera.h"
 #include "ModuleResources.h"
 #include "ResourceMesh.h"
+
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
 aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(false), timeWindow(true),
@@ -1040,56 +1042,29 @@ void ModuleEditor::WindowProject()
 	{
 		if (ImGui::Begin("Assets", &projectWindow))
 		{
-			//char* extension = "png";
-
-			//DrawAssetDirectory(ASSETS_PATH, extension);
+			DrawAssetDirectory(ASSETS_PATH);
 		}
 		ImGui::End();
 	}
 }
 
-void ModuleEditor::DrawAssetDirectory(const char* directory, const char* extension)
+void ModuleEditor::DrawAssetDirectory(const char* directory)
 {
-	/*std::vector<std::string> files;
+	std::vector<std::string> files;
 	std::vector<std::string> dirs;
 
 	std::string dir((directory) ? directory : "");
 	dir += "/";
 
-	App->fs->DiscoverFiles(dir.c_str(), files, dirs);
-
-	for (vector<string>::const_iterator it = dirs.begin(); it != dirs.end(); ++it)
+	if (ImGui::TreeNodeEx(dir.c_str(), ImGuiTreeNodeFlags_Leaf))
 	{
-		if (ImGui::TreeNodeEx((dir + (*it)).c_str(), 0, "%s/", (*it).c_str()))
-		{
-			DrawAssetDirectory((dir + (*it)).c_str(), filter_extension);
-			ImGui::TreePop();
+		if (ImGui::IsItemClicked()) {
+			
 		}
+
+		ImGui::TreePop();
 	}
-
-	std::sort(files.begin(), files.end());
-
-	for (vector<string>::const_iterator it = files.begin(); it != files.end(); ++it)
-	{
-		const string& str = *it;
-
-		bool ok = true;
-
-		if (filter_extension && str.substr(str.find_last_of(".") + 1) != filter_extension)
-			ok = false;
-
-		if (ok && ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Leaf))
-		{
-			if (ImGui::IsItemClicked()) {
-				sprintf_s(selected_file, FILE_MAX, "%s%s", dir.c_str(), str.c_str());
-
-				if (ImGui::IsMouseDoubleClicked(0))
-					file_dialog = ready_to_close;
-			}
-
-			ImGui::TreePop();
-		}
-	}*/
+	
 }
 
 void ModuleEditor::WindowDemo()

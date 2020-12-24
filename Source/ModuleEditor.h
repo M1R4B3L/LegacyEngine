@@ -79,7 +79,7 @@ public:
 	void InspectorShowMaterial(ComponentMaterial* componentMaterial);
 	void InspectorShowCamera(ComponentCamera* componentCamera);
 
-	void DrawAssetDirectory(const char* directory, const char* extension);
+	void DrawAssetDirectory(const char* directory);
 
 	//Guizmos
 	void ImGuizmoUpdate();

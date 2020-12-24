@@ -23,6 +23,7 @@ public:
 	std::string NormalizePath(const char* path);
 	bool DuplicateFile(const char* file, const char* dstFolder, std::string& relativePath);
 	bool DuplicateFile(const char* srcFile, const char* dstFile);
+	void GetAllFiles();
 
 	// Open for Read/Write
 	unsigned int Load(const char* path, const char* file, char** buffer) const;
