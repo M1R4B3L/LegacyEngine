@@ -51,6 +51,11 @@ bool ModuleFileSystem::AddPath(const char * path)
 	return ret;
 }
 
+bool ModuleFileSystem::Exists(const char* file) const
+{
+	return PHYSFS_exists(file) != 0;
+}
+
 bool ModuleFileSystem::CreateDir(const char* dir) 
 {
 	if (IsDirectory(dir) == false)
@@ -61,7 +66,7 @@ bool ModuleFileSystem::CreateDir(const char* dir)
 	return false;
 }
 
-bool ModuleFileSystem::IsDirectory(const char * file) {
+bool ModuleFileSystem::IsDirectory(const char * file) const {
 	PHYSFS_Stat stat;
 	if (!PHYSFS_stat(file, &stat))
 		LOG("Error obtaining file/dir stat: %s", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
@@ -290,4 +295,21 @@ bool ModuleFileSystem::DuplicateFile(const char* srcFile, const char* dstFile)
 		LOG("[error] File could not be duplicated");
 		return false;
 	}
+}
+
+void ModuleFileSystem::DiscoverFiles(const char* directory, std::vector<std::string>& file_list, std::vector<std::string>& dir_list) const
+{
+	char **rc = PHYSFS_enumerateFiles(directory);
+	char **i;
+
+	for (i = rc; *i != nullptr; i++)
+	{
+		std::string str = std::string(directory) + std::string("/") + std::string(*i);
+		if (IsDirectory(str.c_str()))
+			dir_list.push_back(*i);
+		else
+			file_list.push_back(*i);
+	}
+
+	PHYSFS_freeList(rc);
 }

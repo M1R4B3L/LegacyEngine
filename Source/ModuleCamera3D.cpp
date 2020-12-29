@@ -98,8 +98,9 @@ update_status ModuleCamera3D::Update(float dt)
 // -----------------------------------------------------------------
 void ModuleCamera3D::LookAt(const float3& pos)
 {
-	cameraMain->Look(pos);
 	reference = pos;
+
+	cameraMain->Look(reference);	
 }
 
 // -----------------------------------------------------------------
@@ -264,6 +265,8 @@ void ModuleCamera3D::ReferenceRotation(float dt)
 	focus = qy.Transform(focus);
 
 	cameraMain->frustum.SetPos(focus + reference);
+
+	LOG("%f %f %f", focus.x, focus.y, focus.z);
 
 	LookAt(reference);
 }

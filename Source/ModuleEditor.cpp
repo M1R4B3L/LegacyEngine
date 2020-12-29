@@ -22,10 +22,12 @@
 #include "ComponentCamera.h"
 #include "ModuleResources.h"
 #include "ResourceMesh.h"
+#include "ResourceTexture.h"
+#include <algorithm>
 
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
-aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(false), timeWindow(true),
+aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(false), timeWindow(true), resourcesWindow(true),
 component(0), removeMaterial(true), removeMesh(true), removeCamera(true),
 org("CITM"), scroll(true)
 {}
@@ -83,6 +85,7 @@ update_status ModuleEditor::Update(float dt)
 	WindowInspector();
 	WindowHierarchy();
 	WindowProject();
+	WindowResourcesCount();
 	WindowDemo();
 
 	ImGui::Render();
@@ -244,6 +247,9 @@ void ModuleEditor::MenuBar()
 				}
 				if (ImGui::MenuItem("Assets", NULL, projectWindow)) {
 					projectWindow = !projectWindow;
+				}
+				if (ImGui::MenuItem("Resources", NULL, resourcesWindow)){
+					resourcesWindow = !resourcesWindow;
 				}
 				ImGui::EndMenu();
 			}
@@ -880,7 +886,9 @@ void ModuleEditor::InspectorShowMaterial(ComponentMaterial* componentMaterial)
 		//ImGui::SameLine();
 		//ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u x %u");
 
-		ImGui::Image((ImTextureID)componentMaterial->GetID(), ImVec2(100, 100));
+		ResourceTexture* resourceTexture = (ResourceTexture*)App->resources->GetResource(componentMaterial->GetID());
+
+		ImGui::Image((ImTextureID)resourceTexture->gpuID, ImVec2(100, 100), ImVec2(0,1), ImVec2(1,0));
 	}
 
 	if (removeMaterial == false)
@@ -1042,7 +1050,21 @@ void ModuleEditor::WindowProject()
 	{
 		if (ImGui::Begin("Assets", &projectWindow))
 		{
-			DrawAssetDirectory(ASSETS_PATH);
+			ImVec2 smallWindow = {ImGui::GetWindowWidth()*1.0f/3.0f, ImGui::GetWindowHeight()*0.85f};
+			ImVec2 bigWindow = {ImGui::GetWindowWidth()*1.90f/3.0f, ImGui::GetWindowHeight()*0.85f};
+			
+			if (ImGui::BeginChild("##AssetsTree", smallWindow, true))
+			{
+				DrawAssetDirectory(ASSETS_PATH);
+			}
+			ImGui::EndChild();
+			ImGui::SameLine();
+			if (ImGui::BeginChild("##Assets", bigWindow, true))
+			{
+				ImGui::Text("gato");
+			}
+			ImGui::EndChild();
+
 		}
 		ImGui::End();
 	}
@@ -1054,17 +1076,31 @@ void ModuleEditor::DrawAssetDirectory(const char* directory)
 	std::vector<std::string> dirs;
 
 	std::string dir((directory) ? directory : "");
-	dir += "/";
 
-	if (ImGui::TreeNodeEx(dir.c_str(), ImGuiTreeNodeFlags_Leaf))
+	App->fileSystem->DiscoverFiles(dir.c_str(), files, dirs);
+
+	for (std::vector<std::string>::const_iterator it = dirs.begin(); it != dirs.end(); ++it)
 	{
-		if (ImGui::IsItemClicked()) {
-			
+		if (ImGui::TreeNodeEx((dir + (*it)).c_str()/*,0, "%s/", (*it).c_str()*/))
+		{
+			DrawAssetDirectory((dir + (*it)).c_str());
+			ImGui::TreePop();
 		}
-
-		ImGui::TreePop();
 	}
-	
+
+	std::sort(files.begin(), files.end());
+
+	for (std::vector<std::string>::const_iterator it = files.begin(); it != files.end(); ++it)
+	{
+		const std::string& str = *it;
+
+		if (ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Leaf))
+		{
+
+			ImGui::TreePop();
+		}
+	}
+
 }
 
 void ModuleEditor::WindowDemo()
@@ -1114,6 +1150,18 @@ void ModuleEditor::WindowTime()
 			ImGui::SameLine();
 			float time = SDL_GetTicks()/1000.f;
 			ImGui::TextColored(ImVec4(0,1,1,1), "%.3f", time);
+		}
+		ImGui::End();
+	}
+}
+
+void ModuleEditor::WindowResourcesCount()
+{
+	if (resourcesWindow)
+	{
+		if (ImGui::Begin("Resources"))
+		{
+
 		}
 		ImGui::End();
 	}

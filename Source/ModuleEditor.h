@@ -51,6 +51,7 @@ public:
 	bool demoWindow;
 	bool sceneWindow;
 	bool timeWindow;
+	bool resourcesWindow;
 
 	char org[128];
 
@@ -67,6 +68,7 @@ public:
 	void WindowDemo();
 	void WindowScene();
 	void WindowTime();
+	void WindowResourcesCount();
 
 	void AddLog(const char*);
 	void ClearLog();
