@@ -13,8 +13,8 @@ class GameObject
 {
 public:
 	GameObject();
-	GameObject(GameObject* parent, unsigned int UID, const char* iName = "noName", float3 transf = float3::zero, float3 scale = float3::one, Quat rot = Quat::identity);
-	GameObject(GameObject* parent, const char* iName = "noName",float3 transf = float3::zero,float3 scale = float3::one, Quat rot = Quat::identity);
+	GameObject(GameObject* parent, unsigned int UID, const char* iName = "noName");
+	GameObject(GameObject* parent, const char* iName = "noName");
 	~GameObject();
 
 	// Add a new component to this game object

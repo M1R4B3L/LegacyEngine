@@ -19,13 +19,13 @@ GameObject::GameObject() : parent(nullptr), name("No name"), uid(App->scene->Get
 
 }
 
-GameObject::GameObject(GameObject* iParent, unsigned int UID, const char* iName, float3 transf, float3 scale, Quat rot) : parent(iParent), name(iName), uid(UID)
+GameObject::GameObject(GameObject* iParent, unsigned int UID, const char* iName) : parent(iParent), name(iName), uid(UID)
 {
 	if (parent)
 		parent->children.push_back(this);
 }
 
-GameObject::GameObject(GameObject * iParent, const char* iName, float3 transf, float3 scale, Quat rot) : parent(iParent), name(iName), uid(App->scene->GetRandomInt())
+GameObject::GameObject(GameObject * iParent, const char* iName) : parent(iParent), name(iName), uid(App->scene->GetRandomInt())
 {
 	if (parent) 
 		parent->children.push_back(this);
@@ -105,14 +105,13 @@ void GameObject::Draw()
 
 	if (meshComponent && transformComponent)
 	{
-		ResourceMesh* meshResource = (ResourceMesh*)App->resources->GetResource(meshComponent->GetID());
+		const ResourceMesh* meshResource = meshComponent->GetResource();
 
 		const ComponentMaterial* materialComponent = (ComponentMaterial*)GetComponent(ComponentType::Material);
 		unsigned int material = 0;
 		if (materialComponent) 
 		{
-			ResourceTexture* textureResource = (ResourceTexture*)App->resources->GetResource(materialComponent->GetID());
-			material = textureResource->gpuID;
+			material = materialComponent->GetResource()->gpuID;
 		}
 		
 		App->renderer3D->Draw(transformComponent->GetGlobalTransform().Transposed(), meshResource->VAOID, meshResource->numIndices, material);
@@ -201,8 +200,7 @@ void GameObject::GenerateAABB()
 
 	if (mesh)
 	{
-		ResourceMesh* meshResource = (ResourceMesh*)App->resources->GetResource(mesh->GetID());
-		obb = meshResource->aabb;
+		obb = mesh->GetResource()->aabb;
 		obb.Transform(((ComponentTransform*)GetComponent(ComponentType::Transform))->GetGlobalTransform());
 
 		aabb.SetNegativeInfinity();

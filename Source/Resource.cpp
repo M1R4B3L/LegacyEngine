@@ -23,3 +23,8 @@ void Resource::DecreaseReferenceCount()
 		referenceCount -= 1;
 }
 
+void Resource::IncreaseReferenceCount()
+{
+	referenceCount += 1;
+}
+

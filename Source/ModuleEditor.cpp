@@ -836,8 +836,7 @@ void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 		ImGui::Text("Vertex:");
 		ImGui::SameLine();
 		
-		ResourceMesh * resource = (ResourceMesh*)App->resources->GetResource(componentMesh->GetID());
-		ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u", resource->numVertices);
+		ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u", componentMesh->GetResource()->numVertices);
 
 		ImGui::Text("Triangles:");
 		ImGui::Separator();

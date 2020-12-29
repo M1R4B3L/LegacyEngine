@@ -6,9 +6,8 @@
 #include "Primitive.h"
 #include "Dependencies/MathGeoLib/Algorithm/Random/LCG.h"
 
-#define MAX_SNAKE 2
-
 class GameObject;
+class ResourceScene;
 
 class ModuleScene : public Module
 {
@@ -34,17 +33,24 @@ public:
 	void DeleteGameObject(GameObject* gameObject, bool root = true);
 
 	void SaveScene();
-	bool LoadScene(const char * fileName);
+	bool LoadScene(unsigned int ID);
 
 	unsigned int GetRandomInt();
 	GameObject* FindGOFromUID(GameObject* currGO, unsigned int UID);
 
 	void CreateCamera(const char* name);
 
+	unsigned int GetResourceId() const;
+	const ResourceScene* GetResource() const;
+	const char* GetSceneName() const;
+
 private:
 
 	GameObject* root = nullptr;
 	GameObject* selectedObject = nullptr;
+	unsigned int resourceID = 0;
+	ResourceScene* resource = nullptr;
+	std::string sceneName;
 
 	LCG random;
 };

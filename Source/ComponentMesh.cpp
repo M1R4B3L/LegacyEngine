@@ -1,12 +1,12 @@
 #include "ComponentMesh.h"
 #include "Application.h"
-#include "Application.h"
 #include "ModuleResources.h"
+#include "ResourceMesh.h"
 
 
-ComponentMesh::ComponentMesh(): Component(ComponentType::Mesh), resourceID(0), activeMesh(true){}
+ComponentMesh::ComponentMesh(): Component(ComponentType::Mesh), resourceID(0), resource(nullptr), activeMesh(true){}
 
-ComponentMesh::ComponentMesh(unsigned int uid) : Component(ComponentType::Mesh), resourceID(uid), activeMesh(true) { App->resources->RequestResource(resourceID, Resource::Type::MESH); }
+ComponentMesh::ComponentMesh(unsigned int uid) : Component(ComponentType::Mesh), resourceID(uid), resource((ResourceMesh*)App->resources->RequestResource(resourceID, Resource::Type::MESH)), activeMesh(true) {}
 
 ComponentMesh::~ComponentMesh() 
 {
@@ -17,6 +17,11 @@ ComponentMesh::~ComponentMesh()
 const unsigned int ComponentMesh::GetID() const
 {
 	return resourceID;
+}
+
+const ResourceMesh* ComponentMesh::GetResource() const
+{
+	return resource;
 }
 
 bool ComponentMesh::IsActive() const
@@ -43,5 +48,5 @@ void ComponentMesh::Load(JSON_Object* componentObj)
 	activeMesh = json_object_get_boolean(componentObj, "Active");
 	resourceID = json_object_get_number(componentObj, "ResourceUID");
 	if(resourceID != 0)
-		App->resources->RequestResource(resourceID, Resource::Type::MESH);
+		resource = (ResourceMesh*)App->resources->RequestResource(resourceID, Resource::Type::MESH);
 }
