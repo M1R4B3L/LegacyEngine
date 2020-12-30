@@ -1,5 +1,6 @@
 #pragma once
 #include "Globals.h"
+#include <Windows.h>
 #include "Application.h"
 #include "ModuleScene.h"
 

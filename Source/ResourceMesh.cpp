@@ -31,6 +31,5 @@ bool ResourceMesh::LoadInMemory()
 	ourMesh.aabb.Enclose((float3*)ourMesh.vertexData, ourMesh.numVertices);
 	aabb = ourMesh.aabb;
 	type = Resource::Type::MESH;
-	referenceCount = 1;
 	return true;
 }

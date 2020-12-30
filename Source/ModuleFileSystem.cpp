@@ -20,7 +20,7 @@ ModuleFileSystem::ModuleFileSystem(bool startEnable) : Module(startEnable)
 	//TODO: Add the assets path ??
 	CreateAssetsDirectories();
 	AddPath(ASSETS_PATH);
-	AddPath(ASSETS_PATH);
+	AddPath(ASSETS_MESHES);
 	AddPath(ASSETS_MODELS);
 	AddPath(ASSETS_TEXTURES);
 	AddPath(ASSETS_SHADERS);
@@ -80,12 +80,13 @@ void ModuleFileSystem::CreateLibraryDirectories()
 	CreateDir(MESHES_PATH);
 	CreateDir(TEXTURES_PATH);
 	CreateDir(SHADERS_PATH);
+	CreateDir(SCENES_PATH);
 }
 
 void ModuleFileSystem::CreateAssetsDirectories()
 {
 	CreateDir(ASSETS_PATH);
-	CreateDir(ASSETS_PATH);
+	CreateDir(ASSETS_MESHES);
 	CreateDir(ASSETS_MODELS);
 	CreateDir(ASSETS_TEXTURES);
 	CreateDir(ASSETS_SHADERS);

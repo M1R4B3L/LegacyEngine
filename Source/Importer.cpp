@@ -19,6 +19,7 @@
 #include "Resource.h"
 #include "ResourceMesh.h"
 #include "ResourceTexture.h"
+#include "ResourceScene.h"
 
 
 bool Importer::ImportDroped(const char* absFilepath)
@@ -33,22 +34,36 @@ bool Importer::ImportDroped(const char* absFilepath)
 
 	if (extension == "fbx" || extension == "FBX")
 	{
-		//TODO: define a macro for the "Assets"?c folder (order assets in assets/modle\texture\mesh...)
+		//TODO: if file already exists?
+		/*std::string modelMeta = ASSETS_MODELS; modelMeta += fileName + ".meta";
+		if (App->fileSystem->FileExists(modelMeta.c_str())) {
+			LOG("File %s already imported", absFilepath);
+			return true;
+		}*/
 		App->fileSystem->DuplicateFile(normalPath.c_str(), ASSETS_MODELS, relativePath);
-		//AKI !!!!!!!!! todo: Li passo el path del fitxer copiat o el del fitxer del que copio ?¿?¿?¿?
 		App->resources->ImportFile(normalPath.c_str(), Resource::Type::MODEL);
-		//Meshes::ImportFbx(relativePath.c_str());
 		return true;
 	}
 	else if (extension == "png" || extension == "tga")
 	{
-		std::string textureMeta = ASSETS_TEXTURES; textureMeta += fileName + ".meta";
-		if (App->fileSystem->FileExists(textureMeta.c_str()))
-			return true; //TODO: llegir el .meta i posar la textura al seleccionat?
+		/*std::string textureMeta = ASSETS_TEXTURES; textureMeta += fileName + ".meta";
+		if (App->fileSystem->FileExists(textureMeta.c_str())) {
+			LOG("File %s already imported", absFilepath);
+			return true;
+		}*/
 		App->fileSystem->DuplicateFile(normalPath.c_str(), ASSETS_TEXTURES, relativePath);
 		App->resources->ImportFile(relativePath.c_str(), Resource::Type::TEXTURE);
-		//App->renderer3D->dropedTexture = Textures::Import(normalPath.c_str());
 		return true;
+	}
+	else if (extension == "scene") 
+	{
+		/*std::string sceneMeta = ASSETS_SCENES; sceneMeta += fileName + ".meta";
+		if (App->fileSystem->FileExists(sceneMeta.c_str())) {
+			LOG("File %s already imported", absFilepath);
+			return true;
+		}*/
+		App->fileSystem->DuplicateFile(normalPath.c_str(), ASSETS_SCENES, relativePath);
+		App->resources->ImportFile(normalPath.c_str(), Resource::Type::SCENE);
 	}
 
 	return false;
@@ -103,7 +118,7 @@ GameObject* Importer::Models::ParseFbxNode(aiNode* node, const aiScene* scene, c
 	float3 pos(translation.x, translation.y, translation.z);
 	float3 scale(scaling.x, scaling.y, scaling.z);
 	Quat rot(aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w);
-	Quat	tempRotation;
+	Quat tempRotation;
 	float3 scale1 = { 1, 1, 1 };
 
 	while (strstr(node->mName.C_Str(), "_$AssimpFbx$_") != nullptr && node->mNumChildren == 1)
@@ -122,7 +137,6 @@ GameObject* Importer::Models::ParseFbxNode(aiNode* node, const aiScene* scene, c
 		scale.z *= scaling.z;
 
 		rot = rot * tempRotation;
-
 	}
 
 	go = new GameObject(parentGo, node->mName.C_Str());
@@ -158,7 +172,7 @@ GameObject* Importer::Models::ParseFbxNode(aiNode* node, const aiScene* scene, c
 
 			aiMesh* nodeMesh = scene->mMeshes[node->mMeshes[i]];
 			Mesh ourMesh;
-			unsigned int resourceID = Importer::Meshes::SaveMeshLib(nodeMesh);
+			unsigned int resourceID = Importer::Meshes::SaveMeshLib(nodeMesh, node->mName.C_Str());
 
 			ComponentMesh* meshComponent = new ComponentMesh(resourceID);
 			go->AddComponent(meshComponent);
@@ -208,9 +222,8 @@ GameObject* Importer::Models::ParseFbxNode(aiNode* node, const aiScene* scene, c
 							JSON_Object* node = json_value_get_object(rootValue);
 							unsigned int resourceID = json_object_get_number(node, "LIBUID");
 
-							ResourceTexture* resource = (ResourceTexture*)App->resources->RequestResource(resourceID, Resource::Type::TEXTURE);
-
-							ComponentMaterial* materialComponent = new ComponentMaterial(resource->GetUID());
+							ComponentMaterial* materialComponent = new ComponentMaterial((ResourceTexture*)App->resources->RequestResource(resourceID, Resource::Type::TEXTURE));
+							
 							go->AddComponent(materialComponent);
 							json_value_free(rootValue);
 						}
@@ -343,8 +356,9 @@ char* Importer::Meshes::SaveMesh(aiMesh* mesh)
 	return fileBuffer;
 }
 
-unsigned int Importer::Meshes::SaveMeshLib(aiMesh* mesh)
+unsigned int Importer::Meshes::SaveMeshLib(aiMesh* mesh, const char* name)
 {
+	//Creating lib file from aiMesh
 	uint numVertices = mesh->mNumVertices;
 	uint numIndices = 0;
 	uint numTextureCoordinates = 0;
@@ -416,6 +430,7 @@ unsigned int Importer::Meshes::SaveMeshLib(aiMesh* mesh)
 		cursor += bytes;
 	}
 
+	//Saving lib file
 	std::string path = MESHES_PATH;
 	unsigned int id = App->resources->GenerateNewUID();
 	Resource* resource = new Resource(id,Resource::Type::MESH);
@@ -424,6 +439,20 @@ unsigned int Importer::Meshes::SaveMeshLib(aiMesh* mesh)
 	path += fileName;
 	App->fileSystem->Save(path.c_str(), fileBuffer, size);
 	delete[] fileBuffer;
+
+	//Creating and saving metafile
+	JSON_Value* rootValue = json_value_init_object();
+	JSON_Object* node = json_value_get_object(rootValue);
+	json_object_set_number(node, "LIBUID", id);
+	size_t Size = json_serialization_size_pretty(rootValue);
+	char* buffer = new char[Size];
+	json_serialize_to_buffer_pretty(rootValue, buffer, Size);
+
+	path = ASSETS_MESHES;
+	path += name;
+	path += ".mesh";
+	App->fileSystem->Save(path.c_str(), buffer, Size);
+
 	return id;
 }
 
@@ -507,7 +536,7 @@ void Importer::Textures::Import(const char* imgPath, char** libBuffer,unsigned i
 	JSON_Value* rootValue = json_value_init_object();
 	JSON_Object* node = json_value_get_object(rootValue);
 	json_object_set_number(node, "LIBUID", resource->GetUID());
-	json_object_set_number(node, "Type", resource->GetType());
+	json_object_set_number(node, "Type", (unsigned int)resource->GetType());
 	json_object_set_number(node, "BufferSize", size);
 	json_object_set_string(node, "ImageExtension", "DDS");
 	json_object_set_number(node, "ImageExtensionDefine", IL_DDS);
@@ -563,4 +592,18 @@ uint Importer::Textures::LoadTexture(char* buffer, uint size)
 	ilutGLBindMipmaps();
 	ilDeleteImages(1, &il_image);
 	return texture;
+}
+
+void Importer::Scenes::Import(const char* scenePath, char** libBuffer, unsigned int& libSize, char** metaBuffer, unsigned int& metaSize, ResourceScene* resource)
+{
+	//Copying the file to lib directory
+	libSize = App->fileSystem->Load(scenePath, libBuffer);
+
+	//Generating metafile
+	JSON_Value* rootValue = json_value_init_object();
+	JSON_Object* node = json_value_get_object(rootValue);
+	json_object_set_number(node, "LIBUID", resource->GetUID());
+	metaSize = json_serialization_size_pretty(rootValue);
+	*metaBuffer = new char[metaSize];
+	json_serialize_to_buffer_pretty(rootValue, *metaBuffer, metaSize);
 }

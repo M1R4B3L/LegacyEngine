@@ -842,8 +842,7 @@ void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 		ImGui::Text("Vertex:");
 		ImGui::SameLine();
 		
-		ResourceMesh * resource = (ResourceMesh*)App->resources->GetResource(componentMesh->GetID());
-		ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u", resource->numVertices);
+		ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u", componentMesh->GetResource()->numVertices);
 
 		ImGui::Text("Triangles:");
 		ImGui::Separator();
@@ -886,9 +885,7 @@ void ModuleEditor::InspectorShowMaterial(ComponentMaterial* componentMaterial)
 		//ImGui::SameLine();
 		//ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u x %u");
 
-		ResourceTexture* resourceTexture = (ResourceTexture*)App->resources->GetResource(componentMaterial->GetID());
-
-		ImGui::Image((ImTextureID)resourceTexture->gpuID, ImVec2(100, 100), ImVec2(0,1), ImVec2(1,0));
+		ImGui::Image((ImTextureID)componentMaterial->GetResource()->gpuID, ImVec2(100, 100), ImVec2(0,1), ImVec2(1,0));
 	}
 
 	if (removeMaterial == false)

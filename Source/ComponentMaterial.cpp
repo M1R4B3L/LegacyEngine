@@ -1,16 +1,15 @@
 #include "ComponentMaterial.h"
 #include "Application.h"
+#include "Resource.h"
+#include "ResourceTexture.h"
 #include "ModuleResources.h"
 
 
-ComponentMaterial::ComponentMaterial() : Component(ComponentType::Material), resourceID(0)
-{
-}
+ComponentMaterial::ComponentMaterial() : Component(ComponentType::Material), resourceID(0), resource(nullptr){}
 
-ComponentMaterial::ComponentMaterial(unsigned int texture): Component(ComponentType::Material), resourceID(texture)
-{
-	App->resources->RequestResource(resourceID, Resource::Type::TEXTURE);
-}
+ComponentMaterial::ComponentMaterial(unsigned int texture): Component(ComponentType::Material), resourceID(texture), resource((ResourceTexture*)App->resources->RequestResource(resourceID, Resource::Type::TEXTURE)){}
+
+ComponentMaterial::ComponentMaterial(ResourceTexture* inputResource): Component(ComponentType::Material), resourceID(inputResource->GetUID()), resource(inputResource) {}
 
 ComponentMaterial::~ComponentMaterial() {
 	if (resourceID != 0)
@@ -20,6 +19,11 @@ ComponentMaterial::~ComponentMaterial() {
 const unsigned int ComponentMaterial::GetID() const
 {
 	return resourceID;
+}
+
+const ResourceTexture* ComponentMaterial::GetResource() const
+{
+	return resource;
 }
 
 void ComponentMaterial::Save(JSON_Array* componentsArry) const
@@ -34,5 +38,5 @@ void ComponentMaterial::Load(JSON_Object* componentObj)
 {
 	resourceID = json_object_get_number(componentObj, "ResourceUID");
 	if (resourceID != 0)
-		App->resources->RequestResource(resourceID, Resource::Type::TEXTURE);
+		resource = (ResourceTexture*)App->resources->RequestResource(resourceID, Resource::Type::TEXTURE);
 }

@@ -9,16 +9,14 @@ class aiScene;
 class aiMesh;
 class ResourceTexture;
 class ResourceModel;
+class ResourceScene;
 
 namespace Importer {
     bool ImportDroped(const char* filepath);
     namespace Meshes {
-        void ImportFbx(const char* fbxPath);
-        void ParseFbxNode(aiNode * node, const aiScene * scene, const char * path,GameObject* parentGo = nullptr);
-        std::vector<Mesh> Import(const char* absFilepath);
         char* SaveMesh(aiMesh* mesh);
         void LoadMesh(char* buffer, Mesh* mesh);
-        unsigned int SaveMeshLib(aiMesh* mesh);
+        unsigned int SaveMeshLib(aiMesh* mesh, const char* name);
     }
     namespace Models {
         void ImportFbx(const char* assetPath, char** libBuffer, unsigned int& libSize, char** metaBuffer, unsigned int& metaSize, ResourceModel* resource);
@@ -31,5 +29,8 @@ namespace Importer {
         uint checkerImage();
         uint SaveTexture(const char* imagePath, char** fileBuffer);
         uint LoadTexture(char* buffer, uint size);
+    }
+    namespace Scenes {
+        void Import(const char* scenePath, char** libBuffer, unsigned int& libSize, char** metaBuffer, unsigned int& metaSize, ResourceScene* resource);
     }
 }

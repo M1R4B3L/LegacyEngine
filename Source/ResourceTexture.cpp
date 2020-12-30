@@ -20,6 +20,5 @@ bool ResourceTexture::LoadInMemory()
 	delete[] fileBuffer;
 	fileBuffer = nullptr;
 	type = Resource::Type::TEXTURE;
-	referenceCount = 0;
 	return true;
 }

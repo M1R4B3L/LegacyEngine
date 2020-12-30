@@ -5,7 +5,7 @@
 class Resource
 {
 public:
-	enum Type {
+	enum class Type: unsigned int {
 		TEXTURE,
 		MESH,
 		SCENE,
@@ -20,10 +20,13 @@ public:
 	unsigned int GetUID() const;
 	unsigned int GetReferenceCount() const;
 	void DecreaseReferenceCount();
+	void IncreaseReferenceCount();
 	virtual bool LoadInMemory() { return true; }
+	virtual bool SaveResource() { return true; }
 
 protected:
 	unsigned int uid = 0;
 	Type type = Type::unknown;
+private:
 	unsigned int referenceCount = 0;
 };

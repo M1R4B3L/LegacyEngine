@@ -1,9 +1,7 @@
 #pragma once
-
 #include "Component.h"
-#include "Globals.h"
 
-class Component;
+class ResourceMesh;
 
 class ComponentMesh : public Component
 {
@@ -13,8 +11,8 @@ public:
     ~ComponentMesh();
 
     const unsigned int GetID() const;
+    const ResourceMesh* GetResource()const;
 
- 
     bool IsActive()const override;
     void SetActive(bool active) override;
 
@@ -23,6 +21,7 @@ public:
     
 private:
     unsigned int resourceID;
+    ResourceMesh* resource = nullptr;
 
 public:
     bool activeMesh = true;
