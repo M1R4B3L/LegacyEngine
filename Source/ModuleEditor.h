@@ -82,11 +82,13 @@ public:
 	void InspectorShowCamera(ComponentCamera* componentCamera);
 
 	void DrawAssetDirectory(const char* directory);
-
+	void ShowDirFiles(const char* directory);
 	//Guizmos
 	void ImGuizmoUpdate();
 
 private:
+
+	std::string selectedFolder;
 
 	std::vector<char*> stringLog;
 	bool scroll;

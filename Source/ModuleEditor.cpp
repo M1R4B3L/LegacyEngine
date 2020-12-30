@@ -29,7 +29,7 @@
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
 aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(false), timeWindow(true), resourcesWindow(true),
 component(0), removeMaterial(true), removeMesh(true), removeCamera(true),
-org("CITM"), scroll(true)
+org("CITM"), scroll(true), selectedFolder(ASSETS_PATH)
 {}
 
 ModuleEditor::~ModuleEditor()
@@ -1054,14 +1054,16 @@ void ModuleEditor::WindowProject()
 			ImVec2 bigWindow = {ImGui::GetWindowWidth()*1.90f/3.0f, ImGui::GetWindowHeight()*0.85f};
 			
 			if (ImGui::BeginChild("##AssetsTree", smallWindow, true))
-			{
+			{			
 				DrawAssetDirectory(ASSETS_PATH);
 			}
 			ImGui::EndChild();
+
 			ImGui::SameLine();
+
 			if (ImGui::BeginChild("##Assets", bigWindow, true))
 			{
-				ImGui::Text("gato");
+				ShowDirFiles(selectedFolder.c_str());
 			}
 			ImGui::EndChild();
 
@@ -1079,28 +1081,63 @@ void ModuleEditor::DrawAssetDirectory(const char* directory)
 
 	App->fileSystem->DiscoverFiles(dir.c_str(), files, dirs);
 
-	for (std::vector<std::string>::const_iterator it = dirs.begin(); it != dirs.end(); ++it)
+	ImGuiDockNodeFlags treeFlags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+
+	if (dirs.empty())
 	{
-		if (ImGui::TreeNodeEx((dir + (*it)).c_str()/*,0, "%s/", (*it).c_str()*/))
+		treeFlags |= ImGuiTreeNodeFlags_Leaf;
+	}
+
+	if (ImGui::TreeNodeEx(dir.c_str(), treeFlags))
+	{
+		if (ImGui::IsItemClicked())
 		{
-			DrawAssetDirectory((dir + (*it)).c_str());
-			ImGui::TreePop();
+			selectedFolder = dir;
+			LOG("Current Folder %s", selectedFolder.c_str());
 		}
+
+		for (std::vector<std::string>::const_iterator it = dirs.begin(); it != dirs.end(); ++it)
+		{
+			DrawAssetDirectory((*it).c_str());
+		}
+		ImGui::TreePop();
+	}
+
+}
+
+void ModuleEditor::ShowDirFiles(const char* directory)
+{
+	std::vector<std::string> files;
+	std::vector<std::string> dirs;
+
+	std::string dir((directory) ? directory : "");
+	dir += "/";
+
+	std::vector<std::string>::const_iterator it;
+
+	App->fileSystem->DiscoverFiles(dir.c_str(), files, dirs);
+
+	for ( it = dirs.begin(); it != dirs.end(); ++it)
+	{
+		
+		if (ImGui::Button((*it).c_str()))
+		{
+		}
+
 	}
 
 	std::sort(files.begin(), files.end());
 
-	for (std::vector<std::string>::const_iterator it = files.begin(); it != files.end(); ++it)
+	for (std::vector<std::string>::const_iterator it2 = files.begin(); it2 != files.end(); ++it2)
 	{
-		const std::string& str = *it;
+		const std::string& str = *it2;
 
-		if (ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Leaf))
+		if (ImGui::Button(str.c_str()))
 		{
-
-			ImGui::TreePop();
 		}
+		//ImGui::SameLine();
 	}
-
+	
 }
 
 void ModuleEditor::WindowDemo()
