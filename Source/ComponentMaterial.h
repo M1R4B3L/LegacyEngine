@@ -14,6 +14,8 @@ public:
     const unsigned int GetID() const;
     const ResourceTexture* GetResource()const;
 
+    void ChangeResource(ResourceTexture* resourceTexture);
+
     void Save(JSON_Array* componentsArry) const override;
     void Load(JSON_Object* componentObj) override;
 

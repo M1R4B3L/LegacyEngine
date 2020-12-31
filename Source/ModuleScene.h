@@ -8,6 +8,7 @@
 
 class GameObject;
 class ResourceScene;
+class ComponentTransform;
 
 class ModuleScene : public Module
 {
@@ -22,6 +23,7 @@ public:
 	void UpdateAllGameObjects(float dt);
 	void DrawAllGameObjects();
 	GameObject* CreateGameObject(const char* name, GameObject* parent = nullptr);
+	GameObject* CreateTransformGameObject(const char* name, GameObject* parent, ComponentTransform* transform = nullptr);
 	void SetParent(GameObject* gameObject, GameObject* newParent);
 
 	GameObject* GetRootObject() const;

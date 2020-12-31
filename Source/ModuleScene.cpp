@@ -80,6 +80,22 @@ GameObject* ModuleScene::CreateGameObject(const char* name , GameObject* parent)
 	return go;
 }
 
+GameObject* ModuleScene::CreateTransformGameObject(const char* name, GameObject* parent, ComponentTransform* transform)
+{
+	GameObject* go;
+	if (parent)
+		go = new GameObject(parent, name);
+	else
+		go = new GameObject(root, name);
+
+	if (transform)
+		go->AddComponent((Component*)transform);
+	else
+		Component* transformComp = new ComponentTransform(go);
+	
+	return go;
+}
+
 void ModuleScene::SetParent(GameObject* gameObject, GameObject* newParent)
 {
 	GameObject* parent = gameObject->GetParent();

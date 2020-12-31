@@ -89,6 +89,7 @@ public:
 private:
 
 	std::string selectedFolder;
+	const char* fileToImport = nullptr;
 
 	std::vector<char*> stringLog;
 	bool scroll;

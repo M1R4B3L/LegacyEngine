@@ -26,6 +26,12 @@ const ResourceTexture* ComponentMaterial::GetResource() const
 	return resource;
 }
 
+void ComponentMaterial::ChangeResource(ResourceTexture* resourceTexture)
+{
+	App->resources->UnrequestResource(resourceID);
+	
+}
+
 void ComponentMaterial::Save(JSON_Array* componentsArry) const
 {
 	json_array_append_value(componentsArry, json_value_init_object());
