@@ -1164,7 +1164,8 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 				JSON_Value* rootValue = json_parse_string(buffer);
 				JSON_Object* node = json_value_get_object(rootValue);
 				unsigned int uid = json_object_get_number(node, "LIBUID");
-				App->resources->RequestResource(uid, Resource::Type::MODEL);
+				//TODO: Import the models on the engine
+				//ResourceModel* resource = (ResourceModel*)App->resources->RequestResource(uid, Resource::Type::MODEL);
 				json_value_free(rootValue);
 				delete[] buffer;
 			}
@@ -1179,9 +1180,10 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 					JSON_Value* rootValue = json_parse_string(buffer);
 					JSON_Object* node = json_value_get_object(rootValue);
 					unsigned int uid = json_object_get_number(node, "LIBUID");
-					if (selected->GetComponent(ComponentType::Material) != nullptr)
+					ComponentMaterial* componentMaterial = (ComponentMaterial*)selected->GetComponent(ComponentType::Material);
+					if ( componentMaterial != nullptr)
 					{
-						//TODO: If he already has a mesh
+						componentMaterial->ChangeResource(uid);
 					}
 					else
 					{
@@ -1202,6 +1204,7 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 				JSON_Value* rootValue = json_parse_string(buffer);
 				JSON_Object* node = json_value_get_object(rootValue);
 				unsigned int uid = json_object_get_number(node, "LIBUID");
+				//TODO: Save and load scenes
 				App->resources->RequestResource(uid, Resource::Type::SCENE);
 				json_value_free(rootValue);
 				delete[] buffer;
@@ -1216,9 +1219,10 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 
 				if (selected != nullptr)
 				{
-					if (selected->GetComponent(ComponentType::Material) != nullptr)
+					ComponentMesh* componentMesh = (ComponentMesh*)selected->GetComponent(ComponentType::Mesh);
+					if (componentMesh != nullptr)
 					{
-
+						componentMesh->ChangeResource(uid);
 					}
 					else
 					{

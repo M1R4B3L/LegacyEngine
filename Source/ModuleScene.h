@@ -46,6 +46,8 @@ public:
 	const ResourceScene* GetResource() const;
 	const char* GetSceneName() const;
 
+	bool ChangeResource(unsigned int id);
+
 private:
 
 	GameObject* root = nullptr;

@@ -24,6 +24,19 @@ const ResourceMesh* ComponentMesh::GetResource() const
 	return resource;
 }
 
+bool ComponentMesh::ChangeResource(unsigned int id)
+{
+	ResourceMesh* newResource = (ResourceMesh*)App->resources->RequestResource(id, Resource::Type::MESH);
+	if (newResource == nullptr)
+		return false;
+
+	App->resources->UnrequestResource(resourceID);
+	resource = newResource;
+	resourceID = id;
+
+	return true;
+}
+
 bool ComponentMesh::IsActive() const
 {
 	return activeMesh;

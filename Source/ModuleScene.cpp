@@ -227,3 +227,16 @@ const char* ModuleScene::GetSceneName() const
 {
 	return sceneName.c_str();
 }
+
+bool ModuleScene::ChangeResource(unsigned int id)
+{
+	ResourceScene* newResource = (ResourceScene*)App->resources->RequestResource(id, Resource::Type::SCENE);
+	if (newResource == nullptr)
+		return false;
+
+	App->resources->UnrequestResource(resourceID);
+	resource = newResource;
+	resourceID = id;
+
+	return true;
+}
