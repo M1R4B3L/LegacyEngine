@@ -27,8 +27,8 @@ public:
 	void SetParent(GameObject* gameObject, GameObject* newParent);
 
 	GameObject* GetRootObject() const;
-
 	GameObject* GetSelectedObject() const;
+
 	void SetGameObjectSelected(GameObject* gameObject);
 	void SetGameObjectUnselected();
 	
@@ -45,7 +45,6 @@ public:
 	unsigned int GetResourceId() const;
 	const ResourceScene* GetResource() const;
 	const char* GetSceneName() const;
-
 	bool ChangeResource(unsigned int id);
 
 private:

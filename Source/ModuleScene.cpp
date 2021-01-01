@@ -237,6 +237,7 @@ bool ModuleScene::ChangeResource(unsigned int id)
 	App->resources->UnrequestResource(resourceID);
 	resource = newResource;
 	resourceID = id;
+	selectedObject = nullptr;
 
 	return true;
 }
