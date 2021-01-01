@@ -37,7 +37,7 @@ struct Mesh {
     float* vertexData = nullptr;
     float* normalsData = nullptr;
     float* texturecoordsData = nullptr;
-    unsigned int difuseTexture = 0;
+    unsigned int textureBuffer = 0;
 
     AABB aabb;
 
@@ -53,6 +53,10 @@ public:
 public:
 	unsigned int numIndices = 0;
 	unsigned int numVertices = 0;
-	unsigned int VAOID = 0;
+	unsigned int VAO = 0;
+    unsigned int VBO = 0;
+    unsigned int EBO = 0;
+    unsigned int textureBuffer = 0;
+    //unsigned int normalsBuffer = 0;
 	AABB aabb;
 };

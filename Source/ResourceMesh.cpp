@@ -11,7 +11,7 @@ ResourceMesh::ResourceMesh(unsigned int id) : Resource(id, Resource::Type::MESH)
 ResourceMesh::~ResourceMesh()
 {
 	//TODO: //glDisableMesh()
-	App->renderer3D->DeleteBuffer(&VAOID);
+	App->renderer3D->DeleteMeshBuffers(VAO, VBO, EBO, textureBuffer);
 }
 
 bool ResourceMesh::LoadInMemory()
@@ -26,7 +26,11 @@ bool ResourceMesh::LoadInMemory()
 	fileBuffer = nullptr;
 	numVertices = ourMesh.numVertices;
 	numIndices = ourMesh.numIndices;
-	VAOID = App->renderer3D->VAOFromMesh(&ourMesh);
+	App->renderer3D->GenMeshBuffers(&ourMesh);
+	VAO = ourMesh.VAO;
+	VBO = ourMesh.VBO;
+	EBO = ourMesh.EBO;
+	textureBuffer = ourMesh.textureBuffer;
 	ourMesh.aabb.SetNegativeInfinity();
 	ourMesh.aabb.Enclose((float3*)ourMesh.vertexData, ourMesh.numVertices);
 	aabb = ourMesh.aabb;
