@@ -35,8 +35,8 @@ public:
 	void SetWireframes(bool activate);
 	void SetglEnbleFlags(GLenum flag, bool activate);
 
-	void GenMeshBuffers(Mesh* mesh);
-	void DeleteMeshBuffers(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int textureBuffer);
+	unsigned int VAOFromMesh(Mesh* mesh);
+	void DeleteBuffer(unsigned int* VAO);
 	void DeleteTexture(unsigned int* texture);
 
 	void DrawAABB(AABB& aabb);

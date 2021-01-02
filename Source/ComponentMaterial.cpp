@@ -26,17 +26,10 @@ const ResourceTexture* ComponentMaterial::GetResource() const
 	return resource;
 }
 
-bool ComponentMaterial::ChangeResource(unsigned int id)
+void ComponentMaterial::ChangeResource(ResourceTexture* resourceTexture)
 {
-	ResourceTexture* newResource = (ResourceTexture*)App->resources->RequestResource(id, Resource::Type::TEXTURE);
-	if (newResource == nullptr)
-		return false;
-
 	App->resources->UnrequestResource(resourceID);
-	resource = newResource;
-	resourceID = id;
-
-	return true;
+	
 }
 
 void ComponentMaterial::Save(JSON_Array* componentsArry) const
@@ -50,5 +43,6 @@ void ComponentMaterial::Save(JSON_Array* componentsArry) const
 void ComponentMaterial::Load(JSON_Object* componentObj)
 {
 	resourceID = json_object_get_number(componentObj, "ResourceUID");
-	ChangeResource(resourceID);
+	if (resourceID != 0)
+		resource = (ResourceTexture*)App->resources->RequestResource(resourceID, Resource::Type::TEXTURE);
 }

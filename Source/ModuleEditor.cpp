@@ -176,7 +176,6 @@ void ModuleEditor::MenuBar()
 			ImGui::Separator();
 			ImGui::Spacing();
 			if (ImGui::MenuItem("Save Scene", "")) {
-
 			}
 			ImGui::Spacing();
 			ImGui::Separator();
@@ -1152,10 +1151,8 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 		
 		if (strstr(str.c_str(), ".meta") == nullptr)
 		{
-
-			if (ImGui::Button(str.c_str())) 
+			if (ImGui::Button(str.c_str()))
 			{
-
 				std::string path;
 				std::string fileName;
 				std::string extension;
@@ -1170,48 +1167,12 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 					JSON_Value* rootValue = json_parse_string(buffer);
 					JSON_Object* node = json_value_get_object(rootValue);
 					unsigned int uid = json_object_get_number(node, "LIBUID");
-					//TODO: Import the models on the engine
-					//ResourceModel* resource = (ResourceModel*)App->resources->RequestResource(uid, Resource::Type::MODEL);
-					json_value_free(rootValue);
-					delete[] buffer;
-				}
-				else if (extension == "png" || extension == "tga")
-				{
-					std::string path;
-					std::string fileName;
-					std::string extension;
-					App->fileSystem->SplitFilePath(str.c_str(), &path, &fileName, &extension);
-					GameObject* selected = App->scene->GetSelectedObject();
-				}
-				if (extension == "fbx" || extension == "FBX")
-				{
-					path = path + fileName + ".meta";
-					char* buffer = nullptr;
-					App->fileSystem->Load(path.c_str(), &buffer);
-					JSON_Value* rootValue = json_parse_string(buffer);
-					JSON_Object* node = json_value_get_object(rootValue);
-					unsigned int uid = json_object_get_number(node, "LIBUID");
-
 					App->resources->RequestResource(uid, Resource::Type::MODEL);
-
-					ComponentMaterial * componentMaterial = (ComponentMaterial*)selected->GetComponent(ComponentType::Material);
-					if (componentMaterial != nullptr)
-					{
-						componentMaterial->ChangeResource(uid);
-					}
-					else
-					{
-						Component* component = new ComponentMaterial(uid);
-						selected->AddComponent(component);
-					}
-
-
 					json_value_free(rootValue);
 					delete[] buffer;
 				}
 				else if (extension == "png" || extension == "tga")
 				{
-
 
 					if (selected != nullptr)
 					{
@@ -1231,43 +1192,6 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 							selected->AddComponent(component);
 						}
 
-					}
-					else if (extension == "scene")
-					{
-						path = path + fileName + ".meta";
-						char* buffer = nullptr;
-						App->fileSystem->Load(path.c_str(), &buffer);
-						JSON_Value* rootValue = json_parse_string(buffer);
-						JSON_Object* node = json_value_get_object(rootValue);
-						unsigned int uid = json_object_get_number(node, "LIBUID");
-						//TODO: Save and load scenes
-						ImGui::OpenPopup("Warning");
-						if (ImGui::BeginPopupModal("Warning"))
-						{
-							ImGui::Text("All scene unsaved changes will be lost");
-							ImGui::Text("Are you sure?");
-							if (ImGui::Button("Yes"))
-							{
-								App->scene->LoadScene(uid);
-							}
-							if (ImGui::Button("No"))
-							{
-								ImGui::CloseCurrentPopup();
-							}
-							ImGui::EndPopup();
-						}
-						json_value_free(rootValue);
-						delete[] buffer;
-					}
-					else if (extension == "mesh")
-					{
-						char* buffer = nullptr;
-						App->fileSystem->Load(str.c_str(), &buffer);
-						JSON_Value* rootValue = json_parse_string(buffer);
-						JSON_Object* node = json_value_get_object(rootValue);
-						unsigned int uid = json_object_get_number(node, "LIBUID");
-
-
 						json_value_free(rootValue);
 						delete[] buffer;
 					}
@@ -1275,7 +1199,6 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 				}
 				else if (extension == "scene")
 				{
-
 					path = path + fileName + ".meta";
 					char* buffer = nullptr;
 					App->fileSystem->Load(path.c_str(), &buffer);
@@ -1311,30 +1234,16 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 					else
 					{
 						GameObject* go = App->scene->CreateTransformGameObject(fileName.c_str(), nullptr);
-
-						ComponentMesh * componentMesh = (ComponentMesh*)selected->GetComponent(ComponentType::Mesh);
-						if (componentMesh != nullptr)
-						{
-							componentMesh->ChangeResource(uid);
-						}
-						else
-						{
-							//We need a component transform for the mesh to work
-							if (selected->GetComponent(ComponentType::Transform) == nullptr)
-								Component* component = new ComponentTransform(selected);
-
-							Component* component = new ComponentMesh(uid);
-							go->AddComponent(component);
-						}
+						Component* component = new ComponentMesh(uid);
+						go->AddComponent(component);
 					}
 				}
 			}
-		}
 			//ImGui::SameLine();
+		}
 	}
+
 }
-
-
 
 void ModuleEditor::WindowDemo()
 {

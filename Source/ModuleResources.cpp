@@ -10,18 +10,6 @@
 
 bool ModuleResources::Start()
 {
-	std::vector<std::string> files;
-	std::vector<std::string> directories;
-	App->fileSystem->DiscoverFiles(MESHES_PATH, files, directories);
-	App->fileSystem->DiscoverFiles(SCENES_PATH, files, directories);
-	App->fileSystem->DiscoverFiles(TEXTURES_PATH, files, directories);
-	App->fileSystem->DiscoverFiles(MODELS_PATH, files, directories);
-	
-	std::vector<std::string>::const_iterator cit = files.cbegin();
-	for (cit; cit != files.cend(); ++cit) {
-		unsigned int uid = std::stoi((*cit));
-		resources[uid] = nullptr;
-	}
 	return true;
 }
 

@@ -51,7 +51,6 @@ bool Importer::ImportDroped(const char* absFilepath)
 			LOG("File %s already imported", absFilepath);
 			return true;
 		}*/
-		//TODO: if file exists remove the lib file (meta maybe not because it will get rewriten) before reimporting
 		App->fileSystem->DuplicateFile(normalPath.c_str(), ASSETS_TEXTURES, relativePath);
 		App->resources->ImportFile(relativePath.c_str(), Resource::Type::TEXTURE);
 		return true;
@@ -79,8 +78,6 @@ void Importer::Models::ImportFbx(const char* assetPath, char** libBuffer, unsign
 	{
 		GameObject* rootObject = ParseFbxNode(scene->mRootNode, scene, assetPath, nullptr);
 
-		aiReleaseImport(scene);
-
 		JSON_Value* rootValue = json_value_init_object();
 		JSON_Object* node = json_value_get_object(rootValue);
 		json_object_set_value(node, "GameObjects", json_value_init_array());
@@ -90,10 +87,14 @@ void Importer::Models::ImportFbx(const char* assetPath, char** libBuffer, unsign
 		metaSize = json_serialization_size_pretty(rootValue);
 		*metaBuffer = new char[metaSize];
 		json_serialize_to_buffer_pretty(rootValue, *metaBuffer, metaSize);
+		/*//TODO:Scene name!!!
+		App->fileSystem->Save("Assets/scene.json", *metaBuffer, metaSize);
 		json_value_free(rootValue);
+		delete[] buffer;*/
 	}
 	else
 		LOG("Error opening file: %s ", assetPath);
+	aiReleaseImport(scene);
 }
 
 GameObject* Importer::Models::ParseFbxNode(aiNode* node, const aiScene* scene, const char* fbxPath, GameObject* parentGo)
@@ -438,7 +439,6 @@ unsigned int Importer::Meshes::SaveMeshLib(aiMesh* mesh, const char* name)
 	path += fileName;
 	App->fileSystem->Save(path.c_str(), fileBuffer, size);
 	delete[] fileBuffer;
-	fileBuffer = nullptr;
 
 	//Creating and saving metafile
 	JSON_Value* rootValue = json_value_init_object();
@@ -452,10 +452,6 @@ unsigned int Importer::Meshes::SaveMeshLib(aiMesh* mesh, const char* name)
 	path += name;
 	path += ".mesh";
 	App->fileSystem->Save(path.c_str(), buffer, Size);
-	
-	json_value_free(rootValue);
-	delete[] buffer;
-	buffer = nullptr;
 
 	return id;
 }
@@ -549,7 +545,6 @@ void Importer::Textures::Import(const char* imgPath, char** libBuffer,unsigned i
 	metaSize = json_serialization_size_pretty(rootValue);
 	*metaBuffer = new char[metaSize];
 	json_serialize_to_buffer_pretty(rootValue, *metaBuffer, metaSize);
-	json_value_free(rootValue);
 }
 
 ILuint Importer::Textures::SaveTexture(const char * imagePath, char** fileBuffer)
@@ -611,5 +606,4 @@ void Importer::Scenes::Import(const char* scenePath, char** libBuffer, unsigned 
 	metaSize = json_serialization_size_pretty(rootValue);
 	*metaBuffer = new char[metaSize];
 	json_serialize_to_buffer_pretty(rootValue, *metaBuffer, metaSize);
-	json_value_free(rootValue);
 }

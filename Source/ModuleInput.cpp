@@ -93,25 +93,30 @@ update_status ModuleInput::PreUpdate(float dt)
 	SDL_Event e;
 	while(SDL_PollEvent(&e))
 	{
+		//IMGUI!!!!
+		/*if (ImGui::GetIO().WantCaptureMouse) {
+			LOG("true");
+		}
+		else
+			LOG("false");
+		if (ImGui::GetIO().WantCaptureKeyboard) {
+			LOG("KeyTrue");
+		}
+		else
+			LOG("KeyFalse");*/
 		ImGui_ImplSDL2_ProcessEvent(&e);
-		//TODO: BLOCK PRESSING KEYS ON MOUSE AND KEYBOARD
-		bool blockKeyboard = ImGui::GetIO().WantCaptureKeyboard;
-		bool blockMouse = ImGui::GetIO().WantCaptureMouse;
 		switch(e.type)
 		{
 			case SDL_MOUSEWHEEL:
-			if(!blockMouse)
-				mouseZ = e.wheel.y;
+			mouseZ = e.wheel.y;
 			break;
 
 			case SDL_MOUSEMOTION:
-			if (blockMouse) {
-				mouseX = e.motion.x / SCREEN_SIZE;
-				mouseY = e.motion.y / SCREEN_SIZE;
+			mouseX = e.motion.x / SCREEN_SIZE;
+			mouseY = e.motion.y / SCREEN_SIZE;
 
-				mouseXMotion = e.motion.xrel / SCREEN_SIZE;
-				mouseYMotion = e.motion.yrel / SCREEN_SIZE;
-			}
+			mouseXMotion = e.motion.xrel / SCREEN_SIZE;
+			mouseYMotion = e.motion.yrel / SCREEN_SIZE;
 			break;
 
 			case SDL_QUIT:
