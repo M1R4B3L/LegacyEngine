@@ -13,6 +13,8 @@ public:
     const unsigned int GetID() const;
     const ResourceMesh* GetResource()const;
 
+    bool ChangeResource(unsigned int id);
+
     bool IsActive()const override;
     void SetActive(bool active) override;
 

@@ -182,6 +182,9 @@ bool ModuleScene::LoadScene(unsigned int ID)
 		LOG("Could not load the scene");
 		return false;
 	}
+	//TODO: we just have 1 scene at a time (just one root on scene)
+
+	App->resources->UnrequestResource(resourceID);
 	resourceID = resource->GetUID();
 	root = resource->root;
 	sceneName = resource->sceneName;
@@ -226,4 +229,18 @@ const ResourceScene* ModuleScene::GetResource() const
 const char* ModuleScene::GetSceneName() const
 {
 	return sceneName.c_str();
+}
+
+bool ModuleScene::ChangeResource(unsigned int id)
+{
+	ResourceScene* newResource = (ResourceScene*)App->resources->RequestResource(id, Resource::Type::SCENE);
+	if (newResource == nullptr)
+		return false;
+
+	App->resources->UnrequestResource(resourceID);
+	resource = newResource;
+	resourceID = id;
+	selectedObject = nullptr;
+
+	return true;
 }

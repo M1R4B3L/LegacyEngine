@@ -281,7 +281,7 @@ void ModuleRenderer3D::SetglEnbleFlags(GLenum flag, bool activate)
 	}
 }
 
-unsigned int ModuleRenderer3D::VAOFromMesh(Mesh* mesh)
+void ModuleRenderer3D::GenMeshBuffers(Mesh* mesh)
 {
 	glGenVertexArrays(1, &mesh->VAO);
 	glBindVertexArray(mesh->VAO);
@@ -300,9 +300,8 @@ unsigned int ModuleRenderer3D::VAOFromMesh(Mesh* mesh)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 
 	if (mesh->numTexcoords > 0) {
-		uint TexCoordBuffer;
-		glGenBuffers(1, &TexCoordBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, TexCoordBuffer);
+		glGenBuffers(1, &mesh->textureBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, mesh->textureBuffer);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh->numTexcoords, mesh->texturecoordsData, GL_STATIC_DRAW);
 		//glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 
@@ -323,12 +322,15 @@ unsigned int ModuleRenderer3D::VAOFromMesh(Mesh* mesh)
 	}*/
 
 	glBindVertexArray(0);
-	return mesh->VAO;
 }
 
-void ModuleRenderer3D::DeleteBuffer(unsigned int * VAO)
+void ModuleRenderer3D::DeleteMeshBuffers(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int textureBuffer)
 {
-	glDeleteBuffers(1, VAO);
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+	if(textureBuffer != 0)
+		glDeleteBuffers(1, &textureBuffer);
 }
 
 void ModuleRenderer3D::DeleteTexture(unsigned int* texture)

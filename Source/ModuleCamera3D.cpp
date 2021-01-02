@@ -266,8 +266,6 @@ void ModuleCamera3D::ReferenceRotation(float dt)
 
 	cameraMain->frustum.SetPos(focus + reference);
 
-	LOG("%f %f %f", focus.x, focus.y, focus.z);
-
 	LookAt(reference);
 }
 

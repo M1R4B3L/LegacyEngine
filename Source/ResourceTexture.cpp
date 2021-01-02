@@ -19,6 +19,5 @@ bool ResourceTexture::LoadInMemory()
 	gpuID = Importer::Textures::LoadTexture(fileBuffer, size);
 	delete[] fileBuffer;
 	fileBuffer = nullptr;
-	type = Resource::Type::TEXTURE;
 	return true;
 }
