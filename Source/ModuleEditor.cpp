@@ -1226,6 +1226,10 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 					}
 					else
 					{
+						//We need a component transform for the mesh to work
+						if (selected->GetComponent(ComponentType::Transform) == nullptr)
+							Component* component = new ComponentTransform(selected);
+						
 						Component* component = new ComponentMesh(uid);
 						selected->AddComponent(component);
 					}
