@@ -1093,7 +1093,6 @@ void ModuleEditor::DrawAssetDirectory(const char* directory)
 		if (ImGui::IsItemClicked())
 		{
 			selectedFolder = dir;
-			LOG("Current Folder %s", selectedFolder.c_str());
 		}
 
 		for (std::vector<std::string>::const_iterator it = dirs.begin(); it != dirs.end(); ++it)
