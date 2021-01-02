@@ -46,7 +46,6 @@ bool ModuleEditor::Init()
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-
 	//io.ConfigViewportsNoAutoMerge = true;
 	//io.ConfigViewportsNoTaskBarIcon = true;
 	io.ConfigDockingWithShift = false;
@@ -1149,17 +1148,30 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 	{
 		const std::string& str = *it2;
 		
-		if (strstr(str.c_str(), ".meta") == nullptr)
+		if (ImGui::Button(str.c_str()))
 		{
-			if (ImGui::Button(str.c_str()))
+			std::string path;
+			std::string fileName;
+			std::string extension;
+			App->fileSystem->SplitFilePath(str.c_str(), &path, &fileName, &extension);
+			GameObject* selected = App->scene->GetSelectedObject();
+
+			if (extension == "fbx" || extension == "FBX")
 			{
-				std::string path;
-				std::string fileName;
-				std::string extension;
-				App->fileSystem->SplitFilePath(str.c_str(), &path, &fileName, &extension);
-				GameObject* selected = App->scene->GetSelectedObject();
-
-				if (extension == "fbx" || extension == "FBX")
+				path = path + fileName + ".meta";
+				char* buffer = nullptr;
+				App->fileSystem->Load(path.c_str(), &buffer);
+				JSON_Value* rootValue = json_parse_string(buffer);
+				JSON_Object* node = json_value_get_object(rootValue);
+				unsigned int uid = json_object_get_number(node, "LIBUID");
+				App->resources->RequestResource(uid, Resource::Type::MODEL);
+				json_value_free(rootValue);
+				delete[] buffer;
+			}
+			else if (extension == "png" || extension == "tga")
+			{
+			
+				if ( selected != nullptr)
 				{
 					path = path + fileName + ".meta";
 					char* buffer = nullptr;
@@ -1167,80 +1179,64 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 					JSON_Value* rootValue = json_parse_string(buffer);
 					JSON_Object* node = json_value_get_object(rootValue);
 					unsigned int uid = json_object_get_number(node, "LIBUID");
-					App->resources->RequestResource(uid, Resource::Type::MODEL);
-					json_value_free(rootValue);
-					delete[] buffer;
-				}
-				else if (extension == "png" || extension == "tga")
-				{
-
-					if (selected != nullptr)
+					if (selected->GetComponent(ComponentType::Material) != nullptr)
 					{
-						path = path + fileName + ".meta";
-						char* buffer = nullptr;
-						App->fileSystem->Load(path.c_str(), &buffer);
-						JSON_Value* rootValue = json_parse_string(buffer);
-						JSON_Object* node = json_value_get_object(rootValue);
-						unsigned int uid = json_object_get_number(node, "LIBUID");
-						if (selected->GetComponent(ComponentType::Material) != nullptr)
-						{
-							//TODO: If he already has a mesh
-						}
-						else
-						{
-							Component* component = new ComponentMaterial(uid);
-							selected->AddComponent(component);
-						}
-
-						json_value_free(rootValue);
-						delete[] buffer;
-					}
-
-				}
-				else if (extension == "scene")
-				{
-					path = path + fileName + ".meta";
-					char* buffer = nullptr;
-					App->fileSystem->Load(path.c_str(), &buffer);
-					JSON_Value* rootValue = json_parse_string(buffer);
-					JSON_Object* node = json_value_get_object(rootValue);
-					unsigned int uid = json_object_get_number(node, "LIBUID");
-					App->resources->RequestResource(uid, Resource::Type::SCENE);
-					json_value_free(rootValue);
-					delete[] buffer;
-				}
-				else if (extension == "mesh")
-				{
-					char* buffer = nullptr;
-					App->fileSystem->Load(str.c_str(), &buffer);
-					JSON_Value* rootValue = json_parse_string(buffer);
-					JSON_Object* node = json_value_get_object(rootValue);
-					unsigned int uid = json_object_get_number(node, "LIBUID");
-
-					if (selected != nullptr)
-					{
-						if (selected->GetComponent(ComponentType::Material) != nullptr)
-						{
-
-						}
-						else
-						{
-							Component* component = new ComponentMesh(uid);
-							selected->AddComponent(component);
-						}
-						json_value_free(rootValue);
-						delete[] buffer;
+						//TODO: If he already has a mesh
 					}
 					else
 					{
-						GameObject* go = App->scene->CreateTransformGameObject(fileName.c_str(), nullptr);
-						Component* component = new ComponentMesh(uid);
-						go->AddComponent(component);
+						Component* component = new ComponentMaterial(uid);
+						selected->AddComponent(component);
 					}
+					
+					json_value_free(rootValue);
+					delete[] buffer;
+				}
+
+			}
+			else if (extension == "scene")
+			{
+				path = path + fileName + ".meta";
+				char* buffer = nullptr;
+				App->fileSystem->Load(path.c_str(), &buffer);
+				JSON_Value* rootValue = json_parse_string(buffer);
+				JSON_Object* node = json_value_get_object(rootValue);
+				unsigned int uid = json_object_get_number(node, "LIBUID");
+				App->resources->RequestResource(uid, Resource::Type::SCENE);
+				json_value_free(rootValue);
+				delete[] buffer;
+			}
+			else if (extension == "mesh")
+			{
+				char* buffer = nullptr;
+				App->fileSystem->Load(str.c_str(), &buffer);
+				JSON_Value* rootValue = json_parse_string(buffer);
+				JSON_Object* node = json_value_get_object(rootValue);
+				unsigned int uid = json_object_get_number(node, "LIBUID");
+
+				if (selected != nullptr)
+				{
+					if (selected->GetComponent(ComponentType::Material) != nullptr)
+					{
+
+					}
+					else
+					{
+						Component* component = new ComponentMesh(uid);
+						selected->AddComponent(component);
+					}
+					json_value_free(rootValue);
+					delete[] buffer;
+				}
+				else
+				{
+					GameObject* go = App->scene->CreateTransformGameObject(fileName.c_str(),nullptr);
+					Component* component = new ComponentMesh(uid);
+					go->AddComponent(component);
 				}
 			}
-			//ImGui::SameLine();
 		}
+		//ImGui::SameLine();
 	}
 
 }
