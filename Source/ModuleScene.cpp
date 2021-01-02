@@ -182,6 +182,8 @@ bool ModuleScene::LoadScene(unsigned int ID)
 		LOG("Could not load the scene");
 		return false;
 	}
+	//TODO: we just have 1 scene at a time (just one root on scene)
+	App->resources->UnrequestResource(resourceID);
 	resourceID = resource->GetUID();
 	root = resource->root;
 	sceneName = resource->sceneName;

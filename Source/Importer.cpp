@@ -51,6 +51,7 @@ bool Importer::ImportDroped(const char* absFilepath)
 			LOG("File %s already imported", absFilepath);
 			return true;
 		}*/
+		//TODO: if file exists remove the lib file (meta maybe not because it will get rewriten) before reimporting
 		App->fileSystem->DuplicateFile(normalPath.c_str(), ASSETS_TEXTURES, relativePath);
 		App->resources->ImportFile(relativePath.c_str(), Resource::Type::TEXTURE);
 		return true;
@@ -439,6 +440,7 @@ unsigned int Importer::Meshes::SaveMeshLib(aiMesh* mesh, const char* name)
 	path += fileName;
 	App->fileSystem->Save(path.c_str(), fileBuffer, size);
 	delete[] fileBuffer;
+	fileBuffer = nullptr;
 
 	//Creating and saving metafile
 	JSON_Value* rootValue = json_value_init_object();
@@ -452,6 +454,10 @@ unsigned int Importer::Meshes::SaveMeshLib(aiMesh* mesh, const char* name)
 	path += name;
 	path += ".mesh";
 	App->fileSystem->Save(path.c_str(), buffer, Size);
+	
+	json_value_free(rootValue);
+	delete[] buffer;
+	buffer = nullptr;
 
 	return id;
 }
@@ -606,4 +612,5 @@ void Importer::Scenes::Import(const char* scenePath, char** libBuffer, unsigned 
 	metaSize = json_serialization_size_pretty(rootValue);
 	*metaBuffer = new char[metaSize];
 	json_serialize_to_buffer_pretty(rootValue, *metaBuffer, metaSize);
+	json_value_free(rootValue);
 }
