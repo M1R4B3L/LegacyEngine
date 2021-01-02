@@ -1131,9 +1131,9 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 		ImGui::EndDragDropTarget();
 	}*/
 
-	for ( it = dirs.begin(); it != dirs.end(); ++it)
+	for (it = dirs.begin(); it != dirs.end(); ++it)
 	{
-		
+
 		if (ImGui::Button((*it).c_str()))
 		{
 			//fileToImport = (*it).c_str();
@@ -1149,13 +1149,11 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 	for (std::vector<std::string>::const_iterator it2 = files.begin(); it2 != files.end(); ++it2)
 	{
 		const std::string& str = *it2;
-		
-		if (strstr(str.c_str(), ".meta") == nullptr)
+
+		if(strstr(str.c_str(), ".meta") == nullptr)
 		{
-
-			if (ImGui::Button(str.c_str())) 
+			if (ImGui::Button(str.c_str()))
 			{
-
 				std::string path;
 				std::string fileName;
 				std::string extension;
@@ -1177,41 +1175,6 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 				}
 				else if (extension == "png" || extension == "tga")
 				{
-					std::string path;
-					std::string fileName;
-					std::string extension;
-					App->fileSystem->SplitFilePath(str.c_str(), &path, &fileName, &extension);
-					GameObject* selected = App->scene->GetSelectedObject();
-				}
-				if (extension == "fbx" || extension == "FBX")
-				{
-					path = path + fileName + ".meta";
-					char* buffer = nullptr;
-					App->fileSystem->Load(path.c_str(), &buffer);
-					JSON_Value* rootValue = json_parse_string(buffer);
-					JSON_Object* node = json_value_get_object(rootValue);
-					unsigned int uid = json_object_get_number(node, "LIBUID");
-
-					App->resources->RequestResource(uid, Resource::Type::MODEL);
-
-					ComponentMaterial * componentMaterial = (ComponentMaterial*)selected->GetComponent(ComponentType::Material);
-					if (componentMaterial != nullptr)
-					{
-						componentMaterial->ChangeResource(uid);
-					}
-					else
-					{
-						Component* component = new ComponentMaterial(uid);
-						selected->AddComponent(component);
-					}
-
-
-					json_value_free(rootValue);
-					delete[] buffer;
-				}
-				else if (extension == "png" || extension == "tga")
-				{
-
 
 					if (selected != nullptr)
 					{
@@ -1221,52 +1184,16 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 						JSON_Value* rootValue = json_parse_string(buffer);
 						JSON_Object* node = json_value_get_object(rootValue);
 						unsigned int uid = json_object_get_number(node, "LIBUID");
-						if (selected->GetComponent(ComponentType::Material) != nullptr)
+						ComponentMaterial* componentMaterial = (ComponentMaterial*)selected->GetComponent(ComponentType::Material);
+						if (componentMaterial != nullptr)
 						{
-							//TODO: If he already has a mesh
+							componentMaterial->ChangeResource(uid);
 						}
 						else
 						{
 							Component* component = new ComponentMaterial(uid);
 							selected->AddComponent(component);
 						}
-
-					}
-					else if (extension == "scene")
-					{
-						path = path + fileName + ".meta";
-						char* buffer = nullptr;
-						App->fileSystem->Load(path.c_str(), &buffer);
-						JSON_Value* rootValue = json_parse_string(buffer);
-						JSON_Object* node = json_value_get_object(rootValue);
-						unsigned int uid = json_object_get_number(node, "LIBUID");
-						//TODO: Save and load scenes
-						ImGui::OpenPopup("Warning");
-						if (ImGui::BeginPopupModal("Warning"))
-						{
-							ImGui::Text("All scene unsaved changes will be lost");
-							ImGui::Text("Are you sure?");
-							if (ImGui::Button("Yes"))
-							{
-								App->scene->LoadScene(uid);
-							}
-							if (ImGui::Button("No"))
-							{
-								ImGui::CloseCurrentPopup();
-							}
-							ImGui::EndPopup();
-						}
-						json_value_free(rootValue);
-						delete[] buffer;
-					}
-					else if (extension == "mesh")
-					{
-						char* buffer = nullptr;
-						App->fileSystem->Load(str.c_str(), &buffer);
-						JSON_Value* rootValue = json_parse_string(buffer);
-						JSON_Object* node = json_value_get_object(rootValue);
-						unsigned int uid = json_object_get_number(node, "LIBUID");
-
 
 						json_value_free(rootValue);
 						delete[] buffer;
@@ -1275,14 +1202,28 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 				}
 				else if (extension == "scene")
 				{
-
 					path = path + fileName + ".meta";
 					char* buffer = nullptr;
 					App->fileSystem->Load(path.c_str(), &buffer);
 					JSON_Value* rootValue = json_parse_string(buffer);
 					JSON_Object* node = json_value_get_object(rootValue);
 					unsigned int uid = json_object_get_number(node, "LIBUID");
-					App->resources->RequestResource(uid, Resource::Type::SCENE);
+					//TODO: Save and load scenes
+					ImGui::OpenPopup("Warning");
+					if (ImGui::BeginPopupModal("Warning"))
+					{
+						ImGui::Text("All scene unsaved changes will be lost");
+						ImGui::Text("Are you sure?");
+						if (ImGui::Button("Yes"))
+						{
+							App->scene->LoadScene(uid);
+						}
+						if (ImGui::Button("No"))
+						{
+							ImGui::CloseCurrentPopup();
+						}
+						ImGui::EndPopup();
+					}
 					json_value_free(rootValue);
 					delete[] buffer;
 				}
@@ -1296,23 +1237,7 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 
 					if (selected != nullptr)
 					{
-						if (selected->GetComponent(ComponentType::Material) != nullptr)
-						{
-
-						}
-						else
-						{
-							Component* component = new ComponentMesh(uid);
-							selected->AddComponent(component);
-						}
-						json_value_free(rootValue);
-						delete[] buffer;
-					}
-					else
-					{
-						GameObject* go = App->scene->CreateTransformGameObject(fileName.c_str(), nullptr);
-
-						ComponentMesh * componentMesh = (ComponentMesh*)selected->GetComponent(ComponentType::Mesh);
+						ComponentMesh* componentMesh = (ComponentMesh*)selected->GetComponent(ComponentType::Mesh);
 						if (componentMesh != nullptr)
 						{
 							componentMesh->ChangeResource(uid);
@@ -1324,14 +1249,23 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 								Component* component = new ComponentTransform(selected);
 
 							Component* component = new ComponentMesh(uid);
-							go->AddComponent(component);
+							selected->AddComponent(component);
 						}
+						json_value_free(rootValue);
+						delete[] buffer;
+					}
+					else
+					{
+						GameObject* go = App->scene->CreateTransformGameObject(fileName.c_str(), nullptr);
+						Component* component = new ComponentMesh(uid);
+						go->AddComponent(component);
 					}
 				}
 			}
 		}
-			//ImGui::SameLine();
+		//ImGui::SameLine();
 	}
+
 }
 
 
