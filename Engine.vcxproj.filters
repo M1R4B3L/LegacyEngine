@@ -43,16 +43,14 @@
     <Filter Include="Deps\ImGuizmos">
       <UniqueIdentifier>{fc9ee7a1-4d0b-465d-bd9b-511ca5f8179c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources">
-      <UniqueIdentifier>{9df7cd8b-e707-4b51-bb98-bc4ad3883243}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Parson">
+    <Filter Include="Deps\Parson">
       <UniqueIdentifier>{5ac15ab8-dbaa-4d7d-b2b4-fcca68ecea46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Resources">
+      <UniqueIdentifier>{9df7cd8b-e707-4b51-bb98-bc4ad3883243}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source/Application.h" />
-    <ClInclude Include="Source/Globals.h" />
     <ClInclude Include="Source\Dependencies\imgui\imconfig.h">
       <Filter>Deps\imGui</Filter>
     </ClInclude>
@@ -77,7 +75,6 @@
     <ClInclude Include="Source\Dependencies\imgui\examples\imgui_impl_sdl.h">
       <Filter>Deps\imGui</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Importer.h" />
     <ClInclude Include="Source\ModuleEditor.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
@@ -96,7 +93,6 @@
     <ClInclude Include="Source/Module.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader.h" />
     <ClInclude Include="Source\ComponentMesh.h">
       <Filter>Sources\GameObjects&amp;Components</Filter>
     </ClInclude>
@@ -374,30 +370,40 @@
       <Filter>Deps\ImGuizmos</Filter>
     </ClInclude>
     <ClInclude Include="Source\ModuleResources.h">
-      <Filter>Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source\Dependencies\parson\include\parson.h">
-      <Filter>Parson</Filter>
+      <Filter>Deps\Parson</Filter>
     </ClInclude>
     <ClInclude Include="Source\Resource.h">
-      <Filter>Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source\ResourceTexture.h">
-      <Filter>Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source\ResourceMesh.h">
-      <Filter>Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source\ResourceModel.h">
-      <Filter>Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source\ResourceScene.h">
-      <Filter>Resources</Filter>
+      <Filter>Sources\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source/Application.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source/Globals.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Importer.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Shader.h">
+      <Filter>Sources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source/Application.cpp" />
-    <ClCompile Include="Source/Main.cpp" />
     <ClCompile Include="Source\Dependencies\imgui\imgui.cpp">
       <Filter>Deps\imGui</Filter>
     </ClCompile>
@@ -416,7 +422,6 @@
     <ClCompile Include="Source\Dependencies\imgui\examples\imgui_impl_sdl.cpp">
       <Filter>Deps\imGui</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Importer.cpp" />
     <ClCompile Include="Source\ModuleEditor.cpp">
       <Filter>Sources\Modules</Filter>
     </ClCompile>
@@ -432,7 +437,6 @@
     <ClCompile Include="Source/ModuleWindow.cpp">
       <Filter>Sources\Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ComponentMesh.cpp">
       <Filter>Sources\GameObjects&amp;Components</Filter>
     </ClCompile>
@@ -611,25 +615,37 @@
       <Filter>Deps\ImGuizmos</Filter>
     </ClCompile>
     <ClCompile Include="Source\ModuleResources.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Dependencies\parson\src\parson.c">
-      <Filter>Parson</Filter>
+      <Filter>Deps\Parson</Filter>
     </ClCompile>
     <ClCompile Include="Source\Resource.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Source\ResourceTexture.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Source\ResourceMesh.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Source\ResourceModel.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Source\ResourceScene.cpp">
-      <Filter>Resources</Filter>
+      <Filter>Sources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source/Application.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Importer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source/Main.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Shader.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
