@@ -89,14 +89,11 @@ void Importer::Models::ImportFbx(const char* assetPath, char** libBuffer, unsign
 		*metaBuffer = new char[metaSize];
 		json_serialize_to_buffer_pretty(rootValue, *metaBuffer, metaSize);
 		json_value_free(rootValue);
-		/*//TODO:Scene name!!!
-		App->fileSystem->Save("Assets/scene.json", *metaBuffer, metaSize);
-		json_value_free(rootValue);
-		delete[] buffer;*/
+
+		aiReleaseImport(scene);
 	}
 	else
 		LOG("Error opening file: %s ", assetPath);
-	aiReleaseImport(scene);
 }
 
 GameObject* Importer::Models::ParseFbxNode(aiNode* node, const aiScene* scene, const char* fbxPath, GameObject* parentGo)
