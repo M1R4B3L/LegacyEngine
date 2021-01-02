@@ -88,6 +88,7 @@ void Importer::Models::ImportFbx(const char* assetPath, char** libBuffer, unsign
 		metaSize = json_serialization_size_pretty(rootValue);
 		*metaBuffer = new char[metaSize];
 		json_serialize_to_buffer_pretty(rootValue, *metaBuffer, metaSize);
+		json_value_free(rootValue);
 		/*//TODO:Scene name!!!
 		App->fileSystem->Save("Assets/scene.json", *metaBuffer, metaSize);
 		json_value_free(rootValue);
@@ -551,6 +552,7 @@ void Importer::Textures::Import(const char* imgPath, char** libBuffer,unsigned i
 	metaSize = json_serialization_size_pretty(rootValue);
 	*metaBuffer = new char[metaSize];
 	json_serialize_to_buffer_pretty(rootValue, *metaBuffer, metaSize);
+	json_value_free(rootValue);
 }
 
 ILuint Importer::Textures::SaveTexture(const char * imagePath, char** fileBuffer)
