@@ -70,6 +70,9 @@ public:
 	void WindowTime();
 	void WindowResourcesCount();
 
+	void ChangeTextureWindow(const char* directory);
+	void ChangeMeshWindow(const char* directory);
+
 	void AddLog(const char*);
 	void ClearLog();
 
@@ -96,6 +99,9 @@ private:
 	bool dragDrop;
 
 	int component;
+
+	bool changeTexture;
+	bool changeMesh;
 
 	bool removeMaterial;
 	bool removeMesh;

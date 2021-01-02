@@ -29,7 +29,7 @@
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
 aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(false), timeWindow(true), resourcesWindow(true),
-component(0), removeMaterial(true), removeMesh(true), removeCamera(true),
+component(0), removeMaterial(true), removeMesh(true), removeCamera(true), changeTexture(false), changeMesh(false),
 org("CITM"), scroll(true), selectedFolder(ASSETS_PATH)
 {}
 
@@ -89,6 +89,9 @@ update_status ModuleEditor::Update(float dt)
 	WindowProject();
 	WindowResourcesCount();
 	WindowDemo();
+
+	ChangeTextureWindow(TEXTURES_PATH);
+	ChangeMeshWindow(MESHES_PATH);
 
 	ImGui::Render();
 	ImGuiIO& io = ImGui::GetIO();
@@ -853,6 +856,13 @@ void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 		ImGui::Checkbox("AABB",&App->scene->GetSelectedObject()->showAABB);
 		ImGui::SameLine();
 		ImGui::Checkbox("OBB", &App->scene->GetSelectedObject()->showOBB);
+
+		ImGui::Separator();
+
+		if (ImGui::Button("Change Mesh")) 
+		{
+			changeMesh = true;
+		}
 	}
 	
 	if (removeMesh == false)
@@ -888,7 +898,10 @@ void ModuleEditor::InspectorShowMaterial(ComponentMaterial* componentMaterial)
 		//ImGui::SameLine();
 		//ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u x %u");
 
-		ImGui::Image((ImTextureID)componentMaterial->GetResource()->gpuID, ImVec2(100, 100), ImVec2(0,1), ImVec2(1,0));
+		if (ImGui::ImageButton((ImTextureID)componentMaterial->GetResource()->gpuID, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0)))
+		{
+			changeTexture = true;
+		}
 	}
 
 	if (removeMaterial == false)
@@ -1327,13 +1340,39 @@ void ModuleEditor::WindowResourcesCount()
 {
 	if (resourcesWindow)
 	{
-		if (ImGui::Begin("Resources"))
+		if (ImGui::Begin("Resources", &resourcesWindow))
 		{
 
 		}
 		ImGui::End();
 	}
 }
+
+void ModuleEditor::ChangeTextureWindow(const char* directory)
+{
+	if (changeTexture)
+	{
+		if (ImGui::Begin("Textures", &changeTexture))
+		{
+			ImGui::Text("");
+		}
+		ImGui::End();
+	}
+}
+
+
+void ModuleEditor::ChangeMeshWindow(const char* directory)
+{
+	if (changeMesh)
+	{
+		if (ImGui::Begin("Meshes", &changeMesh))
+		{
+			ImGui::Text("");
+		}
+		ImGui::End();
+	}
+}
+
 
 void ModuleEditor::AddLog(const char* string)
 {
