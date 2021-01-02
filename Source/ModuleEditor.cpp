@@ -175,6 +175,7 @@ void ModuleEditor::MenuBar()
 			ImGui::Separator();
 			ImGui::Spacing();
 			if (ImGui::MenuItem("Save Scene", "")) {
+
 			}
 			ImGui::Spacing();
 			ImGui::Separator();
@@ -1205,7 +1206,21 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 				JSON_Object* node = json_value_get_object(rootValue);
 				unsigned int uid = json_object_get_number(node, "LIBUID");
 				//TODO: Save and load scenes
-				App->resources->RequestResource(uid, Resource::Type::SCENE);
+				ImGui::OpenPopup("Warning");
+				if (ImGui::BeginPopupModal("Warning")) 
+				{
+					ImGui::Text("All scene unsaved changes will be lost");
+					ImGui::Text("Are you sure?");
+					if (ImGui::Button("Yes")) 
+					{
+						App->scene->LoadScene(uid);
+					}
+					if (ImGui::Button("No"))
+					{
+						ImGui::CloseCurrentPopup();
+					}
+					ImGui::EndPopup();
+				}
 				json_value_free(rootValue);
 				delete[] buffer;
 			}
