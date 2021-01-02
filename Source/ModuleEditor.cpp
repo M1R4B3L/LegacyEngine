@@ -29,7 +29,7 @@
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
 aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(false), timeWindow(true), resourcesWindow(true),
-component(0), removeMaterial(true), removeMesh(true), removeCamera(true), changeTexture(false), changeMesh(false),
+component(0), removeMaterial(true), removeMesh(true), removeCamera(true), changeTexture(false), changeMesh(false), addedTexture(false), addedMesh(false),
 org("CITM"), scroll(true), selectedFolder(ASSETS_PATH)
 {}
 
@@ -659,11 +659,13 @@ void ModuleEditor::WindowInspector()
 
 				ImGui::Separator();
 				
-				ImGui::Combo("##Select", &component, "Unkown\0Transform\0Mesh\0Material\0Camera\0");
+				ImGui::Combo("##Select", &component, "Add Component\0Transform\0Mesh\0Material\0Camera\0");
 				ImGui::SameLine();
+
+				Component* tmp = nullptr;
+
 				if (ImGui::Button("Add"))
 				{
-					Component* tmp = nullptr;
 					switch (component)
 					{
 						case 0:
@@ -676,7 +678,6 @@ void ModuleEditor::WindowInspector()
 							if (!App->scene->GetSelectedObject()->HasComponent(ComponentType::Transform))
 							{
 								tmp = new ComponentTransform(App->scene->GetSelectedObject());
-								App->scene->GetSelectedObject()->AddComponent(tmp);
 								LOG("Successful added a Component Transform");
 							}
 							else
@@ -687,24 +688,22 @@ void ModuleEditor::WindowInspector()
 						}
 						case 2:
 						{
-							if (!App->scene->GetSelectedObject()->HasComponent(ComponentType::Mesh))
+							if (!App->scene->GetSelectedObject()->HasComponent(ComponentType::Mesh) && App->scene->GetSelectedObject()->HasComponent(ComponentType::Transform))
 							{
-								tmp = new ComponentMesh();
-								App->scene->GetSelectedObject()->AddComponent(tmp);
+								addedMesh = true;
 								LOG("Successful added a Component Mesh");
 							}
 							else
 							{
-								LOG("This Game Object already has a Component Mesh");
+								LOG("This Game Object already has a Component Mesh or doesn't have transform");
 							}
 							break;
 						}
 						case 3:
 						{
-							if (!App->scene->GetSelectedObject()->HasComponent(ComponentType::Material))
+							if (!App->scene->GetSelectedObject()->HasComponent(ComponentType::Material) && App->scene->GetSelectedObject()->HasComponent(ComponentType::Mesh))
 							{
-								tmp = new ComponentMaterial();
-								App->scene->GetSelectedObject()->AddComponent(tmp);
+								addedTexture = true;
 								LOG("Successful added a Component Material");
 							}
 							else
@@ -730,7 +729,16 @@ void ModuleEditor::WindowInspector()
 
 					}
 				}
-			
+
+				if (addedMesh == true)
+				{
+					AddMeshWindow(ASSETS_MESHES);
+				}
+				else if(addedTexture == true)
+				{
+					AddTextureWindow(ASSETS_TEXTURES);
+				}
+
 			}
 
 		}
@@ -1352,7 +1360,7 @@ void ModuleEditor::ChangeTextureWindow(const char* directory, ComponentMaterial*
 {
 	if (changeTexture)
 	{
-		if (ImGui::Begin("Textures", &changeTexture))
+		if (ImGui::Begin("Change Texture", &changeTexture))
 		{
 
 			std::vector<std::string> files;
@@ -1403,7 +1411,7 @@ void ModuleEditor::ChangeMeshWindow(const char* directory, ComponentMesh* mesh)
 {
 	if (changeMesh)
 	{
-		if (ImGui::Begin("Meshes", &changeMesh))
+		if (ImGui::Begin("Change Mesh", &changeMesh))
 		{
 			std::vector<std::string> files;
 			std::vector<std::string> dirs;
@@ -1443,6 +1451,105 @@ void ModuleEditor::ChangeMeshWindow(const char* directory, ComponentMesh* mesh)
 	}
 }
 
+
+void ModuleEditor::AddTextureWindow(const char* directory)
+{
+	if (addedTexture)
+	{
+		if (ImGui::Begin("Add Texture", &addedTexture))
+		{
+
+			std::vector<std::string> files;
+			std::vector<std::string> dirs;
+
+			std::string dir((directory) ? directory : "");
+			dir += "/";
+
+			std::vector<std::string>::const_iterator it;
+
+			App->fileSystem->DiscoverFiles(dir.c_str(), files, dirs);
+
+			std::sort(files.begin(), files.end());
+
+			for (std::vector<std::string>::const_iterator it2 = files.begin(); it2 != files.end(); ++it2)
+			{
+				if (strstr((*it2).c_str(), ".meta") == nullptr)
+				{
+					if (ImGui::Button((*it2).c_str()))
+					{
+						std::string path;
+						std::string fileName;
+						std::string extension;
+						App->fileSystem->SplitFilePath((*it2).c_str(), &path, &fileName, &extension);
+						path = path + fileName + ".meta";
+						char* buffer = nullptr;
+						App->fileSystem->Load(path.c_str(), &buffer);
+						JSON_Value* rootValue = json_parse_string(buffer);
+						JSON_Object* node = json_value_get_object(rootValue);
+						unsigned int uid = json_object_get_number(node, "LIBUID");
+
+						ComponentMaterial* material = new ComponentMaterial(uid);
+
+						App->scene->GetSelectedObject()->AddComponent(material);
+
+						addedTexture = false;
+
+						json_value_free(rootValue);
+						delete[] buffer;
+					}
+				}
+			}
+		}
+		ImGui::End();
+	}
+}
+
+void ModuleEditor::AddMeshWindow(const char* directory)
+{
+	if (addedMesh)
+	{
+		if (ImGui::Begin("Add Mesh", &addedMesh))
+		{
+			std::vector<std::string> files;
+			std::vector<std::string> dirs;
+
+			std::string dir((directory) ? directory : "");
+			dir += "/";
+
+			std::vector<std::string>::const_iterator it;
+
+			App->fileSystem->DiscoverFiles(dir.c_str(), files, dirs);
+
+			std::sort(files.begin(), files.end());
+
+			for (std::vector<std::string>::const_iterator it2 = files.begin(); it2 != files.end(); ++it2)
+			{
+				if (strstr((*it2).c_str(), ".meta") == nullptr)
+				{
+					if (ImGui::Button((*it2).c_str()))
+					{
+						
+						char* buffer = nullptr;
+						App->fileSystem->Load((*it2).c_str(), &buffer);
+						JSON_Value* rootValue = json_parse_string(buffer);
+						JSON_Object* node = json_value_get_object(rootValue);
+						unsigned int uid = json_object_get_number(node, "LIBUID");
+						ComponentMesh* mesh = new ComponentMesh(uid);
+
+						App->scene->GetSelectedObject()->AddComponent(mesh);
+
+						addedMesh = false;
+
+						json_value_free(rootValue);
+						delete[] buffer;
+					}
+				}
+			}
+		}
+		ImGui::End();
+	}
+	
+}
 
 void ModuleEditor::AddLog(const char* string)
 {

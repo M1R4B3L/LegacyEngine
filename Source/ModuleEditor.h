@@ -5,6 +5,7 @@
 #include "Globals.h"
 
 enum class ComponentType;
+class Component;
 class ComponentTransform;
 class ComponentMesh;
 class ComponentMaterial;
@@ -73,6 +74,9 @@ public:
 	void ChangeTextureWindow(const char* directory, ComponentMaterial* material);
 	void ChangeMeshWindow(const char* directory, ComponentMesh* mesh);
 
+	void AddTextureWindow(const char* directory);
+	void AddMeshWindow(const char* directory);
+
 	void AddLog(const char*);
 	void ClearLog();
 
@@ -98,16 +102,19 @@ private:
 	bool scroll;
 	bool dragDrop;
 
-	int component;
-
 	bool changeTexture;
 	bool changeMesh;
+
+	bool addedTexture;
+	bool addedMesh;
 
 	bool removeMaterial;
 	bool removeMesh;
 	bool removeCamera;
 
 	GameObject* dragDropObject = nullptr;
+
+	int component;
 
 };
 
