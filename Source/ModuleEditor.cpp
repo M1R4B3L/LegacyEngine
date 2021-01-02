@@ -1131,9 +1131,10 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 		ImGui::EndDragDropTarget();
 	}*/
 
+	ImGui::Text(dir.c_str());
+
 	for (it = dirs.begin(); it != dirs.end(); ++it)
 	{
-
 		if (ImGui::Button((*it).c_str()))
 		{
 			//fileToImport = (*it).c_str();
