@@ -708,7 +708,7 @@ void ModuleEditor::WindowInspector()
 							}
 							else
 							{
-								LOG("This Game Object already has a Component Material");
+								LOG("This Game Object already has a Component Material or doesn't have a mesh");
 							}
 							break;
 						}
