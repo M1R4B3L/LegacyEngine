@@ -70,8 +70,8 @@ public:
 	void WindowTime();
 	void WindowResourcesCount();
 
-	void ChangeTextureWindow(const char* directory);
-	void ChangeMeshWindow(const char* directory);
+	void ChangeTextureWindow(const char* directory, ComponentMaterial* material);
+	void ChangeMeshWindow(const char* directory, ComponentMesh* mesh);
 
 	void AddLog(const char*);
 	void ClearLog();

@@ -90,9 +90,6 @@ update_status ModuleEditor::Update(float dt)
 	WindowResourcesCount();
 	WindowDemo();
 
-	ChangeTextureWindow(TEXTURES_PATH);
-	ChangeMeshWindow(MESHES_PATH);
-
 	ImGui::Render();
 	ImGuiIO& io = ImGui::GetIO();
 	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
@@ -863,6 +860,8 @@ void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 		{
 			changeMesh = true;
 		}
+
+		ChangeMeshWindow(ASSETS_MESHES, componentMesh);
 	}
 	
 	if (removeMesh == false)
@@ -902,6 +901,8 @@ void ModuleEditor::InspectorShowMaterial(ComponentMaterial* componentMaterial)
 		{
 			changeTexture = true;
 		}
+
+		ChangeTextureWindow(ASSETS_TEXTURES, componentMaterial);
 	}
 
 	if (removeMaterial == false)
@@ -1347,26 +1348,96 @@ void ModuleEditor::WindowResourcesCount()
 	}
 }
 
-void ModuleEditor::ChangeTextureWindow(const char* directory)
+void ModuleEditor::ChangeTextureWindow(const char* directory, ComponentMaterial* material)
 {
 	if (changeTexture)
 	{
 		if (ImGui::Begin("Textures", &changeTexture))
 		{
-			ImGui::Text("");
+
+			std::vector<std::string> files;
+			std::vector<std::string> dirs;
+
+			std::string dir((directory) ? directory : "");
+			dir += "/";
+
+			std::vector<std::string>::const_iterator it;
+
+			App->fileSystem->DiscoverFiles(dir.c_str(), files, dirs);
+
+			std::sort(files.begin(), files.end());
+
+			for (std::vector<std::string>::const_iterator it2 = files.begin(); it2 != files.end(); ++it2)
+			{
+				if (strstr((*it2).c_str(), ".meta") == nullptr)
+				{
+					if (ImGui::Button((*it2).c_str()))
+					{
+						std::string path;
+						std::string fileName;
+						std::string extension;
+						App->fileSystem->SplitFilePath((*it2).c_str(), &path, &fileName, &extension);
+						path = path + fileName + ".meta";
+						char* buffer = nullptr;
+						App->fileSystem->Load(path.c_str(), &buffer);
+						JSON_Value* rootValue = json_parse_string(buffer);
+						JSON_Object* node = json_value_get_object(rootValue);
+						unsigned int uid = json_object_get_number(node, "LIBUID");
+
+						material->ChangeResource(uid);
+
+						changeTexture = false;
+
+						json_value_free(rootValue);
+						delete[] buffer;
+					}
+				}
+			}
 		}
 		ImGui::End();
 	}
 }
 
 
-void ModuleEditor::ChangeMeshWindow(const char* directory)
+void ModuleEditor::ChangeMeshWindow(const char* directory, ComponentMesh* mesh)
 {
 	if (changeMesh)
 	{
 		if (ImGui::Begin("Meshes", &changeMesh))
 		{
-			ImGui::Text("");
+			std::vector<std::string> files;
+			std::vector<std::string> dirs;
+
+			std::string dir((directory) ? directory : "");
+			dir += "/";
+
+			std::vector<std::string>::const_iterator it;
+
+			App->fileSystem->DiscoverFiles(dir.c_str(), files, dirs);
+
+			std::sort(files.begin(), files.end());
+
+			for (std::vector<std::string>::const_iterator it2 = files.begin(); it2 != files.end(); ++it2)
+			{
+				if (strstr((*it2).c_str(), ".meta") == nullptr)
+				{
+					if (ImGui::Button((*it2).c_str()))
+					{
+						char* buffer = nullptr;
+						App->fileSystem->Load((*it2).c_str(), &buffer);
+						JSON_Value* rootValue = json_parse_string(buffer);
+						JSON_Object* node = json_value_get_object(rootValue);
+						unsigned int uid = json_object_get_number(node, "LIBUID");
+
+						mesh->ChangeResource(uid);
+
+						changeMesh = false;
+
+						json_value_free(rootValue);
+						delete[] buffer;
+					}
+				}
+			}
 		}
 		ImGui::End();
 	}
