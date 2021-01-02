@@ -34,6 +34,5 @@ bool ResourceMesh::LoadInMemory()
 	ourMesh.aabb.SetNegativeInfinity();
 	ourMesh.aabb.Enclose((float3*)ourMesh.vertexData, ourMesh.numVertices);
 	aabb = ourMesh.aabb;
-	type = Resource::Type::MESH;
 	return true;
 }

@@ -79,6 +79,8 @@ void Importer::Models::ImportFbx(const char* assetPath, char** libBuffer, unsign
 	{
 		GameObject* rootObject = ParseFbxNode(scene->mRootNode, scene, assetPath, nullptr);
 
+		aiReleaseImport(scene);
+
 		JSON_Value* rootValue = json_value_init_object();
 		JSON_Object* node = json_value_get_object(rootValue);
 		json_object_set_value(node, "GameObjects", json_value_init_array());
@@ -89,8 +91,6 @@ void Importer::Models::ImportFbx(const char* assetPath, char** libBuffer, unsign
 		*metaBuffer = new char[metaSize];
 		json_serialize_to_buffer_pretty(rootValue, *metaBuffer, metaSize);
 		json_value_free(rootValue);
-
-		aiReleaseImport(scene);
 	}
 	else
 		LOG("Error opening file: %s ", assetPath);
