@@ -70,7 +70,7 @@ void ComponentTransform::GetLocalTransform(float3& translation, float3& scale, Q
 	rotation = this->rotation;
 }
 
-void ComponentTransform::SetFlag() const
+void ComponentTransform::SetFlag()
 {
 	globalFlag = true;
 }

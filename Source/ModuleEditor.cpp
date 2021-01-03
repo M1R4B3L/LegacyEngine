@@ -1591,7 +1591,7 @@ void ModuleEditor::ImGuizmoUpdate()
 	{
 		ComponentTransform* selectedTransform = (ComponentTransform*)tmp->GetComponent(ComponentType::Transform);
 
-		if (selectedTransform) 
+		if (selectedTransform && tmp->HasComponent(ComponentType::Mesh)) 
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();

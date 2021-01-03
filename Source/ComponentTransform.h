@@ -12,7 +12,7 @@ public:
 	void SetLocalTransform(float3 iTranslate, float3 iScale, Quat iRotation);
 	void NewParentLocal(GameObject* newParent);
 	void GetLocalTransform(float3& translation, float3& scale, Quat& rotation) const;
-	void SetFlag() const;
+	void SetFlag();
 	const float4x4 GetGlobalTransform();
 	void SetGlobalTransform(float4x4 transform);
 	void Save(JSON_Array* componentsArry)const override;
@@ -21,11 +21,11 @@ public:
 private:
 	void SetGlobalTransform();
 
-	mutable float3 translation;
+	float3 translation;
 	float3 scale;
 	Quat rotation;
 	float4x4 localTransform;
-	mutable float4x4 globalTransform;
-	mutable bool globalFlag;
+	float4x4 globalTransform;
+	bool globalFlag;
 };
 
