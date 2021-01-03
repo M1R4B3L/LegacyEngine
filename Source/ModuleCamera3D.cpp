@@ -336,7 +336,7 @@ void ModuleCamera3D::DrawRay()
 void ModuleCamera3D::LeftClick()
 {
 	float normalizedX = App->input->GetMouseX() / (float) App->window->GetWidth();
-	float normalizedY = App->input->GetMouseY() / (float) App->window->GetWidth();
+	float normalizedY = App->input->GetMouseY() / (float) App->window->GetHeight();
 
 	normalizedX = 1.0 - 2.0 * normalizedX;
 	normalizedY = -1.0 + 2.0 * normalizedY;
