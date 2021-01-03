@@ -695,7 +695,7 @@ void ModuleEditor::WindowInspector()
 							if (!App->scene->GetSelectedObject()->HasComponent(ComponentType::Mesh) && App->scene->GetSelectedObject()->HasComponent(ComponentType::Transform))
 							{
 								addedMesh = true;
-								LOG("Successful added a Component Mesh");
+								LOG("Select the mesh to add");
 							}
 							else
 							{
@@ -708,7 +708,7 @@ void ModuleEditor::WindowInspector()
 							if (!App->scene->GetSelectedObject()->HasComponent(ComponentType::Material) && App->scene->GetSelectedObject()->HasComponent(ComponentType::Mesh))
 							{
 								addedTexture = true;
-								LOG("Successful added a Component Material");
+								LOG("Select the texture to add");
 							}
 							else
 							{
@@ -1497,6 +1497,7 @@ void ModuleEditor::AddTextureWindow(const char* directory)
 
 						App->scene->GetSelectedObject()->AddComponent(material);
 
+						LOG("Successful added a Component Material");
 						addedTexture = false;
 
 						json_value_free(rootValue);
@@ -1544,7 +1545,7 @@ void ModuleEditor::AddMeshWindow(const char* directory)
 						App->scene->GetSelectedObject()->AddComponent(mesh);
 
 						addedMesh = false;
-
+						LOG("Successful added a Component Mesh");
 						json_value_free(rootValue);
 						delete[] buffer;
 					}
