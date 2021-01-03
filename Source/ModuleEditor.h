@@ -3,6 +3,8 @@
 
 #include "Module.h"
 #include "Globals.h"
+#include "imgui.h"
+#include "Dependencies/ImGuizmo-master/ImGuizmo.h"
 
 enum class ComponentType;
 class Component;
@@ -115,6 +117,8 @@ private:
 	GameObject* dragDropObject = nullptr;
 
 	int component;
+
+	ImGuizmo::OPERATION gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 
 };
 

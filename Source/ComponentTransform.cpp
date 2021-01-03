@@ -79,6 +79,13 @@ const float4x4 ComponentTransform::GetGlobalTransform() const
 	return globalTransform;
 }
 
+void ComponentTransform::SetGlobalTransform(float4x4 transform)
+{
+	localTransform = ((ComponentTransform*)GetGameObject().GetParent()->GetComponent(ComponentType::Transform))->GetGlobalTransform()/*.Inverted()*/ * transform;
+	globalTransform = transform;
+	globalFlag = true;
+}
+
 void ComponentTransform::Save(JSON_Array* componentsArry) const
 {
 	json_array_append_value(componentsArry, json_value_init_object());

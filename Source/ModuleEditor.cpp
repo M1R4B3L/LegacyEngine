@@ -31,7 +31,8 @@ ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
 aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(false), timeWindow(true), resourcesWindow(true),
 component(0), removeMaterial(true), removeMesh(true), removeCamera(true), changeTexture(false), changeMesh(false), addedTexture(false), addedMesh(false),
 org("CITM"), scroll(true), selectedFolder(ASSETS_PATH)
-{}
+{
+}
 
 ModuleEditor::~ModuleEditor()
 {
@@ -89,6 +90,7 @@ update_status ModuleEditor::Update(float dt)
 	WindowProject();
 	WindowResourcesCount();
 	WindowDemo();
+
 
 	ImGui::Render();
 	ImGuiIO& io = ImGui::GetIO();
@@ -159,6 +161,7 @@ void ModuleEditor::WindowDocking()
 			}
 			ImGui::EndChild();*/
 		}
+		ImGuizmoUpdate();
 		ImGui::End();
 	}
 
@@ -1573,22 +1576,40 @@ void ModuleEditor::ClearLog()
 
 void ModuleEditor::ImGuizmoUpdate()
 {
-	/*GameObject* tmp = App->scene->GetSelectedObject();
+	GameObject* tmp = App->scene->GetSelectedObject();
 
-	if (tmp != nullptr)
+	if (tmp)
 	{
-		ComponentTransform* selectedTransform = (ComponentTransform*)tmp;
+		ComponentTransform* selectedTransform = (ComponentTransform*)tmp->GetComponent(ComponentType::Transform);
 
-		float4x4 viewMatrix = App->camera->GetCamera()->GetGLViewMatrix();
-		float4x4 projectionMatrix = App->camera->GetCamera()->GetGLProjectionMatrix();
-		float4x4 selectedMatrix = selectedTransform->GetGlobalTransform().Transposed();
+		if (selectedTransform) 
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
 
-		float matrixTranslation[3], matrixRotation[3], matrixScale[3];
-		ImGuizmo::DecomposeMatrixToComponents(, matrixTranslation, matrixRotation, matrixScale);
-		ImGui::InputFloat3("Tr", matrixTranslation, 3);
-		ImGui::InputFloat3("Rt", matrixRotation, 3);
-		ImGui::InputFloat3("Sc", matrixScale, 3);
-		ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, ;
+			//ImGuiIO& io = ImGui::GetIO();
+			//ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+			float windowWidth = (float)ImGui::GetWindowWidth();
+			float windowHeight= (float)ImGui::GetWindowHeight();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-	}*/
+			float4x4 viewMatrix = App->camera->GetCamera()->GetGLViewMatrix();
+			float4x4 projectionMatrix = App->camera->GetCamera()->GetGLProjectionMatrix();
+			float4x4 modelMatrix = selectedTransform->GetGlobalTransform().Transposed();
+
+			float modelPtr[16];
+			memcpy(modelPtr, modelMatrix.ptr(), 16 * sizeof(float));
+			ImGuizmo::MODE finalMode = (gizmoOperation == ImGuizmo::OPERATION::SCALE ? ImGuizmo::MODE::LOCAL : ImGuizmo::MODE::WORLD);
+
+			ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), gizmoOperation, finalMode, modelPtr);
+
+			if (ImGuizmo::IsUsing()) 
+			{
+				float4x4 newMatrix;
+				newMatrix.Set(modelPtr);
+				modelMatrix = newMatrix.Transposed();
+				selectedTransform->SetGlobalTransform(modelMatrix);
+			}
+		}
+	}
 }

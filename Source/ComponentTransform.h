@@ -14,6 +14,7 @@ public:
 	void GetLocalTransform(float3& translation, float3& scale, Quat& rotation) const;
 	void SetFlag() const;
 	const float4x4 GetGlobalTransform() const;
+	void SetGlobalTransform(float4x4 transform);
 	void Save(JSON_Array* componentsArry)const override;
 	void Load(JSON_Object* componentObj) override;
 
