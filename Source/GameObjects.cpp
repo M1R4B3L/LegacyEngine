@@ -114,7 +114,7 @@ void GameObject::Draw()
 			material = materialComponent->GetResource()->gpuID;
 		}
 		
-		App->renderer3D->Draw(transformComponent->GetGlobalTransform().Transposed(), meshResource->VAO, meshResource->numIndices, material);
+		App->renderer3D->Draw(transformComponent->GetGlobalTransform().Transposed(), meshResource->VAO, meshResource->numIndices, material, this == App->scene->GetSelectedObject());
 
 		if (showAABB)
 		{

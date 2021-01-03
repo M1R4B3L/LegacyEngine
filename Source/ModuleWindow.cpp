@@ -41,6 +41,7 @@ bool ModuleWindow::Init()
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
 		*/
+		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
 
 		if(WIN_FULLSCREEN == true)
 		{

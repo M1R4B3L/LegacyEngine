@@ -24,7 +24,7 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
-	void Draw(float4x4 modelMatrix, uint VAO, uint indices, uint textureId = 0);
+	void Draw(float4x4 modelMatrix, uint VAO, uint indices, uint textureId = 0, bool outline = false);
 
 	void OnResize(int width, int height);
 
@@ -60,6 +60,9 @@ public:
 	SDL_GLContext context;
 
 	Shader* defaultShader = nullptr;
+	Shader* singleColorShader = nullptr;
+	float4 outlineColor = { 0.04f, 0.28f, 0.26f, 1.0f };
+	float outlineWeight = 0.05f;
 	unsigned int dropedTexture = 0;
 };
 

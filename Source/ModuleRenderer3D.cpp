@@ -82,7 +82,7 @@ bool ModuleRenderer3D::Init()
 		glClearDepth(1.0f);
 		
 		//Initialize clear color
-		glClearColor(0.f, 0.f, 0.f, 1.f);
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 		//Check for error
 		error = glGetError();
@@ -116,7 +116,14 @@ bool ModuleRenderer3D::Init()
 		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
 
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		/*glDisable(GL_STENCIL_TEST);
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);*/
+
 		defaultShader = new Shader("DefaultVertexShader.vs", "DefaultFragmentShader.fs");
+		singleColorShader = new Shader("DefaultVertexShader.vs", "SingleColorFragmentShader.fs");
 	}
 
 	// Projection matrix for
@@ -130,8 +137,9 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, sceneFrameBuffer);
 	glEnable(GL_DEPTH_TEST);
-	//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	if (camera->updatePMatrix)
 	{
@@ -179,49 +187,70 @@ bool ModuleRenderer3D::CleanUp()
 
 	glDeleteShader(defaultShader->ID); //TODO: maybe on the shader destructor
 	RELEASE(defaultShader);
+	glDeleteShader(singleColorShader->ID); //TODO: maybe on the shader destructor
+	RELEASE(singleColorShader);
 	SDL_GL_DeleteContext(context);
 
 	return true;
 }
 
-void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint textureID)
+void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint textureID, bool outline)
 {
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	if (outline) 
+	{
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilMask(0xFF);
+	}
+	else 
+	{
+		glStencilMask(0x00);
+	}
 
 	defaultShader->use();
-	// draw mesh
+
 	if (textureID != 0) {
-		//glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, textureID);
-		//ilutGLBindTexImage();
-		//ilutGLBindMipmaps
 	}
 
 	defaultShader->setMat4("projection",App->camera->GetCamera()->GetGLProjectionMatrix().ptr());
 	defaultShader->setMat4("view", App->camera->GetCamera()->GetGLViewMatrix().ptr());
 	defaultShader->setMat4("model", modelMatrix.ptr());
 	glBindVertexArray(VAO);
-	/*glEnableClientState(GL_VERTEX_ARRAY);
-	//glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);*/
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDrawElements(GL_TRIANGLES, indices, GL_UNSIGNED_INT, 0);
-	/*glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);*/
-	glBindVertexArray(0);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	if (outline) 
+	{
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilMask(0x00);
+		glDisable(GL_DEPTH_TEST);
+
+		singleColorShader->use();
+		singleColorShader->setMat4("projection", App->camera->GetCamera()->GetGLProjectionMatrix().ptr());
+		singleColorShader->setMat4("view", App->camera->GetCamera()->GetGLViewMatrix().ptr());
+		float3 translation, scale;
+		Quat rotation;
+		modelMatrix.Transpose();
+		modelMatrix.Decompose(translation, rotation, scale);
+		outlineWeight = 0.05f;
+		scale.x += outlineWeight; scale.y += outlineWeight; scale.z += outlineWeight;
+		modelMatrix = modelMatrix.FromTRS(translation, rotation, scale).Transposed();
+		singleColorShader->setMat4("model", modelMatrix.ptr());
+		singleColorShader->setFloat4("selectedColor", outlineColor.x, outlineColor.y, outlineColor.z, outlineColor.w);
+		glDrawElements(GL_TRIANGLES, indices, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+		glStencilMask(0xFF);
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glEnable(GL_DEPTH_TEST);
+	}
+	glBindVertexArray(0);
 	glUseProgram(0);
-	//glDisable(GL_TEXTURE_2D);
-
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-	// clear all relevant buffers
-	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
-	//glClear(GL_COLOR_BUFFER_BIT);
-
-	//glBindTexture(GL_TEXTURE_2D, sceneTextureBuffer);
+	glDisable(GL_STENCIL_TEST);
 }
 
 void ModuleRenderer3D::OnResize(int width, int height)
