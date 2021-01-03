@@ -24,6 +24,7 @@
 #include "ResourceMesh.h"
 #include "ResourceTexture.h"
 #include "parson.h"
+#include "ModuleInput.h"
 #include <algorithm>
 
 
@@ -1577,6 +1578,13 @@ void ModuleEditor::ClearLog()
 
 void ModuleEditor::ImGuizmoUpdate()
 {
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_UP && !ImGui::GetIO().WantCaptureKeyboard)
+		gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_STATE::KEY_UP && !ImGui::GetIO().WantCaptureKeyboard)
+		gizmoOperation = ImGuizmo::OPERATION::ROTATE;
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_STATE::KEY_UP && !ImGui::GetIO().WantCaptureKeyboard)
+		gizmoOperation = ImGuizmo::OPERATION::SCALE;
+
 	GameObject* tmp = App->scene->GetSelectedObject();
 
 	if (tmp)
