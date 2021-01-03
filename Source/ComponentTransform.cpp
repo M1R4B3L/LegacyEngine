@@ -50,10 +50,11 @@ void ComponentTransform::SetGlobalTransform() const
 		globalTransform.Set(((ComponentTransform*)parentGo->GetComponent(ComponentType::Transform))->GetGlobalTransform() * localTransform);
 	}*/
 	globalFlag = false;
-	if (!GetGameObject().GetParent()->HasComponent(ComponentType::Transform))
+	ComponentTransform* parentTransform = (ComponentTransform*)GetGameObject().GetParent()->GetComponent(ComponentType::Transform);
+	if (!parentTransform)
 		globalTransform.Set(localTransform);
 	else
-		globalTransform.Set(((ComponentTransform*)(GetGameObject().GetParent()->GetComponent(ComponentType::Transform)))->GetGlobalTransform() * localTransform);
+		globalTransform.Set(parentTransform->GetGlobalTransform() * localTransform);
 	for (int i = 0; i < GetGameObject().children.size(); ++i)
 	{
 		((ComponentTransform*)GetGameObject().children[i]->GetComponent(ComponentType::Transform))->SetGlobalTransform();
@@ -81,8 +82,15 @@ const float4x4 ComponentTransform::GetGlobalTransform() const
 
 void ComponentTransform::SetGlobalTransform(float4x4 transform)
 {
-	localTransform = ((ComponentTransform*)GetGameObject().GetParent()->GetComponent(ComponentType::Transform))->GetGlobalTransform()/*.Inverted()*/ * transform;
-	globalTransform = transform;
+	ComponentTransform* parentTransform = (ComponentTransform*)GetGameObject().GetParent()->GetComponent(ComponentType::Transform);
+	if (parentTransform) {
+		localTransform = ((ComponentTransform*)GetGameObject().GetParent()->GetComponent(ComponentType::Transform))->GetGlobalTransform()/*.Inverted()*/ * transform;
+		globalTransform = transform;
+	}
+	else {
+		localTransform = transform;
+		globalTransform = transform;
+	}
 	globalFlag = true;
 }
 
