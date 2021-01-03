@@ -237,7 +237,6 @@ void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint t
 		Quat rotation;
 		modelMatrix.Transpose();
 		modelMatrix.Decompose(translation, rotation, scale);
-		outlineWeight = 0.05f;
 		scale.x += outlineWeight; scale.y += outlineWeight; scale.z += outlineWeight;
 		modelMatrix = modelMatrix.FromTRS(translation, rotation, scale).Transposed();
 		singleColorShader->setMat4("model", modelMatrix.ptr());

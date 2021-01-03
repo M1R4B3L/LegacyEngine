@@ -533,6 +533,20 @@ void ModuleEditor::WindowConfig()
 					{
 						App->renderer3D->SetglEnbleFlags(GL_TEXTURE_2D, texture2D);
 					}
+					ImGui::Separator();
+					ImGui::Spacing();
+
+					float outlineWidth = App->renderer3D->outlineWeight;
+					if (ImGui::DragFloat("Outline Width", (float*)&outlineWidth, 0.01f, 0.01f, 0.1f))
+					{
+						App->renderer3D->outlineWeight = outlineWidth;
+					}
+
+					ImVec4 colorOutline = ImVec4(App->renderer3D->outlineColor.x, App->renderer3D->outlineColor.y, App->renderer3D->outlineColor.z, App->renderer3D->outlineColor.w);
+					if (ImGui::ColorEdit4("Color", &colorOutline.x))
+					{
+						App->renderer3D->outlineColor = float4(colorOutline.x, colorOutline.y, colorOutline.z, colorOutline.w);
+					}
 					ImGui::EndTabItem();
 				}
 
@@ -1158,7 +1172,7 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 	}*/
 
 	ImGui::Text(dir.c_str());
-
+	ImGui::Separator();
 	for (it = dirs.begin(); it != dirs.end(); ++it)
 	{
 		if (ImGui::Button((*it).c_str()))
@@ -1166,7 +1180,7 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 			//fileToImport = (*it).c_str();
 
 			selectedFolder = *it;
-			LOG("Current Folder %s", selectedFolder.c_str());
+			//LOG("Current Folder %s", selectedFolder.c_str());
 		}
 
 	}

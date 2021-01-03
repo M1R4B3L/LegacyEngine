@@ -4,9 +4,11 @@
 #include "Module.h"
 #include "Globals.h"
 #include "Dependencies/MathGeolib/Math/float3.h"
+#include "Dependencies/MathGeolib/Geometry/LineSegment.h"
 
 class GameObject;
 class ComponentCamera;
+
 
 class ModuleCamera3D : public Module
 {
@@ -33,6 +35,9 @@ public:
 	void Zoom(float dt);
 	void Focus(GameObject* gameObject);
 	
+	void LeftClick();
+
+	void DrawRay();
 
 public:
 
@@ -44,6 +49,7 @@ private:
 
 	float3 reference;
 	ComponentCamera* cameraMain = nullptr;
+	LineSegment rayPicking;
 };
 
 #endif //__ModuleCamera3D_H__

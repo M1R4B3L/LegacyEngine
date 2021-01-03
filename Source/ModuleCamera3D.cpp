@@ -1,5 +1,6 @@
 #include "Globals.h"
 #include "Application.h"
+#include "ModuleWindow.h"
 #include "ModuleInput.h"
 #include "ModuleCamera3D.h"
 #include "ModuleRenderer3D.h"
@@ -8,6 +9,7 @@
 #include "ComponentCamera.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
+#include "SDL_opengl.h"
 
 ModuleCamera3D::ModuleCamera3D(bool startEnable) : Module(startEnable), moveSpeed(10),rotateSpeed(0.025),zoomSpeed(10)
 {
@@ -90,6 +92,10 @@ update_status ModuleCamera3D::Update(float dt)
 		Focus(App->scene->GetSelectedObject());
 	}
 
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+	{
+		LeftClick();
+	}
 	// Recalculate matrix -------------
 
 	return UPDATE_CONTINUE;
@@ -309,4 +315,34 @@ void ModuleCamera3D::Focus(GameObject* gameObject)
 		Look(reference, cameraDistance);
 	}
 
+}
+
+void ModuleCamera3D::DrawRay()
+{
+	glColor4f(1, 0, 0, 1);
+
+	//Between-planes right
+	GLfloat pointA[3] = { rayPicking.a.x, rayPicking.a.y, rayPicking.a.z };
+	GLfloat pointB[3] = { rayPicking.b.x, rayPicking.b.y, rayPicking.b.z };
+
+	glBegin(GL_LINES);
+	glVertex3fv(pointA);
+	glVertex3fv(pointB);
+	glEnd();
+
+	glColor4f(1, 1, 1, 1);
+}
+
+void ModuleCamera3D::LeftClick()
+{
+	float normalizedX = App->input->GetMouseX() / (float) App->window->GetWidth();
+	float normalizedY = App->input->GetMouseY() / (float) App->window->GetWidth();
+
+	normalizedX = 1.0 - 2.0 * normalizedX;
+	normalizedY = -1.0 + 2.0 * normalizedY;
+
+	rayPicking = cameraMain->frustum.UnProjectLineSegment(normalizedX, normalizedY);
+
+	LOG("%f %f %f", rayPicking.a.x, rayPicking.a.y, rayPicking.a.z);
+	LOG("%f %f %f", rayPicking.b.x, rayPicking.a.y, rayPicking.a.z);
 }
