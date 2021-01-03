@@ -821,6 +821,7 @@ void ModuleEditor::InspectorShowTransform(ComponentTransform* componentTransform
 	{
 		float3 translation, scale;
 		Quat rotation;
+
 		componentTransform->GetLocalTransform(translation, scale, rotation);
 
 		if (ImGui::DragFloat3("Position", (float*)&translation, 0.01f, 0.0f, 0.0f, "%.3f")) {

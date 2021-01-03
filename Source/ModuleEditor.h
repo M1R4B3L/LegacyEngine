@@ -118,7 +118,7 @@ private:
 
 	int component;
 
-	ImGuizmo::OPERATION gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+	ImGuizmo::OPERATION gizmoOperation = ImGuizmo::OPERATION::SCALE;
 
 };
 

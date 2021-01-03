@@ -99,7 +99,7 @@ void GameObject::Update(float dt)
 
 void GameObject::Draw()
 {
-	const ComponentTransform* transformComponent = (ComponentTransform*)GetComponent(ComponentType::Transform);
+	ComponentTransform* transformComponent = (ComponentTransform*)GetComponent(ComponentType::Transform);
 	const ComponentMesh* meshComponent = (ComponentMesh*)GetComponent(ComponentType::Mesh);
 	ComponentCamera* cameraComponent = (ComponentCamera*)GetComponent(ComponentType::Camera);
 

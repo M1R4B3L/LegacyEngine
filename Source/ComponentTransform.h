@@ -13,15 +13,15 @@ public:
 	void NewParentLocal(GameObject* newParent);
 	void GetLocalTransform(float3& translation, float3& scale, Quat& rotation) const;
 	void SetFlag() const;
-	const float4x4 GetGlobalTransform() const;
+	const float4x4 GetGlobalTransform();
 	void SetGlobalTransform(float4x4 transform);
 	void Save(JSON_Array* componentsArry)const override;
 	void Load(JSON_Object* componentObj) override;
 
 private:
-	void SetGlobalTransform() const;
+	void SetGlobalTransform();
 
-	float3 translation;
+	mutable float3 translation;
 	float3 scale;
 	Quat rotation;
 	float4x4 localTransform;
