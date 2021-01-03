@@ -535,7 +535,7 @@ void ModuleEditor::WindowConfig()
 					}
 					ImGui::Separator();
 					ImGui::Spacing();
-
+					ImGui::Text("Outliner:");
 					float outlineWidth = App->renderer3D->outlineWeight;
 					if (ImGui::DragFloat("Outline Width", (float*)&outlineWidth, 0.01f, 0.01f, 0.1f))
 					{
