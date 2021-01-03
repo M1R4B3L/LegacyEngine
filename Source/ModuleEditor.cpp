@@ -1330,6 +1330,26 @@ void ModuleEditor::WindowTime()
 			Timer timer;
 			timer.Start();
 
+			if (ImGui::Button("Translate"))
+			{
+				gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+				LOG("Guizmo Operation TRANSLATE");
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Rotate"))
+			{
+				gizmoOperation = ImGuizmo::OPERATION::ROTATE;
+				LOG("Guizmo Operation ROTATE");
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Scale"))
+			{
+				gizmoOperation = ImGuizmo::OPERATION::SCALE;
+				LOG("Guizmo Operation SCALE");
+			}
+			ImGui::SameLine();
+			ImGui::InvisibleButton("##",ImVec2(50,10));
+			ImGui::SameLine();
 			if (ImGui::Button("Play"))
 			{
 				LOG("Game Mode Activated");
