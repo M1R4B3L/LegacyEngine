@@ -432,7 +432,7 @@ unsigned int Importer::Meshes::SaveMeshLib(aiMesh* mesh, const char* name)
 	//Saving lib file
 	std::string path = MESHES_PATH;
 	unsigned int id = App->resources->GenerateNewUID();
-	Resource* resource = new Resource(id,Resource::Type::MESH);
+	Resource* resource = new ResourceMesh(id);
 	App->resources->AddMeshResource(id,resource);
 	std::string fileName = std::to_string(id);
 	path += fileName;
