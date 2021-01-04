@@ -49,6 +49,9 @@
     <Filter Include="Sources\Resources">
       <UniqueIdentifier>{9df7cd8b-e707-4b51-bb98-bc4ad3883243}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Deps\ImGuiTextEditor">
+      <UniqueIdentifier>{b34d8c48-9344-4c65-9273-ab2afd14c5ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Dependencies\imgui\imconfig.h">
@@ -402,6 +405,9 @@
     <ClInclude Include="Source\Shader.h">
       <Filter>Sources</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Dependencies\ImGuiColorTextEdit-master\TextEditor.h">
+      <Filter>Deps\ImGuiTextEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Dependencies\imgui\imgui.cpp">
@@ -646,6 +652,9 @@
     </ClCompile>
     <ClCompile Include="Source\Shader.cpp">
       <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\ImGuiColorTextEdit-master\TextEditor.cpp">
+      <Filter>Deps\ImGuiTextEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

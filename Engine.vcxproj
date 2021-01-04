@@ -89,6 +89,7 @@
     <ClInclude Include="Source/ModuleRenderer3D.h" />
     <ClInclude Include="Source/Module.h" />
     <ClInclude Include="Source/ModuleInput.h" />
+    <ClInclude Include="Source\Dependencies\ImGuiColorTextEdit-master\TextEditor.h" />
     <ClInclude Include="Source\Dependencies\ImGuizmo-master\ImCurveEdit.h" />
     <ClInclude Include="Source\Dependencies\ImGuizmo-master\ImGradient.h" />
     <ClInclude Include="Source\Dependencies\ImGuizmo-master\ImGuizmo.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="Source/ModuleCamera3D.cpp" />
     <ClCompile Include="Source/ModuleInput.cpp" />
     <ClCompile Include="Source/ModuleRenderer3D.cpp" />
+    <ClCompile Include="Source\Dependencies\ImGuiColorTextEdit-master\TextEditor.cpp" />
     <ClCompile Include="Source\Dependencies\ImGuizmo-master\ImCurveEdit.cpp" />
     <ClCompile Include="Source\Dependencies\ImGuizmo-master\ImGradient.cpp" />
     <ClCompile Include="Source\Dependencies\ImGuizmo-master\ImGuizmo.cpp" />
