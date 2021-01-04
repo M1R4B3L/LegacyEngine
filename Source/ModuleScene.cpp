@@ -153,11 +153,14 @@ void ModuleScene::DeleteGameObject(GameObject* gameObject, bool root)
 	gameObject->children.clear();
 
 	if (root) {
-		for (std::vector<GameObject*>::iterator it = gameObject->GetParent()->children.begin(); it != gameObject->GetParent()->children.end(); ++it)
-		{
-			if ((*it) == gameObject) {
-				gameObject->GetParent()->children.erase(it);
-				break;
+		GameObject* parent = gameObject->GetParent();
+		if (parent) {
+			for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); ++it)
+			{
+				if ((*it) == gameObject) {
+					parent->children.erase(it);
+					break;
+				}
 			}
 		}
 	}

@@ -40,7 +40,7 @@ bool Importer::ImportDroped(const char* absFilepath)
 			LOG("File %s already imported", absFilepath);
 			return true;
 		}*/
-		App->fileSystem->DuplicateFile(normalPath.c_str(), ASSETS_MODELS, relativePath);
+		//App->fileSystem->DuplicateFile(normalPath.c_str(), ASSETS_MODELS, relativePath);
 		App->resources->ImportFile(normalPath.c_str(), Resource::Type::MODEL);
 		return true;
 	}
@@ -73,7 +73,7 @@ bool Importer::ImportDroped(const char* absFilepath)
 void Importer::Models::ImportFbx(const char* assetPath, char** libBuffer, unsigned int& libSize, char** metaBuffer, unsigned int& metaSize, ResourceModel* resource)
 {
 	//TODO: return a bool if any error?
-	LOG("Importing Mesh");
+	LOG("Importing Mesh %s", assetPath);
 	const aiScene* scene = aiImportFile(assetPath, aiProcessPreset_TargetRealtime_MaxQuality);
 	if (scene != nullptr && scene->HasMeshes())
 	{
@@ -87,10 +87,13 @@ void Importer::Models::ImportFbx(const char* assetPath, char** libBuffer, unsign
 		JSON_Array* arry = json_object_get_array(node, "GameObjects");
 
 		rootObject->Save(arry);
+
 		metaSize = json_serialization_size_pretty(rootValue);
 		*metaBuffer = new char[metaSize];
 		json_serialize_to_buffer_pretty(rootValue, *metaBuffer, metaSize);
+
 		json_value_free(rootValue);
+		App->scene->DeleteGameObject(rootObject);
 	}
 	else
 		LOG("Error opening file: %s ", assetPath);
