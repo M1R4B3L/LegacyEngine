@@ -4,6 +4,8 @@
 #include "Module.h"
 #include "SDL.h"
 
+#include "Dependencies/MathGeolib/Math/float2.h"
+
 class ModuleWindow : public Module
 {
 public:
@@ -42,6 +44,7 @@ public:
 	//Windows Parameters
 	int  GetWidth();
 	int  GetHeight();
+	float2 GetSize();
 	const int GetRefreshRate() const;
 	bool GetFullscreen();
 	bool GetResizable();

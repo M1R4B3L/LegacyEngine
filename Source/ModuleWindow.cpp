@@ -111,6 +111,13 @@ int ModuleWindow::GetHeight()
 	return windowConfig.screenHeight;
 }
 
+float2 ModuleWindow::GetSize()
+{
+	SDL_GetWindowSize(window, &windowConfig.screenWidth, &windowConfig.screenHeight);
+
+	return float2(windowConfig.screenWidth, windowConfig.screenHeight);
+}
+
 void ModuleWindow::SetSize(int width, int height)
 {
 	windowConfig.screenWidth = width;
@@ -145,15 +152,20 @@ void ModuleWindow::SetFullscreen(bool activate)
 		if (activate == true)
 		{
 			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+			SDL_GetWindowSize(window, &windowConfig.screenWidth, &windowConfig.screenHeight);
+			SetSize(windowConfig.screenWidth, windowConfig.screenHeight);
 			LOG("[WINDOWS] Set Fullscreen Mode");
 			windowConfig.fullscreen = activate;
 		}
 		else
 		{
 			SDL_SetWindowFullscreen(window, 0);
+			SDL_GetWindowSize(window, &windowConfig.screenWidth, &windowConfig.screenHeight);
+			SetSize(windowConfig.screenWidth, windowConfig.screenHeight);
 			LOG("[WINDOWS] Set Windows Mode");
 			windowConfig.fullscreen = activate;
 			windowConfig.fullDesktop = activate;
+			
 		}
 	}
 }
@@ -220,12 +232,16 @@ void ModuleWindow::SetFullscreenDesktop(bool activate)
 		if (activate == true)
 		{
 			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+			SDL_GetWindowSize(window, &windowConfig.screenWidth, &windowConfig.screenHeight);
+			SetSize(windowConfig.screenWidth, windowConfig.screenHeight);
 			LOG("[WINDOWS] Set Fullscreen Desktop Mode");
 			windowConfig.fullDesktop = activate;
 		}
 		else
 		{
 			SDL_SetWindowFullscreen(window, 0);
+			SDL_GetWindowSize(window, &windowConfig.screenWidth, &windowConfig.screenHeight);
+			SetSize(windowConfig.screenWidth, windowConfig.screenHeight);
 			LOG("[WINDOWS] Set Windows Mode");
 			windowConfig.fullscreen = activate;
 			windowConfig.fullDesktop = activate;
