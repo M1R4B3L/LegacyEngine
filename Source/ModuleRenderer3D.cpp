@@ -197,11 +197,12 @@ bool ModuleRenderer3D::CleanUp()
 
 void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint textureID, bool outline)
 {
-	glEnable(GL_STENCIL_TEST);
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
 	if (outline) 
 	{
+		glEnable(GL_STENCIL_TEST);
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glStencilMask(0xFF);
 	}
@@ -247,10 +248,11 @@ void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint t
 		glStencilMask(0xFF);
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glEnable(GL_DEPTH_TEST);
+
+		glDisable(GL_STENCIL_TEST);
 	}
 	glBindVertexArray(0);
 	glUseProgram(0);
-	glDisable(GL_STENCIL_TEST);
 }
 
 void ModuleRenderer3D::OnResize(int width, int height)

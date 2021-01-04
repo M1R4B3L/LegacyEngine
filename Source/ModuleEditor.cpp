@@ -1300,8 +1300,15 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 					}
 					else
 					{
-						GameObject* go = App->scene->CreateTransformGameObject(fileName.c_str(), nullptr);
 						Component* component = new ComponentMesh(uid);
+						unsigned int count = ((ComponentMesh*)component)->GetResource()->GetReferenceCount();
+						if (count > 1)
+						{
+							fileName += "(";
+							std::string num = std::to_string(count);
+							fileName += num + ")";
+						}
+						GameObject* go = App->scene->CreateTransformGameObject(fileName.c_str(), nullptr);
 						go->AddComponent(component);
 					}
 				}
