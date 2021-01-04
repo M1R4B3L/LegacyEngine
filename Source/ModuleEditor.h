@@ -5,6 +5,7 @@
 #include "Globals.h"
 #include "imgui.h"
 #include "Dependencies/ImGuizmo-master/ImGuizmo.h"
+#include "Dependencies/ImGuiColorTextEdit-master/TextEditor.h"
 
 enum class ComponentType;
 class Component;
@@ -95,6 +96,10 @@ public:
 	//Guizmos
 	void ImGuizmoUpdate();
 
+	//Text Editor
+	void TextEditorInit();
+	void TextEditorWindow();
+
 private:
 
 	std::string selectedFolder;
@@ -119,6 +124,9 @@ private:
 	int component;
 
 	ImGuizmo::OPERATION gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+
+	bool editorWindow;
+	TextEditor editor;
 
 };
 
