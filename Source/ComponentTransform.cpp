@@ -32,7 +32,7 @@ void ComponentTransform::SetLocalTransform(float3 iTranslate, float3 iScale, Qua
 
 void ComponentTransform::NewParentLocal(GameObject* newParent)
 {
-	localTransform.Set(globalTransform * ((ComponentTransform*)newParent->GetComponent(ComponentType::Transform))->GetGlobalTransform().Inverted());
+	localTransform.Set(((ComponentTransform*)newParent->GetComponent(ComponentType::Transform))->GetGlobalTransform().Inverted() * globalTransform);
 }
 
 void ComponentTransform::SetGlobalTransform()
@@ -75,7 +75,7 @@ void ComponentTransform::SetGlobalTransform(float4x4 transform)
 {
 	ComponentTransform* parentTransform = (ComponentTransform*)GetGameObject().GetParent()->GetComponent(ComponentType::Transform);
 	if (parentTransform) {
-		localTransform = transform * ((ComponentTransform*)GetGameObject().GetParent()->GetComponent(ComponentType::Transform))->GetGlobalTransform().Inverted();
+		localTransform = ((ComponentTransform*)GetGameObject().GetParent()->GetComponent(ComponentType::Transform))->GetGlobalTransform().Inverted() * transform;
 		globalTransform = transform;
 	}
 	else {
