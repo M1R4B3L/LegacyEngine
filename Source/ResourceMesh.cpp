@@ -47,9 +47,9 @@ bool ResourceMesh::LoadInMemory()
 
 	//needed for mouse picking
 	indexData = new unsigned int[numIndices];
-	memcpy(indexData, ourMesh.indexData, numIndices);
-	vertexData = new float[numVertices];
-	memcpy(vertexData, ourMesh.vertexData, numVertices);
+	memcpy(indexData, ourMesh.indexData, sizeof(unsigned int) * numIndices);
+	vertexData = new float[numVertices * 3];
+	memcpy(vertexData, ourMesh.vertexData, sizeof(float) * numVertices * 3);
 
 	return true;
 }

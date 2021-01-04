@@ -403,7 +403,7 @@ bool ModuleCamera3D::TriangleIntersection(GameObject* object, const LineSegment*
 	float* vertices = meshComponent->GetResource()->vertexData;
 	unsigned int numIndices = meshComponent->GetResource()->numIndices;
 
-	for (unsigned int i = 0; i < numIndices; i+=3) 
+	for (unsigned int i = 0; i < numIndices; i += 3) 
 	{
 		unsigned int index1, index2, index3;
 
@@ -417,6 +417,7 @@ bool ModuleCamera3D::TriangleIntersection(GameObject* object, const LineSegment*
 		float3 triVertex3(&vertices[index3]);
 
 		Triangle tri(triVertex1, triVertex2, triVertex3);
+		tri.Transform(objectTransform);
 		if (ray->Intersects(tri, nullptr, nullptr))
 		{
 			App->scene->SetGameObjectSelected(object);
