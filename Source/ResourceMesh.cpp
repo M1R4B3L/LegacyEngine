@@ -12,6 +12,16 @@ ResourceMesh::~ResourceMesh()
 {
 	//TODO: //glDisableMesh()
 	App->renderer3D->DeleteMeshBuffers(VAO, VBO, EBO, textureBuffer);
+	if (indexData != nullptr) 
+	{
+		delete[] indexData;
+		indexData = nullptr;
+	}
+	if (vertexData != nullptr)
+	{
+		delete[] vertexData;
+		vertexData = nullptr;
+	}
 }
 
 bool ResourceMesh::LoadInMemory()
@@ -34,5 +44,12 @@ bool ResourceMesh::LoadInMemory()
 	ourMesh.aabb.SetNegativeInfinity();
 	ourMesh.aabb.Enclose((float3*)ourMesh.vertexData, ourMesh.numVertices);
 	aabb = ourMesh.aabb;
+
+	//needed for mouse picking
+	indexData = new unsigned int[numIndices];
+	memcpy(indexData, ourMesh.indexData, numIndices);
+	vertexData = new float[numVertices];
+	memcpy(vertexData, ourMesh.vertexData, numVertices);
+
 	return true;
 }

@@ -34,8 +34,6 @@ public:
 
 	void Zoom(float dt);
 	void Focus(GameObject* gameObject);
-	
-	void LeftClick();
 
 	void DrawRay();
 
@@ -44,12 +42,17 @@ public:
 	float moveSpeed;
 	float rotateSpeed;
 	float zoomSpeed;
+	LineSegment rayPicking;
 
 private:
 
+	void MouseObjectSelection();
+	void AABBHitedObjects(std::vector<std::pair<float, GameObject*>>* hits, GameObject* go, const LineSegment* ray);
+	static bool SortByDistance(const std::pair<float, GameObject*> pair1, const std::pair<float, GameObject*> pair2);
+	bool TriangleIntersection(GameObject* object, const LineSegment* ray);
+	
 	float3 reference;
 	ComponentCamera* cameraMain = nullptr;
-	LineSegment rayPicking;
 };
 
 #endif //__ModuleCamera3D_H__

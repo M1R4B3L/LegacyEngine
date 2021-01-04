@@ -95,17 +95,17 @@ update_status ModuleInput::PreUpdate(float dt)
 	{
 		ImGui_ImplSDL2_ProcessEvent(&e);
 		//TODO: BLOCK PRESSING KEYS ON MOUSE AND KEYBOARD
-		bool blockKeyboard = ImGui::GetIO().WantCaptureKeyboard;
-		bool blockMouse = ImGui::GetIO().WantCaptureMouse;
+		ImGuiUseKeyboard = ImGui::GetIO().WantCaptureKeyboard;
+		ImGuiUseMouse = ImGui::GetIO().WantCaptureMouse;
 		switch(e.type)
 		{
 			case SDL_MOUSEWHEEL:
-			if(!blockMouse)
+			if(!ImGuiUseMouse)
 				mouseZ = e.wheel.y;
 			break;
 
 			case SDL_MOUSEMOTION:
-			if (!blockMouse) {
+			if (!ImGuiUseMouse) {
 				mouseX = e.motion.x / SCREEN_SIZE;
 				mouseY = e.motion.y / SCREEN_SIZE;
 

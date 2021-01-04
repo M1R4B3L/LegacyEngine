@@ -51,7 +51,9 @@ public:
 	bool LoadInMemory() override;
 	//void Load(const JSON_Object* config) override;
 public:
-	unsigned int numIndices = 0;
+    unsigned int* indexData = nullptr;
+    float* vertexData = nullptr;
+    unsigned int numIndices = 0;
 	unsigned int numVertices = 0;
 	unsigned int VAO = 0;
     unsigned int VBO = 0;

@@ -10,6 +10,8 @@
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "SDL_opengl.h"
+#include <algorithm>
+#include "ResourceMesh.h"
 
 ModuleCamera3D::ModuleCamera3D(bool startEnable) : Module(startEnable), moveSpeed(10),rotateSpeed(0.025),zoomSpeed(10)
 {
@@ -92,9 +94,9 @@ update_status ModuleCamera3D::Update(float dt)
 		Focus(App->scene->GetSelectedObject());
 	}
 
-	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && !App->input->GetImGuiUseMouse())
 	{
-		LeftClick();
+		MouseObjectSelection();
 	}
 	// Recalculate matrix -------------
 
@@ -333,8 +335,14 @@ void ModuleCamera3D::DrawRay()
 	glColor4f(1, 1, 1, 1);
 }
 
-void ModuleCamera3D::LeftClick()
+bool ModuleCamera3D::SortByDistance(const std::pair<float, GameObject*> pair1, const std::pair<float, GameObject*> pair2)
 {
+	return pair1.first < pair2.first;
+}
+
+void ModuleCamera3D::MouseObjectSelection()
+{
+	//Cast the ray
 	float normalizedX = App->input->GetMouseX() / (float) App->window->GetWidth();
 	float normalizedY = App->input->GetMouseY() / (float) App->window->GetHeight();
 
@@ -343,6 +351,77 @@ void ModuleCamera3D::LeftClick()
 
 	rayPicking = cameraMain->frustum.UnProjectLineSegment(normalizedX, normalizedY);
 
-	LOG("%f %f %f", rayPicking.a.x, rayPicking.a.y, rayPicking.a.z);
-	LOG("%f %f %f", rayPicking.b.x, rayPicking.a.y, rayPicking.a.z);
+	//Order the go by rayhit on aabb
+	GameObject* root = App->scene->GetRootObject();
+	std::vector<std::pair<float, GameObject*>> hits;
+	AABBHitedObjects(&hits, root, &rayPicking);
+	std::sort(hits.begin(), hits.end(), ModuleCamera3D::SortByDistance);
+
+	//look if any of the aabb hited actually hits the object
+	bool hit = false;
+	std::vector<std::pair<float, GameObject*>>::iterator it = hits.begin();
+	for (; it != hits.end(); ++it) {
+		if ((*it).second != nullptr) {
+			if (TriangleIntersection((*it).second, &rayPicking)) {
+				hit = true;
+				break;
+			}
+		}
+	}
+
+	if (!hit) {
+		App->scene->SetGameObjectUnselected();
+	}
+}
+
+void ModuleCamera3D::AABBHitedObjects(std::vector<std::pair<float, GameObject*>>* hits, GameObject* go, const LineSegment* ray)
+{
+	std::vector<GameObject*>::iterator itr = go->children.begin();
+	for (itr; itr != go->children.end(); itr++)
+	{
+		if ((*itr)->activeGameObject)
+		{
+			if ((*itr)->HasComponent(ComponentType::Transform) && (*itr)->HasComponent(ComponentType::Mesh)) {
+				float distance = 0.0f;
+				float distanceFar = 0.0f;
+				if (ray->Intersects((*itr)->GetAABB(), distance, distanceFar))
+				{
+					hits->push_back({ distance, (*itr) });
+				}
+			}
+		}
+		AABBHitedObjects(hits, (*itr), ray);
+	}
+}
+
+bool ModuleCamera3D::TriangleIntersection(GameObject* object, const LineSegment* ray)
+{
+	//From the last check on the aabb we know all the objects have component mesh
+	ComponentMesh* meshComponent = (ComponentMesh*)object->GetComponent(ComponentType::Mesh);
+	float4x4 objectTransform = ((ComponentTransform*)object->GetComponent(ComponentType::Transform))->GetGlobalTransform();
+	unsigned int * indices = meshComponent->GetResource()->indexData;
+	float* vertices = meshComponent->GetResource()->vertexData;
+	unsigned int numIndices = meshComponent->GetResource()->numIndices;
+
+	for (unsigned int i = 0; i < numIndices; i+=3) 
+	{
+		unsigned int index1, index2, index3;
+
+		index1 = indices[i] * 3;
+		float3 triVertex1(&vertices[index1]);
+
+		index2 = indices[i + 1] * 3;
+		float3 triVertex2(&vertices[index2]);
+
+		index3 = indices[i + 2] * 3;
+		float3 triVertex3(&vertices[index3]);
+
+		Triangle tri(triVertex1, triVertex2, triVertex3);
+		if (ray->Intersects(tri, nullptr, nullptr))
+		{
+			App->scene->SetGameObjectSelected(object);
+			return true;
+		}
+	}
+	return false;
 }

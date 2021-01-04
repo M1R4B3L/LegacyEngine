@@ -179,11 +179,6 @@ bool GameObject::HasComponent(ComponentType type) const
 	return false;
 }
 
-std::vector<GameObject*> GameObject::GetChildren() const
-{
-	return children;
-}
-
 const char* GameObject::GetName() const
 {
 	return name.c_str();
@@ -233,4 +228,9 @@ void GameObject::Save(JSON_Array* GOsarry) const
 unsigned int GameObject::GetID() const
 {
 	return uid;
+}
+
+AABB GameObject::GetAABB()
+{
+	return aabb;
 }

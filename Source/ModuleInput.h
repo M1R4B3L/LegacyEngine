@@ -60,6 +60,16 @@ public:
 		return mouseYMotion;
 	}
 
+	bool GetImGuiUseMouse() 
+	{
+		return ImGuiUseMouse;
+	}
+
+	bool GetImGuiUseKeyBoard()
+	{
+		return ImGuiUseKeyboard;
+	}
+
 private:
 	KEY_STATE* keyboard;
 	KEY_STATE mouseButtons[MAX_MOUSE_BUTTONS];
@@ -69,6 +79,9 @@ private:
 	int mouseXMotion;
 	int mouseYMotion;
 	//int mouse_z_motion;
+
+	bool ImGuiUseKeyboard = false;
+	bool ImGuiUseMouse = false;
 };
 
 #endif //__ModuleInput_H__

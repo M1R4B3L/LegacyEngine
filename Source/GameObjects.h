@@ -32,7 +32,6 @@ public:
 
 	const Component* GetComponent(ComponentType type) const;
 	bool HasComponent(ComponentType type) const;
-	std::vector<GameObject*> GetChildren() const;
 
 	const char* GetName() const;
 	void SetName(char* newName);
@@ -43,6 +42,7 @@ public:
 	void Load();
 
 	unsigned int GetID()const;
+	AABB GetAABB();
 
 private:
 	GameObject* parent = nullptr;
