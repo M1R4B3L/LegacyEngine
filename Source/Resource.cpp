@@ -19,7 +19,7 @@ unsigned int Resource::GetReferenceCount() const
 
 void Resource::DecreaseReferenceCount()
 {
-	if(referenceCount != 0)
+	if(referenceCount > 0)
 		referenceCount -= 1;
 }
 

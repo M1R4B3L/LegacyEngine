@@ -146,24 +146,6 @@ void ModuleEditor::WindowDocking()
 			ImGuiID dockspace_id = ImGui::GetID("DockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 			MenuBar();
-
-			/*if(ImGui::BeginChild("##Drag&Drop",viewport->Size))
-			{
-				if (ImGui::BeginDragDropSource()) {
-					ImGui::SetDragDropPayload("_TREENODE", &gameObject, sizeof(GameObject));
-
-					ImGui::Text("%s", gameObject->GetName());
-					dragDropObject = gameObject;
-					ImGui::EndDragDropSource();
-				}
-				if (ImGui::BeginDragDropTarget()) {
-					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_TREENODE")) {
-						App->scene->SetParent(dragDropObject, gameObject);
-					}
-					ImGui::EndDragDropTarget();
-				}
-			}
-			ImGui::EndChild();*/
 		}
 		ImGuizmoUpdate();
 		ImGui::End();
