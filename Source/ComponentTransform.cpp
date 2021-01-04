@@ -28,27 +28,16 @@ void ComponentTransform::SetLocalTransform(float3 iTranslate, float3 iScale, Qua
 	scale = iScale;
 	rotation = iRotation;
 	globalFlag = true;
-	/*for (int i = 0; i < GetGameObject().children.size(); ++i) {
-		if (GetGameObject().children[i]->HasComponent(ComponentType::Transform))
-		{
-			((ComponentTransform*)GetGameObject().children[i]->GetComponent(ComponentType::Transform))->SetFlag();
-		}
-	}*/
 }
 
 void ComponentTransform::NewParentLocal(GameObject* newParent)
 {
-	localTransform.Set(((ComponentTransform*)newParent->GetComponent(ComponentType::Transform))->GetGlobalTransform().Transposed() * globalTransform);
+	localTransform.Set(globalTransform * ((ComponentTransform*)newParent->GetComponent(ComponentType::Transform))->GetGlobalTransform().Inverted());
 }
 
 void ComponentTransform::SetGlobalTransform()
 {
-	/*const GameObject* parentGo = GetGameObject().GetParent();
-	if ((parentGo->GetParent() == nullptr))
-		globalTransform.Set(localTransform);
-	else if (parentGo && (parentGo->HasComponent(ComponentType::Transform))) {
-		globalTransform.Set(((ComponentTransform*)parentGo->GetComponent(ComponentType::Transform))->GetGlobalTransform() * localTransform);
-	}*/
+
 	globalFlag = false;
 	ComponentTransform* parentTransform = (ComponentTransform*)GetGameObject().GetParent()->GetComponent(ComponentType::Transform);
 	if (!parentTransform)
@@ -86,7 +75,7 @@ void ComponentTransform::SetGlobalTransform(float4x4 transform)
 {
 	ComponentTransform* parentTransform = (ComponentTransform*)GetGameObject().GetParent()->GetComponent(ComponentType::Transform);
 	if (parentTransform) {
-		localTransform = ((ComponentTransform*)GetGameObject().GetParent()->GetComponent(ComponentType::Transform))->GetGlobalTransform()/*.Inverted()*/ * transform;
+		localTransform = transform * ((ComponentTransform*)GetGameObject().GetParent()->GetComponent(ComponentType::Transform))->GetGlobalTransform().Inverted();
 		globalTransform = transform;
 	}
 	else {

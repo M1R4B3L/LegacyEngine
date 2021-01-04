@@ -108,10 +108,11 @@ void ModuleScene::SetParent(GameObject* gameObject, GameObject* newParent)
 		}
 	}
 
+	ComponentTransform* goTransform = (ComponentTransform*)gameObject->GetComponent(ComponentType::Transform);
 	newParent->children.push_back(gameObject);
 	gameObject->SetParent(newParent);
-	((ComponentTransform*)gameObject->GetComponent(ComponentType::Transform))->SetFlag();
-	((ComponentTransform*)gameObject->GetComponent(ComponentType::Transform))->NewParentLocal(newParent);
+	goTransform->SetFlag();
+	goTransform->NewParentLocal(newParent);
 
 }
 
