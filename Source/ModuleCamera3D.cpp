@@ -343,8 +343,9 @@ bool ModuleCamera3D::SortByDistance(const std::pair<float, GameObject*> pair1, c
 void ModuleCamera3D::MouseObjectSelection()
 {
 	//Cast the ray
-	float normalizedX = App->input->GetMouseX() / (float) App->window->GetWidth();
-	float normalizedY = App->input->GetMouseY() / (float) App->window->GetHeight();
+
+	float normalizedX = App->input->GetMouseX() / (float) App->window->GetSize().x;
+	float normalizedY = App->input->GetMouseY() / (float) App->window->GetSize().y;
 
 	normalizedX = -1.0 + 2.0 * normalizedX;
 	normalizedY = 1.0 - 2.0 * normalizedY;
