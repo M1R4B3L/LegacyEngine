@@ -244,7 +244,6 @@ void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint t
 		singleColorShader->setMat4("model", modelMatrix.ptr());
 		singleColorShader->setFloat4("selectedColor", outlineColor.x, outlineColor.y, outlineColor.z, outlineColor.w);
 		glDrawElements(GL_TRIANGLES, indices, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
 		glStencilMask(0xFF);
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glEnable(GL_DEPTH_TEST);
