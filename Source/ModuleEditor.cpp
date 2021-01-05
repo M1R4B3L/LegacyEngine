@@ -30,9 +30,10 @@
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
 aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(false), timeWindow(true), resourcesWindow(true), editorWindow(false),
-component(0), removeMaterial(true), removeMesh(true), removeCamera(true), changeTexture(false), changeMesh(false), addedTexture(false), addedMesh(false), loadScene(false),
+component(0), removeMaterial(true), removeMesh(true), removeCamera(true), changeTexture(false), changeMesh(false), addedTexture(false), addedMesh(false), loadScene(false), gameRuning(false), gamePause(false),
 org("CITM"), scroll(true), selectedFolder(ASSETS_PATH)
 {
+	gameTimer.Stop();
 }
 
 ModuleEditor::~ModuleEditor()
@@ -70,6 +71,11 @@ bool ModuleEditor::Init()
 	ImGui_ImplOpenGL3_Init("#version 460"); //TODO: glsl version �?�?
 
 	TextEditorInit();
+
+	//Start Timers
+	gameDt = 0;
+	startDt = 0;
+	startTimer.Start();
 
 	return true;
 }
@@ -1113,7 +1119,7 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 
 			App->scene->SetGameObjectSelected(gameObject);
 		}
-
+		//std::string item = "";
 		if (gameObject != App->scene->GetRootObject()) {
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
 				ImGui::OpenPopup("Delete");
@@ -1136,7 +1142,6 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 				ImGui::EndPopup();
 			}
 
-
 			if (ImGui::BeginDragDropSource()) {
 				ImGui::SetDragDropPayload("_TREENODE", &gameObject, sizeof(GameObject));
 
@@ -1154,7 +1159,43 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 				ImGui::EndDragDropTarget();
 			}
 		}
+		//TODO: Rename SCENE
+		/*else if(gameObject == App->scene->GetRootObject())
+		{
+			if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+				ImGui::OpenPopup("Rename");
+			}
+			if (ImGui::BeginPopup("Rename"))
+			{
+				if (ImGui::Selectable("Rename"))
+				{
+					item = "Change";
+				}
+				ImGui::EndPopup();
+			}
 
+			if (item == "Change") ImGui::OpenPopup("Change Name");
+			if (ImGui::BeginPopup("Change Name"))
+			{
+				static std::string name = App->scene->GetSceneName();
+				ImGui::InputText("Rename", (char*)name.c_str(), 50);
+				if(ImGui::Button("Apply")) 
+				{
+					if (name != App->scene->GetSceneName())
+					{
+						App->scene->SetSceneName(name.c_str());
+						LOG("Succesfully changed Scene Name %s", name.c_str());
+					}
+					else
+					{
+						LOG("Name is the same");
+					}
+				}
+				
+				ImGui::EndPopup();
+			}
+		}*/
+	
 		if (!gameObject->children.empty())
 		{
 			for (uint i = 0; i < gameObject->children.size(); i++)
@@ -1433,9 +1474,6 @@ void ModuleEditor::WindowTime()
 	{
 		if (ImGui::Begin("Time", &timeWindow, ImGuiWindowFlags_NoDecoration)) {
 
-			Timer timer;
-			timer.Start();
-
 			if (ImGui::Button("Translate"))
 			{
 				gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
@@ -1458,18 +1496,46 @@ void ModuleEditor::WindowTime()
 			ImGui::SameLine();
 			if (ImGui::Button("Play"))
 			{
-				LOG("Game Mode Activated");
+				if (gameRuning == true)
+				{
+					gameRuning = false;
+					gameTimer.Stop();
+					LOG("Game Mode Paused");
+				}
+				else
+				{
+					gameRuning = true;
+					gameTimer.Start();
+					gameDt = 0;
+					LOG("Game Mode Activated");
+				}
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Pause"))
 			{
-				LOG("Pause Game Mode");
+				if (gamePause == true)
+				{
+					gamePause = false;
+					gameTimer.Resume();
+					LOG("Game Mode Resumed");
+				}
+				else
+				{
+					gamePause = true;
+					gameTimer.Stop();
+					LOG("Game Mode Paused");
+				}
 			}
 			ImGui::SameLine();
-			ImGui::Text("Time Since Start: ");
+			ImGui::Text("Start time:");
 			ImGui::SameLine();
-			float time = SDL_GetTicks()/1000.f;
-			ImGui::TextColored(ImVec4(0,1,1,1), "%.3f", time);
+			startDt = startTimer.Read() /1000.f;
+			ImGui::TextColored(ImVec4(0,1,1,1), "%.3f", startDt);
+			ImGui::SameLine();
+			ImGui::Text("Game time:");
+			ImGui::SameLine();
+			gameDt = gameTimer.Read() / 1000.0f;
+			ImGui::TextColored(ImVec4(0, 1, 1, 1), "%.3f", gameDt);
 		}
 		ImGui::End();
 	}

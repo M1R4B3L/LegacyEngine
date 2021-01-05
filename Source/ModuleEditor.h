@@ -131,6 +131,13 @@ private:
 	bool editorWindow;
 	TextEditor editor;
 
+	Timer startTimer;
+	float startDt;
+	Timer gameTimer;
+	float gameDt;
+	bool gameRuning;
+	bool gamePause;
+
 };
 
 #endif //__ModuleEditor_H__

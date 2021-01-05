@@ -39,6 +39,7 @@ public:
 	void SetEngineTitle(const char* title);
 
 	bool closeApp;
+	
 private:
 
 	Timer	msTimer;
@@ -46,10 +47,6 @@ private:
 	unsigned __int32 lastSecFrameCount = 0;
 	float	dt;
 	float cappedMs = 0;
-	//Game mode
-	Timer gameTimer;
-	bool gameActive = false;
-	float gameDt;
 
 	//Windows
 	std::string title;
