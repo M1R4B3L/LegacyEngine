@@ -47,6 +47,8 @@ private:
 	float	dt;
 	float cappedMs = 0;
 	//Game mode
+	Timer gameTimer;
+	bool gameActive = false;
 	float gameDt;
 
 	//Windows

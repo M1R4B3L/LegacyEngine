@@ -110,6 +110,10 @@ void Application::PrepareUpdate()
 	lastSecFrameCount++;
 	dt = (float)msTimer.Read() / 1000.0f;
 	msTimer.Start();
+
+	gameTimer.Start();
+	gameDt = (float)gameTimer.Read() / 1000.0f;
+
 }
 
 // ---------------------------------------------
