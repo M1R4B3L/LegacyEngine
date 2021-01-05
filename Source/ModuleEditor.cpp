@@ -450,8 +450,8 @@ void ModuleEditor::WindowConfig()
 						}
 						//static float gamma = App->window->GetGamma();
 
-						static int width = App->window->GetWidth();
-						static int height = App->window->GetHeight();
+						static int width = App->window->GetSize().x;
+						static int height = App->window->GetSize().y;
 						ImGui::Separator();
 						ImGui::Text("Windows Size: You should not use this");
 						ImGui::Text("Width ");
@@ -571,7 +571,7 @@ void ModuleEditor::WindowConfig()
 					ImGui::Spacing();
 					ImGui::Text("Outliner:");
 					float outlineWidth = App->renderer3D->outlineWeight;
-					if (ImGui::DragFloat("Outline Width", (float*)&outlineWidth, 0.01f, 0.01f, 0.1f))
+					if (ImGui::DragFloat("Outline Width", (float*)&outlineWidth, 0.001f, 0.01f, 0.1f))
 					{
 						App->renderer3D->outlineWeight = outlineWidth;
 					}
@@ -887,9 +887,23 @@ void ModuleEditor::InspectorShowTransform(ComponentTransform* componentTransform
 			componentTransform->SetLocalTransform(translation, scale, rotation);
 		}
 
-		if (ImGui::DragFloat3("Scale", (float*)&scale, 0.01f, 0.0f, 0.0f, "%.3f")) {
+		if (ImGui::DragFloat3("Scale", (float*)&scale, 0.01f, 0.01f, NULL, "%.3f")) {
 
+			//TODO: Assert Scale < 0.01f
+			if (scale.x < 0.01f)
+			{
+				scale.x = 0.01f;
+			}
+			if (scale.y < 0.01f)
+			{
+				scale.y = 0.01f;
+			}	
+			if (scale.z < 0.01f)
+			{
+				scale.z = 0.01f;
+			}
 			componentTransform->SetLocalTransform(translation, scale, rotation);
+			
 		}
 	
 	}

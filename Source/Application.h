@@ -46,6 +46,8 @@ private:
 	unsigned __int32 lastSecFrameCount = 0;
 	float	dt;
 	float cappedMs = 0;
+	//Game mode
+	float gameDt;
 
 	//Windows
 	std::string title;
