@@ -1352,6 +1352,7 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 				json_value_free(rootValue);
 				delete[] buffer;
 				App->scene->LoadScene(uid);
+				ImGui::CloseCurrentPopup();
 			}
 			if (ImGui::Button("No"))
 			{
