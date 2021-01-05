@@ -116,6 +116,7 @@ private:
 	bool addedMesh;
 
 	bool loadScene;
+	void WindowLoadScene();
 
 	bool removeMaterial;
 	bool removeMesh;

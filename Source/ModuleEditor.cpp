@@ -30,7 +30,7 @@
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
 aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(false), timeWindow(true), resourcesWindow(true), editorWindow(false),
-component(0), removeMaterial(true), removeMesh(true), removeCamera(true), changeTexture(false), changeMesh(false), addedTexture(false), addedMesh(false),
+component(0), removeMaterial(true), removeMesh(true), removeCamera(true), changeTexture(false), changeMesh(false), addedTexture(false), addedMesh(false), loadScene(false),
 org("CITM"), scroll(true), selectedFolder(ASSETS_PATH)
 {
 }
@@ -92,6 +92,7 @@ update_status ModuleEditor::Update(float dt)
 	WindowHierarchy();
 	WindowProject();
 	WindowResourcesCount();
+	WindowLoadScene();
 	WindowDemo();
 
 	TextEditorWindow();
@@ -160,56 +161,7 @@ void ModuleEditor::MenuBar()
 			if (ImGui::MenuItem("New Scene")) {
 			}
 			if (ImGui::MenuItem("Load Scene", "")) {
-				if (loadScene)
-				{
-					if (ImGui::Begin("Load Scene", &loadScene))
-					{
-						std::vector<std::string> files;
-						std::vector<std::string> dirs;
-
-						//std::string dir((ASSETS_SCENES) ? ASSETS_SCENES : "");
-						//dir += "/";
-						std::string dir(ASSETS_SCENES);
-
-						App->fileSystem->DiscoverFiles(dir.c_str(), files, dirs);
-
-						std::sort(files.begin(), files.end());
-
-						for (std::vector<std::string>::const_iterator itr = files.begin(); itr != files.end(); ++itr)
-						{
-
-							if (ImGui::Button((*itr).c_str()))
-							{
-								ImGui::OpenPopup("Warning");
-							}
-							if (ImGui::BeginPopupModal("Warning"))
-							{
-								ImGui::Text("All scene unsaved changes will be lost");
-								ImGui::Text("Are you sure?");
-								if (ImGui::Button("Yes"))
-								{
-									char* buffer = nullptr;
-									App->fileSystem->Load((*itr).c_str(), &buffer);
-									JSON_Value* rootValue = json_parse_string(buffer);
-									JSON_Object* node = json_value_get_object(rootValue);
-									unsigned int uid = json_object_get_number(node, "LIBUID");
-									loadScene = false;
-									LOG("Successful Loaded scene: %s", (*itr).c_str());
-									json_value_free(rootValue);
-									delete[] buffer;
-									App->scene->LoadScene(uid);
-								}
-								if (ImGui::Button("No"))
-								{
-									ImGui::CloseCurrentPopup();
-								}
-								ImGui::EndPopup();
-							}
-						}
-					}
-					ImGui::End();
-				}
-
+				loadScene = true;
 			}
 			ImGui::Spacing();
 			ImGui::Separator();
@@ -326,6 +278,59 @@ void ModuleEditor::MenuBar()
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
+	}
+}
+
+void ModuleEditor::WindowLoadScene()
+{
+	if (loadScene)
+	{
+		if (ImGui::Begin("Load Scene", &loadScene))
+		{
+			std::vector<std::string> files;
+			std::vector<std::string> dirs;
+
+			//std::string dir((ASSETS_SCENES) ? ASSETS_SCENES : "");
+			//dir += "/";
+			std::string dir(ASSETS_SCENES);
+
+			App->fileSystem->DiscoverFiles(dir.c_str(), files, dirs);
+
+			std::sort(files.begin(), files.end());
+
+			for (std::vector<std::string>::const_iterator itr = files.begin(); itr != files.end(); ++itr)
+			{
+
+				if (ImGui::Button((*itr).c_str()))
+				{
+					ImGui::OpenPopup("Warning");
+				}
+				if (ImGui::BeginPopupModal("Warning"))
+				{
+					ImGui::Text("All scene unsaved changes will be lost");
+					ImGui::Text("Are you sure?");
+					if (ImGui::Button("Yes"))
+					{
+						char* buffer = nullptr;
+						App->fileSystem->Load((*itr).c_str(), &buffer);
+						JSON_Value* rootValue = json_parse_string(buffer);
+						JSON_Object* node = json_value_get_object(rootValue);
+						unsigned int uid = json_object_get_number(node, "LIBUID");
+						loadScene = false;
+						LOG("Successful Loaded scene: %s", (*itr).c_str());
+						json_value_free(rootValue);
+						delete[] buffer;
+						App->scene->LoadScene(uid);
+					}
+					if (ImGui::Button("No"))
+					{
+						ImGui::CloseCurrentPopup();
+					}
+					ImGui::EndPopup();
+				}
+			}
+		}
+		ImGui::End();
 	}
 }
 
