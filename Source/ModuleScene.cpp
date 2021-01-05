@@ -84,8 +84,9 @@ void ModuleScene::GenerateDefaultScene()
 	char* buffer = new char[size];
 	json_serialize_to_buffer_pretty(rootValue, buffer, size);
 
-	std::string libPath = std::to_string(resourceID).c_str();
-	libPath.append(SCENES_PATH);
+	std::string libPath = SCENES_PATH;
+	libPath += std::to_string(resourceID).c_str();
+
 	App->fileSystem->Save(libPath.c_str(), buffer, size);
 	json_value_free(rootValue);
 	delete[] buffer;

@@ -312,15 +312,18 @@ void ModuleEditor::WindowLoadScene()
 					if (ImGui::Button("Yes"))
 					{
 						char* buffer = nullptr;
-						App->fileSystem->Load((*itr).c_str(), &buffer);
+						std::string path = ASSETS_SCENES;
+						path += (*itr).c_str();
+						App->fileSystem->Load(path.c_str(), &buffer);
 						JSON_Value* rootValue = json_parse_string(buffer);
 						JSON_Object* node = json_value_get_object(rootValue);
 						unsigned int uid = json_object_get_number(node, "LIBUID");
 						loadScene = false;
-						LOG("Successful Loaded scene: %s", (*itr).c_str());
 						json_value_free(rootValue);
 						delete[] buffer;
 						App->scene->LoadScene(uid);
+						LOG("Successful Loaded scene: %s", (*itr).c_str());
+						ImGui::CloseCurrentPopup();
 					}
 					if (ImGui::Button("No"))
 					{
