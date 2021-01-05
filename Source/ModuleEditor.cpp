@@ -156,9 +156,12 @@ void ModuleEditor::WindowDocking()
 
 void ModuleEditor::MenuBar()
 {
+	std::string menu_action = "";
+
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
 			if (ImGui::MenuItem("New Scene")) {
+				menu_action = "New";
 			}
 			if (ImGui::MenuItem("Load Scene", "")) {
 				loadScene = true;
@@ -278,6 +281,37 @@ void ModuleEditor::MenuBar()
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
+	}
+
+	if(menu_action == "New") ImGui::OpenPopup("CreateNewScene");
+
+	if (ImGui::BeginPopupModal("CreateNewScene"))
+	{
+		static std::string name = "";
+		ImGui::Text("All scene unsaved changes will be lost");
+		ImGui::Text("Are you sure?");
+		ImGui::InputText("Name", (char*)name.c_str(), 50);
+		if (ImGui::Button("Yes"))
+		{
+			char* buffer = nullptr;
+			std::string path = ASSETS_SCENES;
+			path += name.c_str();
+			App->fileSystem->Load(path.c_str(), &buffer);
+			JSON_Value* rootValue = json_parse_string(buffer);
+			JSON_Object* node = json_value_get_object(rootValue);
+			unsigned int uid = json_object_get_number(node, "LIBUID");
+			loadScene = false;
+			json_value_free(rootValue);
+			delete[] buffer;
+			App->scene->LoadScene(uid);
+			LOG("Successful Loaded scene: %s", name.c_str());
+			ImGui::CloseCurrentPopup();
+		}
+		if (ImGui::Button("No"))
+		{
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::EndPopup();
 	}
 }
 
