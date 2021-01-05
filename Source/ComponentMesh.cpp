@@ -58,6 +58,7 @@ void ComponentMesh::Save(JSON_Array* componentsArry) const
 
 void ComponentMesh::Load(JSON_Object* componentObj)
 {
+	//TODO: im not unloading the preavious one
 	activeMesh = json_object_get_boolean(componentObj, "Active");
 	resourceID = json_object_get_number(componentObj, "ResourceUID");
 	if(resourceID != 0)

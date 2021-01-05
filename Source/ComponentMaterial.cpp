@@ -49,6 +49,5 @@ void ComponentMaterial::Save(JSON_Array* componentsArry) const
 
 void ComponentMaterial::Load(JSON_Object* componentObj)
 {
-	resourceID = json_object_get_number(componentObj, "ResourceUID");
-	ChangeResource(resourceID);
+	ChangeResource(json_object_get_number(componentObj, "ResourceUID"));
 }

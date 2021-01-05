@@ -47,7 +47,7 @@ bool ModuleScene::Start()
 
 		if (!App->scene->LoadScene(uid))
 		{
-			LOG("Could not load the default scene \nGenerating another");
+			LOG("Could not load the default scene \nGenerating default scene");
 			GenerateDefaultScene();
 		}
 	}
