@@ -1345,7 +1345,9 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 			if (ImGui::Button("Yes"))
 			{
 				char* buffer = nullptr;
-				App->fileSystem->Load(str.c_str(), &buffer);
+				std::string path = ASSETS_SCENES;
+				path += str.c_str();
+				App->fileSystem->Load(path.c_str(), &buffer);
 				JSON_Value* rootValue = json_parse_string(buffer);
 				JSON_Object* node = json_value_get_object(rootValue);
 				unsigned int uid = json_object_get_number(node, "LIBUID");

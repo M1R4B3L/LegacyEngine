@@ -241,15 +241,20 @@ void ModuleScene::SaveScene()
 
 bool ModuleScene::LoadScene(unsigned int ID)
 {
-	resource = (ResourceScene*)App->resources->RequestResource(ID, Resource::Type::SCENE);
-	if (resource == nullptr) 
+	if (resourceID == ID)
+		App->resources->UnrequestResource(resourceID);
+	
+	ResourceScene* newResource = (ResourceScene*)App->resources->RequestResource(ID, Resource::Type::SCENE);
+	if (newResource == nullptr) 
 	{
 		LOG("Could not load the scene");
 		return false;
 	}
 	//TODO: we just have 1 scene at a time (just one root on scene)
 
-	App->resources->UnrequestResource(resourceID);
+	if(resourceID != newResource->GetUID())
+		App->resources->UnrequestResource(resourceID);
+	resource = newResource;
 	resourceID = resource->GetUID();
 	root = resource->root;
 	return true;
