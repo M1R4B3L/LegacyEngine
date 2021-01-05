@@ -311,17 +311,3 @@ void ModuleScene::SetSceneName(const char* newName)
 {
 	sceneName = newName;
 }
-
-bool ModuleScene::ChangeResource(unsigned int id)
-{
-	ResourceScene* newResource = (ResourceScene*)App->resources->RequestResource(id, Resource::Type::SCENE);
-	if (newResource == nullptr)
-		return false;
-
-	App->resources->UnrequestResource(resourceID);
-	resource = newResource;
-	resourceID = id;
-	selectedObject = nullptr;
-
-	return true;
-}

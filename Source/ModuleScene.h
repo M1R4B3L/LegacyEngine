@@ -48,7 +48,6 @@ public:
 	const ResourceScene* GetResource() const;
 	const char* GetSceneName() const;
 	void SetSceneName(const char* newName);
-	bool ChangeResource(unsigned int id);
 
 private:
 
