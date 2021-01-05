@@ -20,7 +20,7 @@ public:
 	update_status Update(float dt);	
 	bool CleanUp();
 
-	void GenerateDefaultScene();
+	void GenerateScene(const char* sceneName);
 
 	void UpdateAllGameObjects(float dt);
 	void DrawAllGameObjects();

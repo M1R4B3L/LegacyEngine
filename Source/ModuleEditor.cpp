@@ -293,18 +293,7 @@ void ModuleEditor::MenuBar()
 		ImGui::InputText("Name", (char*)name.c_str(), 50);
 		if (ImGui::Button("Yes"))
 		{
-			char* buffer = nullptr;
-			std::string path = ASSETS_SCENES;
-			path += name.c_str();
-			App->fileSystem->Load(path.c_str(), &buffer);
-			JSON_Value* rootValue = json_parse_string(buffer);
-			JSON_Object* node = json_value_get_object(rootValue);
-			unsigned int uid = json_object_get_number(node, "LIBUID");
-			loadScene = false;
-			json_value_free(rootValue);
-			delete[] buffer;
-			App->scene->LoadScene(uid);
-			LOG("Successful Loaded scene: %s", name.c_str());
+			App->scene->GenerateScene(name.c_str());
 			ImGui::CloseCurrentPopup();
 		}
 		if (ImGui::Button("No"))
@@ -332,39 +321,41 @@ void ModuleEditor::WindowLoadScene()
 
 			std::sort(files.begin(), files.end());
 
+			static std::string sceneName;
 			for (std::vector<std::string>::const_iterator itr = files.begin(); itr != files.end(); ++itr)
 			{
 
 				if (ImGui::Button((*itr).c_str()))
 				{
+					sceneName = (*itr);
 					ImGui::OpenPopup("Warning");
 				}
-				if (ImGui::BeginPopupModal("Warning"))
+			}
+			if (ImGui::BeginPopupModal("Warning"))
+			{
+				ImGui::Text("All scene unsaved changes will be lost");
+				ImGui::Text("Are you sure?");
+				if (ImGui::Button("Yes"))
 				{
-					ImGui::Text("All scene unsaved changes will be lost");
-					ImGui::Text("Are you sure?");
-					if (ImGui::Button("Yes"))
-					{
-						char* buffer = nullptr;
-						std::string path = ASSETS_SCENES;
-						path += (*itr).c_str();
-						App->fileSystem->Load(path.c_str(), &buffer);
-						JSON_Value* rootValue = json_parse_string(buffer);
-						JSON_Object* node = json_value_get_object(rootValue);
-						unsigned int uid = json_object_get_number(node, "LIBUID");
-						loadScene = false;
-						json_value_free(rootValue);
-						delete[] buffer;
-						App->scene->LoadScene(uid);
-						LOG("Successful Loaded scene: %s", (*itr).c_str());
-						ImGui::CloseCurrentPopup();
-					}
-					if (ImGui::Button("No"))
-					{
-						ImGui::CloseCurrentPopup();
-					}
-					ImGui::EndPopup();
+					char* buffer = nullptr;
+					std::string path = ASSETS_SCENES;
+					path += sceneName.c_str();
+					App->fileSystem->Load(path.c_str(), &buffer);
+					JSON_Value* rootValue = json_parse_string(buffer);
+					JSON_Object* node = json_value_get_object(rootValue);
+					unsigned int uid = json_object_get_number(node, "LIBUID");
+					loadScene = false;
+					json_value_free(rootValue);
+					delete[] buffer;
+					App->scene->LoadScene(uid);
+					LOG("Successful Loaded scene: %s", sceneName.c_str());
+					ImGui::CloseCurrentPopup();
 				}
+				if (ImGui::Button("No"))
+				{
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
 			}
 		}
 		ImGui::End();
@@ -1278,6 +1269,7 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 
 	std::sort(files.begin(), files.end());
 
+	static std::string sceneName;
 	for (std::vector<std::string>::const_iterator it2 = files.begin(); it2 != files.end(); ++it2)
 	{
 		const std::string& str = *it2;
@@ -1335,6 +1327,7 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 				else if (extension == "scene")
 				{
 					//TODO: Save and load scenes
+					sceneName = str.c_str();
 					ImGui::OpenPopup("Warning");
 				}
 				else if (extension == "mesh")
@@ -1380,33 +1373,32 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 				}
 			}
 		}
-		if (ImGui::BeginPopupModal("Warning"))
-		{
-			ImGui::Text("All scene unsaved changes will be lost");
-			ImGui::Text("Are you sure?");
-			if (ImGui::Button("Yes"))
-			{
-				char* buffer = nullptr;
-				std::string path = ASSETS_SCENES;
-				path += str.c_str();
-				App->fileSystem->Load(path.c_str(), &buffer);
-				JSON_Value* rootValue = json_parse_string(buffer);
-				JSON_Object* node = json_value_get_object(rootValue);
-				unsigned int uid = json_object_get_number(node, "LIBUID");
-				json_value_free(rootValue);
-				delete[] buffer;
-				App->scene->LoadScene(uid);
-				ImGui::CloseCurrentPopup();
-			}
-			if (ImGui::Button("No"))
-			{
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::EndPopup();
-		}
 		//ImGui::SameLine();
 	}
-
+	if (ImGui::BeginPopupModal("Warning"))
+	{
+		ImGui::Text("All scene unsaved changes will be lost");
+		ImGui::Text("Are you sure?");
+		if (ImGui::Button("Yes"))
+		{
+			char* buffer = nullptr;
+			std::string path = ASSETS_SCENES;
+			path += sceneName;
+			App->fileSystem->Load(path.c_str(), &buffer);
+			JSON_Value* rootValue = json_parse_string(buffer);
+			JSON_Object* node = json_value_get_object(rootValue);
+			unsigned int uid = json_object_get_number(node, "LIBUID");
+			json_value_free(rootValue);
+			delete[] buffer;
+			App->scene->LoadScene(uid);
+			ImGui::CloseCurrentPopup();
+		}
+		if (ImGui::Button("No"))
+		{
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::EndPopup();
+	}
 }
 
 

@@ -35,7 +35,7 @@ bool ModuleScene::Start()
 	std::string path = ASSETS_SCENES;
 	path += "DefaultScene.scene";
 	if (!App->fileSystem->FileExists(path.c_str()))
-		GenerateDefaultScene();
+		GenerateScene("DefaultScene");
 	else {
 		char* buffer = nullptr;
 		App->fileSystem->Load(path.c_str(), &buffer);
@@ -48,7 +48,7 @@ bool ModuleScene::Start()
 		if (!App->scene->LoadScene(uid))
 		{
 			LOG("Could not load the default scene \nGenerating default scene");
-			GenerateDefaultScene();
+			GenerateScene("DefaultScene");
 		}
 	}
 	return ret;
@@ -64,11 +64,13 @@ bool ModuleScene::CleanUp()
 	return true;
 }
 
-void ModuleScene::GenerateDefaultScene()
+void ModuleScene::GenerateScene(const char* name)
 {
-
-	root = new GameObject(nullptr, "Scene");
-	sceneName = "DefaultScene";
+	if (resource != nullptr) 
+		App->resources->UnrequestResource(resourceID);
+	
+	root = new GameObject(nullptr, name);
+	sceneName = name;
 	resourceID = GetRandomInt();
 	resource = new ResourceScene(resourceID, root);
 	App->resources->AddSceneResource(resource);
@@ -101,7 +103,8 @@ void ModuleScene::GenerateDefaultScene()
 	json_serialize_to_buffer_pretty(rootValue, buffer, size);
 	json_value_free(rootValue);
 	std::string path = ASSETS_SCENES;
-	path += "DefaultScene.scene";
+	path += name;
+	path += ".scene";
 	App->fileSystem->Save(path.c_str(), buffer, size);
 
 	delete[] buffer;
