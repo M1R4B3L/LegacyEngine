@@ -40,7 +40,7 @@ bool Importer::ImportDroped(const char* absFilepath)
 			LOG("File %s already imported", absFilepath);
 			return true;
 		}*/
-		//App->fileSystem->DuplicateFile(normalPath.c_str(), ASSETS_MODELS, relativePath);
+		App->fileSystem->DuplicateFile(normalPath.c_str(), ASSETS_MODELS, relativePath);
 		App->resources->ImportFile(normalPath.c_str(), Resource::Type::MODEL);
 		return true;
 	}

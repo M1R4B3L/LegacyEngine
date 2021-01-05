@@ -29,10 +29,28 @@ ModuleScene::~ModuleScene(){}
 bool ModuleScene::Start()
 {
 	Importer::Textures::Init();
-	
 	bool ret = true;
-	root = new GameObject();
 
+	//TODO: Scene inizialitzation
+	std::string path = ASSETS_SCENES;
+	path += "DefaultScene.scene";
+	if (!App->fileSystem->FileExists(path.c_str()))
+		GenerateDefaultScene();
+	else {
+		char* buffer = nullptr;
+		App->fileSystem->Load(path.c_str(), &buffer);
+		JSON_Value* rootValue = json_parse_string(buffer);
+		JSON_Object* node = json_value_get_object(rootValue);
+		unsigned int uid = json_object_get_number(node, "LIBUID");
+		json_value_free(rootValue);
+		delete[] buffer;
+
+		if (!App->scene->LoadScene(uid))
+		{
+			LOG("Could not load the default scene \nGenerating another");
+			GenerateDefaultScene();
+		}
+	}
 	return ret;
 }
 
@@ -44,6 +62,49 @@ bool ModuleScene::CleanUp()
 	resource = nullptr;
 
 	return true;
+}
+
+void ModuleScene::GenerateDefaultScene()
+{
+
+	root = new GameObject(nullptr, "Scene");
+	sceneName = "DefaultScene";
+	resourceID = GetRandomInt();
+	resource = new ResourceScene(resourceID, root);
+	App->resources->AddSceneResource(resource);
+
+	JSON_Value* rootValue = json_value_init_object();
+	JSON_Object* node = json_value_get_object(rootValue);
+	json_object_set_string(node, "SceneName", sceneName.c_str());
+	json_object_set_value(node, "GameObjects", json_value_init_array());
+	JSON_Array* arry = json_object_get_array(node, "GameObjects");
+
+	root->Save(arry);
+	size_t size = json_serialization_size_pretty(rootValue);
+	char* buffer = new char[size];
+	json_serialize_to_buffer_pretty(rootValue, buffer, size);
+
+	std::string libPath = std::to_string(resourceID).c_str();
+	libPath.append(SCENES_PATH);
+	App->fileSystem->Save(libPath.c_str(), buffer, size);
+	json_value_free(rootValue);
+	delete[] buffer;
+	buffer = nullptr;
+
+	//Generating metafile
+	rootValue = json_value_init_object();
+	node = json_value_get_object(rootValue);
+	json_object_set_number(node, "LIBUID", resource->GetUID());
+	size = json_serialization_size_pretty(rootValue);
+	buffer = new char[size];
+	json_serialize_to_buffer_pretty(rootValue, buffer, size);
+	json_value_free(rootValue);
+	std::string path = ASSETS_SCENES;
+	path += "DefaultScene.scene";
+	App->fileSystem->Save(path.c_str(), buffer, size);
+
+	delete[] buffer;
+	buffer = nullptr;
 }
 
 void ModuleScene::UpdateAllGameObjects(float dt)
@@ -191,7 +252,6 @@ bool ModuleScene::LoadScene(unsigned int ID)
 	App->resources->UnrequestResource(resourceID);
 	resourceID = resource->GetUID();
 	root = resource->root;
-	sceneName = resource->sceneName;
 	return true;
 }
 
@@ -202,6 +262,9 @@ unsigned int ModuleScene::GetRandomInt()
 
 GameObject* ModuleScene::FindGOFromUID(GameObject* currGO, unsigned int UID)
 {
+	if (currGO->GetID() == UID)
+		return currGO;
+
 	for (std::vector<GameObject*>::const_iterator cit = currGO->children.cbegin(); cit != currGO->children.cend(); ++cit) 
 	{
 		if ((*cit)->GetID() == UID)
@@ -233,6 +296,11 @@ const ResourceScene* ModuleScene::GetResource() const
 const char* ModuleScene::GetSceneName() const
 {
 	return sceneName.c_str();
+}
+
+void ModuleScene::SetSceneName(const char* newName)
+{
+	sceneName = newName;
 }
 
 bool ModuleScene::ChangeResource(unsigned int id)

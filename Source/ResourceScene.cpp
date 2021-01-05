@@ -8,15 +8,21 @@
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
 #include "ComponentMesh.h"
+#include "Modulescene.h"
 
 ResourceScene::ResourceScene(unsigned int id) : Resource(id, Resource::Type::SCENE)
 {
 
 }
 
-ResourceScene::~ResourceScene()
+ResourceScene::ResourceScene(unsigned int id, GameObject* inputRoot) : Resource(id, Resource::Type::SCENE), root(inputRoot)
 {
 
+}
+
+ResourceScene::~ResourceScene()
+{
+	App->scene->DeleteGameObject(root);
 }
 
 bool ResourceScene::LoadInMemory()
@@ -52,28 +58,16 @@ bool ResourceScene::LoadInMemory()
 		return false;
 	}
 
-	sceneName = json_object_get_string(jsonRootGO, "SceneName");
-	root = new GameObject(nullptr, sceneName.c_str());
+	App->scene->SetSceneName(json_object_get_string(node, "SceneName"));
 
-	GameObject* rootImport = new GameObject(root, json_object_get_number(jsonRootGO, "UID"), json_object_get_string(jsonRootGO, "Name"));
-	JSON_Array* rootComponents = json_object_get_array(jsonRootGO, "Components");
-	JSON_Object* rootTransform = json_array_get_object(rootComponents, 0);
-	if (json_object_get_number(rootTransform, "Type") != (int)ComponentType::Transform)
-	{
-		LOG("The root object does'nt have a transform component");
-		json_value_free(rootValue);
-		delete[] buffer;
-		return false;
-	}
-	ComponentTransform* newComponentTransform = new ComponentTransform(rootImport);
-	newComponentTransform->Load(rootTransform);
+	root = new GameObject(nullptr, json_object_get_number(jsonRootGO, "UID"), json_object_get_string(jsonRootGO, "Name"));
 
 	GameObject* currGO;
 
 	for (int i = 1; i < json_array_get_count(goArray); ++i)
 	{
 		JSON_Object* jsonGO = json_array_get_object(goArray, i);
-		currGO = new GameObject(rootImport, json_object_get_number(jsonGO, "UID"), json_object_get_string(jsonGO, "Name"));
+		currGO = new GameObject(App->scene->FindGOFromUID(root, json_object_get_number(jsonGO, "parentUID")), json_object_get_number(jsonGO, "UID"), json_object_get_string(jsonGO, "Name"));
 		JSON_Array* compArray = json_object_get_array(jsonGO, "Components");
 		for (int j = 0; j < json_array_get_count(compArray); ++j)
 		{
@@ -113,7 +107,7 @@ bool ResourceScene::SaveResource()
 {
 	JSON_Value* rootValue = json_value_init_object();
 	JSON_Object* node = json_value_get_object(rootValue);
-	json_object_set_string(node, "SceneName", sceneName.c_str());
+	json_object_set_string(node, "SceneName", App->scene->GetSceneName());
 	json_object_set_value(node, "GameObjects", json_value_init_array());
 	JSON_Array* arry = json_object_get_array(node, "GameObjects");
 
@@ -122,8 +116,8 @@ bool ResourceScene::SaveResource()
 	char* buffer = new char[size];
 	json_serialize_to_buffer_pretty(rootValue, buffer, size);
 	//TODO: Save the scene last modification time on the metafile
-	std::string libPath = std::to_string(uid).c_str();
-	libPath.append(SCENES_PATH);
+	std::string libPath = SCENES_PATH;
+	libPath += std::to_string(uid).c_str();
 	App->fileSystem->Save(libPath.c_str(), buffer, size);
 	json_value_free(rootValue);
 	delete[] buffer;

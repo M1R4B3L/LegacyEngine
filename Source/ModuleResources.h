@@ -23,6 +23,7 @@ public:
 	int GetResourceCount(unsigned int uid);
 	void RemoveResource(unsigned int uid);
 	void AddMeshResource(unsigned int uid,Resource* resource);
+	void AddSceneResource(Resource* resource);
 private:
 	Resource* CreateNewResource(const char* assetsPath, Resource::Type type,std::string* libPath = nullptr, std::string* metaPath = nullptr);
 	void UnloadResource(unsigned int uid);

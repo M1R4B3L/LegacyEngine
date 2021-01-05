@@ -58,7 +58,7 @@ Resource* ModuleResources::CreateNewResource(const char* assetsPath, Resource::T
 			if (ret == nullptr)
 				break;
 			App->fileSystem->SplitFilePath(assetsPath, metaPath, &fileName);
-			*metaPath = ASSETS_SCENES + fileName + ".meta";
+			*metaPath = ASSETS_SCENES + fileName + ".scene";
 			break;
 	case Resource::Type::MODEL:
 		ret = (Resource*) new ResourceModel(uid);
@@ -144,11 +144,12 @@ Resource* ModuleResources::RequestResource(unsigned int uid, Resource::Type type
 		
 		if (it->second == nullptr) 
 		{
-			switch (type) {
+			switch (type) 
+			{
 			case Resource::Type::MESH: it->second = new ResourceMesh(it->first); break;
 			case Resource::Type::MODEL: it->second = new ResourceModel(it->first); break;
 			case Resource::Type::TEXTURE: it->second = new ResourceTexture(it->first); break;
-			//case Resource::Type::SCENE: it->second = new ResourceScene(it->first); break;
+			case Resource::Type::SCENE: it->second = new ResourceScene(it->first); break;
 			}
 
 			it->second->LoadInMemory();
@@ -223,4 +224,9 @@ void ModuleResources::AddMeshResource(unsigned int uid, Resource* resource)
 {
 	resources[uid] = resource;
 	UnloadResource(resource->GetUID());
+}
+
+void ModuleResources::AddSceneResource(Resource* resource)
+{
+	resources[resource->GetUID()] = resource;
 }

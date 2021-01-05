@@ -20,6 +20,8 @@ public:
 	update_status Update(float dt);	
 	bool CleanUp();
 
+	void GenerateDefaultScene();
+
 	void UpdateAllGameObjects(float dt);
 	void DrawAllGameObjects();
 	GameObject* CreateGameObject(const char* name, GameObject* parent = nullptr);
@@ -45,6 +47,7 @@ public:
 	unsigned int GetResourceId() const;
 	const ResourceScene* GetResource() const;
 	const char* GetSceneName() const;
+	void SetSceneName(const char* newName);
 	bool ChangeResource(unsigned int id);
 
 private:

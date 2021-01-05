@@ -115,6 +115,8 @@ private:
 	bool addedTexture;
 	bool addedMesh;
 
+	bool loadScene;
+
 	bool removeMaterial;
 	bool removeMesh;
 	bool removeCamera;
