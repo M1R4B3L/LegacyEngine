@@ -90,6 +90,7 @@ public:
 	void InspectorShowMesh(ComponentMesh* componentMesh);
 	void InspectorShowMaterial(ComponentMaterial* componentMaterial);
 	void InspectorShowCamera(ComponentCamera* componentCamera);
+	void InspectorShowScript(/*ComponentScript* componentScript*/);
 
 	void DrawAssetDirectory(const char* directory);
 	void ShowDirFiles(const char* directory);
@@ -121,6 +122,7 @@ private:
 	bool removeMaterial;
 	bool removeMesh;
 	bool removeCamera;
+	bool removeScript;
 
 	GameObject* dragDropObject = nullptr;
 
@@ -130,6 +132,7 @@ private:
 
 	bool editorWindow;
 	TextEditor editor;
+	std::string scriptFile;
 
 	Timer startTimer;
 	float startDt;

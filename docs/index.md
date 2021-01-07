@@ -1,37 +1,39 @@
-## Welcome to GitHub Pages
+# Legacy Engine
 
-You can use the [editor on GitHub](https://github.com/M1R4B3L/LegacyEngine/edit/master/docs/index.md) to maintain and preview the content for your website in Markdown files.
+Legacy Engine is a 3D Graphics Engine created by Jordi Bach and Adrián Mirabel for Engines subject at [UPC CITM Tech Talent Center](https://www.citm.upc.edu/) Barcelona.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Team Members
 
-### Markdown
+### Jordi Bach
+Github Account: [bottzo](https://github.com/bottzo)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+  - Shaders
+  - Importers/Drag&Drop
+  - Game Objects & Components
+  - Custom File Format
+  - Serialization
+  - Mouse Picking & Object Selection
+  - Guizmos
+  - Resource Manager
+  - Scripting (Component&Resource)
+  
+### Adrián Mirabel
+Github Account: [M1R4B3L](https://github.com/M1R4B3L)
 
-```markdown
-Syntax highlighted code block
+  - Engine Configuration
+  - UI (ImGui)
+    - Hierarchy
+    - Inspector
+    - Assets Window
+    - Console
+    - Text Editor
+  - Camera Functionality/AABB&OBB
+  - Time Management
 
-# Header 1
-## Header 2
-### Header 3
+## Main Core Sub-systems
+### Mouse Picking:
+![](https://github.com/M1R4B3L/LegacyEngine/blob/master/docs/images/mousePicking.gif)
 
-- Bulleted
-- List
+## Last Assigment Sub-systems
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/M1R4B3L/LegacyEngine/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+## 
