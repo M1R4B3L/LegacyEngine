@@ -9,7 +9,7 @@
 class Component;
 enum class ComponentType;
 
-class GameObject
+class __declspec(dllexport) GameObject
 {
 public:
 	GameObject();

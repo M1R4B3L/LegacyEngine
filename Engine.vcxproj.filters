@@ -52,6 +52,9 @@
     <Filter Include="Deps\ImGuiTextEditor">
       <UniqueIdentifier>{b34d8c48-9344-4c65-9273-ab2afd14c5ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Tools\Compiler">
+      <UniqueIdentifier>{52e4aeb1-d390-4a0c-93c5-524846f6bc33}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Dependencies\imgui\imconfig.h">
@@ -125,9 +128,6 @@
     </ClInclude>
     <ClInclude Include="Source/Timer.h">
       <Filter>Sources\Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ModuleScene.h">
-      <Filter>Sources\Modules</Filter>
     </ClInclude>
     <ClInclude Include="Source\Dependencies\MathGeolib\MathBuildConfig.h">
       <Filter>Deps\MathGeoLib</Filter>
@@ -408,6 +408,21 @@
     <ClInclude Include="Source\Dependencies\ImGuiColorTextEdit-master\TextEditor.h">
       <Filter>Deps\ImGuiTextEditor</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ComponentScript.h">
+      <Filter>Sources\GameObjects&amp;Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ResourceScript.h">
+      <Filter>Sources\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CompileOptions.h">
+      <Filter>Sources\Tools\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Compiler.h">
+      <Filter>Sources\Tools\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ModuleScene.h">
+      <Filter>Sources\Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Dependencies\imgui\imgui.cpp">
@@ -655,6 +670,15 @@
     </ClCompile>
     <ClCompile Include="Source\Dependencies\ImGuiColorTextEdit-master\TextEditor.cpp">
       <Filter>Deps\ImGuiTextEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ComponentScript.cpp">
+      <Filter>Sources\GameObjects&amp;Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ResourceScript.cpp">
+      <Filter>Sources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Compiler_PlatformWindows.cpp">
+      <Filter>Sources\Tools\Compiler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

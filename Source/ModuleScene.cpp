@@ -20,6 +20,10 @@
 #include "ModuleResources.h"
 #include "ResourceScene.h"
 
+//NO CAL
+#include "ModuleInput.h"
+#include "Compiler.h"
+
 
 ModuleScene::ModuleScene(bool startEnable) : Module(startEnable){}
 
@@ -129,6 +133,16 @@ update_status ModuleScene::Update(float dt)
 	p.Render();
 
 	UpdateAllGameObjects(dt);
+
+	if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_UP) 
+	{
+		std::vector<std::string>compileFiles;
+		std::vector<std::string>linkLibraries;
+		CompilerOptions options;
+		std::string Hello = "hello.cpp";
+		compileFiles.push_back(Hello);
+		App->compiler->RunCompile(compileFiles, options, linkLibraries, "hi");
+	}
 
 	return UPDATE_CONTINUE;
 }

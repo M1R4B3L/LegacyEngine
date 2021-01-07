@@ -3,7 +3,7 @@
 
 class ResourceTexture;
 
-class ComponentMaterial : public Component
+class __declspec(dllexport) ComponentMaterial : public Component
 {
 public:
     ComponentMaterial();

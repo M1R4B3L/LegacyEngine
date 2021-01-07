@@ -19,6 +19,8 @@ class ModuleEditor;
 class ModuleFileSystem;
 class ModuleResources;
 
+class Compiler;
+
 class Application
 {
 public:
@@ -40,6 +42,8 @@ public:
 
 	bool closeApp;
 	
+	Compiler* compiler;
+
 private:
 
 	Timer	msTimer;

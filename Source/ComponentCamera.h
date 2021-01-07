@@ -4,7 +4,7 @@
 #include "Dependencies/MathGeolib/Geometry/Frustum.h"
 #include "Dependencies/MathGeolib/Geometry/Plane.h"
 
-class ComponentCamera : public Component
+class __declspec(dllexport) ComponentCamera : public Component
 {
 public:
 	ComponentCamera();

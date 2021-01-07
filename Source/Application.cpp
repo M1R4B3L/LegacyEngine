@@ -9,6 +9,8 @@
 #include "ModuleFileSystem.h"
 #include "ModuleResources.h"
 
+#include "Compiler.h"
+
 #include <list>
 
 Application::Application() : title("Legacy Engine"),
@@ -40,6 +42,8 @@ closeApp(false)
 
 	// Renderer last!
 	AddModule(renderer3D);
+
+	compiler = new Compiler();
 }
 
 Application::~Application()
@@ -79,6 +83,7 @@ bool Application::Init()
 		ret = (*it)->Start();	
 	}
 
+	compiler->Initialise();
 	msTimer.Start();
 	return ret;
 }

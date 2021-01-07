@@ -8,10 +8,11 @@ enum class ComponentType {
 	Transform,
 	Material,
 	Camera,
+	Script,
 	Unknown
 };
 
-class Component
+class __declspec(dllexport) Component
 {
 public:
 	Component(ComponentType iType);

@@ -27,6 +27,19 @@ public:
 	std::string NormalizePath(const char* path);
 	bool DuplicateFile(const char* file, const char* dstFolder, std::string& relativePath);
 	bool DuplicateFile(const char* srcFile, const char* dstFile);
+
+	//For the RuntimeCompiler
+	inline void ToLowerInPlace(std::string& inout_str)
+	{
+		for (size_t i = 0; i < inout_str.size(); ++i)
+		{
+			if (inout_str[i] >= 'A' && inout_str[i] <= 'Z')
+			{
+				//tolower
+				inout_str[i] -= 'A' - 'a';
+			}
+		}
+	}
 	
 
 	// Open for Read/Write

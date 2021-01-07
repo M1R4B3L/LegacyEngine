@@ -89,6 +89,9 @@
     <ClInclude Include="Source/ModuleRenderer3D.h" />
     <ClInclude Include="Source/Module.h" />
     <ClInclude Include="Source/ModuleInput.h" />
+    <ClInclude Include="Source\CompileOptions.h" />
+    <ClInclude Include="Source\Compiler.h" />
+    <ClInclude Include="Source\ComponentScript.h" />
     <ClInclude Include="Source\Dependencies\ImGuiColorTextEdit-master\TextEditor.h" />
     <ClInclude Include="Source\Dependencies\ImGuizmo-master\ImCurveEdit.h" />
     <ClInclude Include="Source\Dependencies\ImGuizmo-master\ImGradient.h" />
@@ -197,6 +200,7 @@
     <ClInclude Include="Source\ResourceMesh.h" />
     <ClInclude Include="Source\ResourceModel.h" />
     <ClInclude Include="Source\ResourceScene.h" />
+    <ClInclude Include="Source\ResourceScript.h" />
     <ClInclude Include="Source\ResourceTexture.h" />
     <ClInclude Include="Source\Shader.h" />
   </ItemGroup>
@@ -209,6 +213,8 @@
     <ClCompile Include="Source/ModuleCamera3D.cpp" />
     <ClCompile Include="Source/ModuleInput.cpp" />
     <ClCompile Include="Source/ModuleRenderer3D.cpp" />
+    <ClCompile Include="Source\Compiler_PlatformWindows.cpp" />
+    <ClCompile Include="Source\ComponentScript.cpp" />
     <ClCompile Include="Source\Dependencies\ImGuiColorTextEdit-master\TextEditor.cpp" />
     <ClCompile Include="Source\Dependencies\ImGuizmo-master\ImCurveEdit.cpp" />
     <ClCompile Include="Source\Dependencies\ImGuizmo-master\ImGradient.cpp" />
@@ -280,6 +286,7 @@
     <ClCompile Include="Source\Resource.cpp" />
     <ClCompile Include="Source\ResourceModel.cpp" />
     <ClCompile Include="Source\ResourceScene.cpp" />
+    <ClCompile Include="Source\ResourceScript.cpp" />
     <ClCompile Include="Source\ResourceTexture.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ResourceMesh.cpp" />
