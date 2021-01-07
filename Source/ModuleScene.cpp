@@ -139,8 +139,10 @@ update_status ModuleScene::Update(float dt)
 		std::vector<std::string>compileFiles;
 		std::vector<std::string>linkLibraries;
 		CompilerOptions options;
-		std::string Hello = "hello.cpp";
-		compileFiles.push_back(Hello);
+		//std::string Hello = "hello.h";
+		std::string hellocpp = "hello.cpp";
+		//compileFiles.push_back(Hello);
+		compileFiles.push_back(hellocpp);
 		App->compiler->RunCompile(compileFiles, options, linkLibraries, "hi");
 	}
 
