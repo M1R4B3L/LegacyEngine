@@ -306,6 +306,42 @@ struct VSVersionDiscoveryInfo
 	bool        tryVSWhere; // can use VSWhere for versioning
 };
 
+//TODO: check if a file exists (outside of our filesystem (not relative to the executable))
+//................................................................................................//
+inline std::wstring _Win32Utf8ToUtf16(const std::string& str)
+{
+	std::wstring convertedString;
+	int requiredSize = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, 0, 0);
+	if (requiredSize > 0)
+	{
+		convertedString.resize(requiredSize);
+		MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, &convertedString[0], requiredSize);
+		convertedString.pop_back(); //remove NULL terminator
+	}
+
+	return convertedString;
+}
+
+inline bool Exists(std::string path)
+{
+
+	int error = -1;
+#ifdef _WIN32
+	struct _stat buffer;
+	std::wstring temp = _Win32Utf8ToUtf16(path);
+	error = _wstat(temp.c_str(), &buffer);
+#else
+	struct stat buffer;
+	error = stat(m_string.c_str(), &buffer);
+#endif
+	if (0 == error)
+	{
+		return true;
+	}
+	return false;
+}
+//................................................................................................//
+
 void GetPathsOfVisualStudioInstalls( std::vector<VSVersionInfo>* pVersions)
 {
 	//e.g.: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\<version>\Setup\VS\<edition>
@@ -423,7 +459,8 @@ void GetPathsOfVisualStudioInstalls( std::vector<VSVersionInfo>* pVersions)
 						end = cmdProc.m_CmdOutput.length();
 					}
 					std::string path = cmdProc.m_CmdOutput.substr( start, end-start );
-					if( path.length() && App->fileSystem->Exists(path.c_str()))
+					//App->fileSystem->Exists(path.c_str())
+					if( path.length() && Exists(path.c_str()))
 					{
 						VSVersionInfo vInfo;
 						vInfo.Path = path;
