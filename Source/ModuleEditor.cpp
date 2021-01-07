@@ -26,11 +26,12 @@
 #include "parson.h"
 #include "ModuleInput.h"
 #include <algorithm>
+#include <fstream>
 
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
 aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(false), timeWindow(true), resourcesWindow(true), editorWindow(false),
-component(0), removeMaterial(true), removeMesh(true), removeCamera(true), changeTexture(false), changeMesh(false), addedTexture(false), addedMesh(false), loadScene(false), gameRuning(false), gamePause(false),
+component(0), removeMaterial(true), removeMesh(true), removeCamera(true), removeScript(true), changeTexture(false), changeMesh(false), addedTexture(false), addedMesh(false), loadScene(false), gameRuning(false), gamePause(false),
 org("CITM"), scroll(true), selectedFolder(ASSETS_PATH)
 {
 	gameTimer.Stop();
@@ -162,12 +163,12 @@ void ModuleEditor::WindowDocking()
 
 void ModuleEditor::MenuBar()
 {
-	std::string menu_action = "";
+	std::string menuAction = "";
 
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
 			if (ImGui::MenuItem("New Scene")) {
-				menu_action = "New";
+				menuAction = "New";
 			}
 			if (ImGui::MenuItem("Load Scene", "")) {
 				loadScene = true;
@@ -289,7 +290,7 @@ void ModuleEditor::MenuBar()
 		ImGui::EndMainMenuBar();
 	}
 
-	if(menu_action == "New") ImGui::OpenPopup("CreateNewScene");
+	if(menuAction == "New") ImGui::OpenPopup("CreateNewScene");
 
 	if (ImGui::BeginPopupModal("CreateNewScene"))
 	{
@@ -818,7 +819,7 @@ void ModuleEditor::WindowInspector()
 							}
 							break;
 						}
-
+						//TODO COMPONENT SCRIPT 
 					}
 				}
 
@@ -862,7 +863,10 @@ void ModuleEditor::InspectorComponents(GameObject* selectedGameObject)
 	ImGui::SameLine();
 	static char name[128];
 	strcpy_s(name, 128, selectedGameObject->GetName());
-	if (ImGui::InputText("Name", name, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+
+	ImGuiInputTextFlags flag = ImGuiInputTextFlags_EnterReturnsTrue;
+
+	if (ImGui::InputText("Name", name, 128, flag))
 		selectedGameObject->SetName(name);
 
 	for (uint i = 0; i < selectedGameObject->components.size(); i++) {
@@ -892,6 +896,7 @@ void ModuleEditor::InspectorComponents(GameObject* selectedGameObject)
 				{
 					InspectorShowCamera((ComponentCamera*)currentComponent);
 				} break;
+				//TODO COMPONENT SCRIPT
 			}
 
 			if (currentComponent->GetType() == ComponentType::Unknown)
@@ -900,6 +905,7 @@ void ModuleEditor::InspectorComponents(GameObject* selectedGameObject)
 			}
 		}
 	}
+	InspectorShowScript();
 
 }
 
@@ -1090,6 +1096,18 @@ void ModuleEditor::InspectorShowCamera(ComponentCamera* componentCamera)
 			ImGui::EndPopup();
 		}
 		
+	}
+}
+
+void ModuleEditor::InspectorShowScript(/*ComponentScript* componentScript*/)
+{
+	if (ImGui::CollapsingHeader("Script", &removeScript, ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Text(scriptFile.c_str());
+		if (ImGui::Button("Edit Script"))
+		{
+			editorWindow = true;
+		}
 	}
 }
 
@@ -1881,17 +1899,18 @@ void ModuleEditor::TextEditorInit()
 	//bpts.insert(47);
 	//editor.SetBreakpoints(bpts);
 
-	static const char* fileToEdit = "ImGuiColorTextEditor/TextEditor.cpp";
+	scriptFile = "../Source/Timer.cpp";
+
 	//	static const char* fileToEdit = "test.cpp";
 
-	/*{
-		std::ifstream t(fileToEdit);
+	{
+		std::ifstream t(scriptFile);
 		if (t.good())
 		{
 			std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
 			editor.SetText(str);
 		}
-	}*/
+	}
 }
 
 void ModuleEditor::TextEditorWindow()
@@ -1948,6 +1967,11 @@ void ModuleEditor::TextEditorWindow()
 			}
 			ImGui::EndMenuBar();
 		}
+
+		ImGui::Text("%6d/%-6d %6d lines  | %s | %s | %s | %s", cpos.mLine + 1, cpos.mColumn + 1, editor.GetTotalLines(),
+			editor.IsOverwrite() ? "Ovr" : "Ins",
+			editor.CanUndo() ? "*" : " ",
+			editor.GetLanguageDefinition().mName.c_str(), scriptFile.c_str());
 
 		editor.Render("TextEditor");
 		ImGui::End();
