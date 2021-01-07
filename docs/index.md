@@ -5,9 +5,8 @@ Legacy Engine is a 3D Graphics Engine created by Jordi Bach and Adrián Mirabel 
 ## Team Members
 
 ### Jordi Bach
-Repository: [bottzo](https://github.com/bottzo)
+Github Account: [bottzo](https://github.com/bottzo)
 
-- Work
   - Shaders
   - Importers/Drag&Drop
   - Game Objects & Components
@@ -19,9 +18,8 @@ Repository: [bottzo](https://github.com/bottzo)
   - Scripting (Component&Resource)
   
 ### Adrián Mirabel
-Repository: [M1R4B3L](https://github.com/M1R4B3L)
+Github Account: [M1R4B3L](https://github.com/M1R4B3L)
 
-- Work
   - Engine Configuration
   - UI (ImGui)
     - Hierarchy
@@ -33,6 +31,8 @@ Repository: [M1R4B3L](https://github.com/M1R4B3L)
   - Time Management
 
 ## Main Core Sub-systems
+### Mouse Picking:
+![](https://github.com/M1R4B3L/LegacyEngine/blob/master/docs/images/mousePicking.gif)
 
 ## Last Assigment Sub-systems
 
