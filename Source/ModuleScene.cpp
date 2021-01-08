@@ -115,6 +115,12 @@ void ModuleScene::GenerateScene(const char* name)
 	buffer = nullptr;
 }
 
+void ModuleScene::StartGame()
+{
+	//TODO: kuan s'acabi el game time returnar a la primera scena
+	root->Start();
+}
+
 void ModuleScene::UpdateAllGameObjects(float dt)
 {
 	root->Update(dt);

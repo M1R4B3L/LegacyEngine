@@ -44,6 +44,7 @@ closeApp(false)
 	AddModule(renderer3D);
 
 	compiler = new Compiler();
+	//compiler->GetIsComplete();
 }
 
 Application::~Application()
@@ -188,6 +189,9 @@ bool Application::CleanUp()
 	{
 		ret = (*it)->CleanUp();
 	}
+
+	delete compiler;
+	compiler = nullptr;
 	return ret;
 }
 

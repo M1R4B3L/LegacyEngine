@@ -60,6 +60,25 @@ bool GameObject::RemoveComponent(Component* c)
 		(*it)->Start();
 }*/
 
+void GameObject::Start()
+{
+
+	std::vector<Component*>::iterator it = components.begin();
+	for (it; it != components.end(); it++)
+	{
+		(*it)->Start();
+	}
+
+	std::vector<GameObject*>::iterator itr = children.begin();
+	for (itr; itr != children.end(); itr++)
+	{
+		if ((*itr)->activeGameObject)
+		{
+			(*itr)->Start();
+		}
+	}
+}
+
 void GameObject::Update(float dt)
 {
 

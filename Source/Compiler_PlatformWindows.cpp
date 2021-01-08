@@ -540,6 +540,7 @@ void ReadAndHandleOutputThread( LPVOID arg )
 				}
 				else
 				{
+					//TODO: This 2 LOGS don't work
 					//check if this is an error
 					size_t errorFound = buffer.find( " : error " );
 					size_t fatalErrorFound = buffer.find( " : fatal error " );

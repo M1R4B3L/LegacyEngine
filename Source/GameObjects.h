@@ -21,7 +21,7 @@ public:
 	void AddComponent(Component* c);
 	bool RemoveComponent(Component* c);
 
-	//void Start();
+	void Start();
 	void Update(float dt);
 	void Draw();
 

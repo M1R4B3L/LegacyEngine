@@ -10,6 +10,7 @@ public:
 		MESH,
 		SCENE,
 		MODEL,
+		SCRIPT,
 		//shader
 		unknown
 	};

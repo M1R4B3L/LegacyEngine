@@ -22,6 +22,8 @@ public:
 
 	void GenerateScene(const char* sceneName);
 
+	void StartGame();
+
 	void UpdateAllGameObjects(float dt);
 	void DrawAllGameObjects();
 	GameObject* CreateGameObject(const char* name, GameObject* parent = nullptr);
