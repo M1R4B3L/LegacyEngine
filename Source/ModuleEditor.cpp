@@ -31,10 +31,9 @@
 
 ModuleEditor::ModuleEditor(bool startEnable) : Module(startEnable),
 aboutWindow(false), configWindow(false), consoleWindow(true), inspectorWindow(true), hierarchyWindow(true), demoWindow(false), dockingWindow(true), projectWindow(true), sceneWindow(false), timeWindow(true), resourcesWindow(true), editorWindow(false),
-component(0), removeMaterial(true), removeMesh(true), removeCamera(true), removeScript(true), changeTexture(false), changeMesh(false), addedTexture(false), addedMesh(false), loadScene(false), gameRuning(false), gamePause(false),
+component(0), removeMaterial(true), removeMesh(true), removeCamera(true), removeScript(true), changeTexture(false), changeMesh(false), addedTexture(false), addedMesh(false), loadScene(false),
 org("CITM"), scroll(true), selectedFolder(ASSETS_PATH)
 {
-	gameTimer.Stop();
 }
 
 ModuleEditor::~ModuleEditor()
@@ -74,10 +73,6 @@ bool ModuleEditor::Init()
 	TextEditorInit();
 
 	//Start Timers
-	gameDt = 0;
-	startDt = 0;
-	startTimer.Start();
-
 	return true;
 }
 
@@ -1510,50 +1505,65 @@ void ModuleEditor::WindowTime()
 				LOG("Guizmo Operation SCALE");
 			}
 			ImGui::SameLine();
-			ImGui::InvisibleButton("##",ImVec2(50,10));
+			ImGui::InvisibleButton("##", ImVec2(50, 10));
 			ImGui::SameLine();
-			if (ImGui::Button("Play"))
+
+			if (App->IsGameRunning())
 			{
-				if (gameRuning == true)
+				playStop = "Stop";
+			}
+			else
+			{
+				playStop = "Play";
+			}
+			if (ImGui::Button(playStop.c_str()))
+			{
+				if (App->IsGameRunning())
 				{
-					gameRuning = false;
-					gameTimer.Stop();
-					LOG("Game Mode Paused");
+					App->StopGame();
+					LOG("Stop Game");
 				}
 				else
 				{
-					gameRuning = true;
-					gameTimer.Start();
-					gameDt = 0;
-					LOG("Game Mode Activated");
+					App->StartGame();
+					LOG("Start Game");
 				}
 			}
 			ImGui::SameLine();
-			if (ImGui::Button("Pause"))
+			if (App->IsGameRunning())
 			{
-				if (gamePause == true)
+				if (App->IsGamePaused())
 				{
-					gamePause = false;
-					gameTimer.Resume();
-					LOG("Game Mode Resumed");
+					pauseResume = "Resume";
 				}
 				else
 				{
-					gamePause = true;
-					gameTimer.Stop();
-					LOG("Game Mode Paused");
+					pauseResume = "Pause";
+				}
+				if (ImGui::Button(pauseResume.c_str()))
+				{
+					if (App->IsGamePaused())
+					{
+						App->ResumeGame();
+						LOG("Resume Game");
+					}
+					else
+					{
+						App->PauseGame();
+						LOG("Pause Game");
+					}
 				}
 			}
 			ImGui::SameLine();
 			ImGui::Text("Start time:");
 			ImGui::SameLine();
-			startDt = startTimer.Read() /1000.f;
-			ImGui::TextColored(ImVec4(0,1,1,1), "%.3f", startDt);
+			float startAppTimer = App->startApp.Read() / 1000.f;;
+			ImGui::TextColored(ImVec4(0,1,1,1), "%.3f", startAppTimer);
 			ImGui::SameLine();
 			ImGui::Text("Game time:");
 			ImGui::SameLine();
-			gameDt = gameTimer.Read() / 1000.0f;
-			ImGui::TextColored(ImVec4(0, 1, 1, 1), "%.3f", gameDt);
+			float gameTime = App->GetGameTime();
+			ImGui::TextColored(ImVec4(0, 1, 1, 1), "%.3f", gameTime);
 		}
 		ImGui::End();
 	}

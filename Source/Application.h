@@ -43,6 +43,7 @@ public:
 	bool closeApp;
 	
 	Compiler* compiler;
+	Timer startApp;
 
 private:
 
@@ -51,6 +52,10 @@ private:
 	unsigned __int32 lastSecFrameCount = 0;
 	float	dt;
 	float cappedMs = 0;
+
+	Timer gameTimer;
+	bool gameRunning;
+	bool gamePaused;
 
 	//Windows
 	std::string title;
@@ -68,6 +73,14 @@ public:
 	void CapFramerate(int fps);
 	uint GetFramerate();
 
+	int GetGameDt() const;
+	float GetGameTime();
+	bool IsGameRunning();
+	bool IsGamePaused();
+	void StartGame();
+	void StopGame();
+	void PauseGame();
+	void ResumeGame();
 
 	void AddConsoleLog(const char* string);
 
