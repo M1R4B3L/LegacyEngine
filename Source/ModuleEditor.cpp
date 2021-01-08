@@ -819,6 +819,7 @@ void ModuleEditor::WindowInspector()
 							break;
 						}
 						//TODO COMPONENT SCRIPT 
+
 					}
 				}
 
@@ -895,7 +896,10 @@ void ModuleEditor::InspectorComponents(GameObject* selectedGameObject)
 				{
 					InspectorShowCamera((ComponentCamera*)currentComponent);
 				} break;
-				//TODO COMPONENT SCRIPT
+				case ComponentType::Script: 
+				{
+					InspectorShowScript();
+				} break;
 			}
 
 			if (currentComponent->GetType() == ComponentType::Unknown)
@@ -904,7 +908,6 @@ void ModuleEditor::InspectorComponents(GameObject* selectedGameObject)
 			}
 		}
 	}
-	InspectorShowScript();
 
 }
 
