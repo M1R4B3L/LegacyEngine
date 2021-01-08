@@ -1177,10 +1177,10 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 			{
 				if (ImGui::Selectable("Delete"))
 				{
-					const char* temp = gameObject->GetName();
 					//Deleteame esto
+					LOG("Succesfully deleted %s", gameObject->GetName());
 					App->scene->DeleteGameObject(gameObject);
-					LOG("Succesfully deleted %s", temp);
+					
 				}
 				if (ImGui::Selectable("Create Child"))
 				{
