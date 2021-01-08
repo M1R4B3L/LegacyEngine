@@ -33,13 +33,23 @@ Github Account: [M1R4B3L](https://github.com/M1R4B3L)
 ## Main Core Sub-systems
 - Game Objects & Components: 
 
-![](https://github.com/M1R4B3L/LegacyEngine/blob/master/docs/images/gameObjects.gif?raw=true)
+Creating game objects can be done from Assets Window (at the bottom) or Menu Bar (at the top). As shown in the image below, you are able to add/delete/change attributes of the components shown in the Inspector Menu.
 
-  - Hierarchy
-  - Inspector
-![]
-- Mouse Picking ![]
-- Time Management ![]
+![GameObjects](https://github.com/M1R4B3L/LegacyEngine/blob/master/docs/images/gameObjects.gif?raw=true)
+
+  - Hierarchy & Inspector:
+
+Hierarchy situated at the left of the Engine & Inspector at the right 
+
+![Hierarchy&Inspector]()
+
+- Mouse Picking 
+
+![MousePicking](https://github.com/M1R4B3L/LegacyEngine/blob/master/docs/images/mousePicking.gif?raw=true)
+
+- Time Management 
+
+![TimeManagement]()
 
 ## Last Assigment Sub-systems
 
