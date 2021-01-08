@@ -38,6 +38,8 @@ public:
 	
 	void DeleteGameObject(GameObject* gameObject, bool root = true);
 
+	void SaveSceneAt(const char* path);
+	void LoadSceneFrom(const char* path);
 	void SaveScene();
 	bool LoadScene(unsigned int ID);
 

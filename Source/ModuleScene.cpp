@@ -260,6 +260,18 @@ void ModuleScene::DeleteGameObject(GameObject* gameObject, bool root)
 	gameObject = nullptr;
 }
 
+void ModuleScene::SaveSceneAt(const char* path)
+{
+	selectedObject = nullptr;
+	resource->SaveResourceAt(path);
+}
+
+void ModuleScene::LoadSceneFrom(const char* path)
+{
+	selectedObject = nullptr;
+	resource->LoadResourceFrom(path);
+}
+
 void ModuleScene::SaveScene()
 {
 	resource->SaveResource();

@@ -19,6 +19,7 @@
 #define MODELS_PATH "Library/Models/"
 #define SCENES_PATH "Library/Scenes/"
 #define SHADERS_PATH "Library/Shaders/"
+#define TEMP_PATH "Temp/"
 
 #define LOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
 

@@ -135,6 +135,7 @@ void Application::StartGame()
 {
 	gameRunning = true;
 	gameTimer.Start();
+	scene->SaveSceneAt(TEMP_PATH);
 }
 
 void Application::StopGame()
@@ -142,6 +143,7 @@ void Application::StopGame()
 	gameRunning = false;
 	gameTimer.Start();
 	gameTimer.Stop();
+	scene->LoadSceneFrom(TEMP_PATH);
 }
 
 void Application::PauseGame()

@@ -81,6 +81,7 @@ void ModuleFileSystem::CreateLibraryDirectories()
 	CreateDir(TEXTURES_PATH);
 	CreateDir(SHADERS_PATH);
 	CreateDir(SCENES_PATH);
+	CreateDir(TEMP_PATH);
 }
 
 void ModuleFileSystem::CreateAssetsDirectories()
@@ -205,6 +206,22 @@ bool ModuleFileSystem::Remove(const char* file)
 	return ret;
 }
 
+bool ModuleFileSystem::DeleteDir(const char* dirName)
+{
+	std::vector<std::string>files;
+	std::vector<std::string>dirs;
+	DiscoverFiles(dirName, files, dirs);
+	for (int i = 0; i < files.size(); ++i){
+		files[i] = dirName + files[i];
+		Remove(files[i].c_str());
+	}
+	for (int i = 0; i < dirs.size(); ++i) {
+		DeleteDir(dirs[i].c_str());
+	}
+	Remove(dirName);
+	return true;
+}
+
 bool ModuleFileSystem::Start()
 {
 	return true;
@@ -217,6 +234,7 @@ update_status ModuleFileSystem::Update(float dt)
 
 bool ModuleFileSystem::CleanUp()
 {
+	DeleteDir(TEMP_PATH);
 	return true;
 }
 

@@ -11,6 +11,8 @@ public:
 	~ResourceScene();
 	bool LoadInMemory() override;
 	bool SaveResource() override;
+	bool SaveResourceAt(const char* path) override;
+	bool LoadResourceFrom(const char* path)override;
 
 public:
 	GameObject* root = nullptr;

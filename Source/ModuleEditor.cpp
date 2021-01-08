@@ -124,7 +124,7 @@ update_status ModuleEditor::Update(float dt)
 
 bool ModuleEditor::CleanUp()
 {
-	return false;
+	return true;
 }
 
 void ModuleEditor::WindowDocking()
@@ -150,7 +150,11 @@ void ModuleEditor::WindowDocking()
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 			MenuBar();
 		}
-		ImGuizmoUpdate();
+
+		//TODO: Don't show guizmos during game
+		if(!App->IsGameRunning())
+			ImGuizmoUpdate();
+
 		ImGui::End();
 	}
 

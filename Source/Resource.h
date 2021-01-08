@@ -24,6 +24,8 @@ public:
 	void IncreaseReferenceCount();
 	virtual bool LoadInMemory() { return true; }
 	virtual bool SaveResource() { return true; }
+	virtual bool SaveResourceAt(const char* path) { return true; }
+	virtual bool LoadResourceFrom(const char* path) { return true; }
 
 protected:
 	unsigned int uid = 0;

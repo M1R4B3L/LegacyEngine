@@ -47,6 +47,7 @@ public:
 	unsigned int Load(const char* file, char** buffer) const;
 	unsigned int Save(const char* file, const void* buffer, unsigned int size, bool append = false) const;
 	bool Remove(const char* file);
+	bool DeleteDir(const char* dirName);
 
 	bool Start();
 	update_status Update(float dt);
