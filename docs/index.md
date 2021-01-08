@@ -32,7 +32,7 @@ Github Account: [M1R4B3L](https://github.com/M1R4B3L)
 
 ## Main Core Sub-systems
 ### Mouse Picking:
-![](https://github.com/M1R4B3L/LegacyEngine/blob/master/docs/images/mousePicking.gif)
+![](https://github.com/M1R4B3L/LegacyEngine/blob/master/docs/images/mousePicking.gif?raw=true)
 
 ## Last Assigment Sub-systems
 

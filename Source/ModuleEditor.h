@@ -134,12 +134,8 @@ private:
 	TextEditor editor;
 	std::string scriptFile;
 
-	Timer startTimer;
-	float startDt;
-	Timer gameTimer;
-	float gameDt;
-	bool gameRuning;
-	bool gamePause;
+	std::string playStop = "Play";
+	std::string pauseResume = "Pause";
 
 };
 

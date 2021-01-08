@@ -44,7 +44,10 @@ closeApp(false)
 	AddModule(renderer3D);
 
 	compiler = new Compiler();
-	//compiler->GetIsComplete();
+
+	gameTimer.Stop();
+	gameRunning = false;
+	gamePaused = false;
 }
 
 Application::~Application()
@@ -86,6 +89,7 @@ bool Application::Init()
 
 	compiler->Initialise();
 	msTimer.Start();
+	startApp.Start();
 	return ret;
 }
 
@@ -110,13 +114,63 @@ uint Application::GetFramerate()
 	}
 }
 
+int Application::GetGameDt() const
+{
+	if (gameRunning && !gamePaused)
+	{
+		return dt;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+float Application::GetGameTime()
+{
+	return gameTimer.Read() / 1000.0f;
+}
+
+void Application::StartGame()
+{
+	gameRunning = true;
+	gameTimer.Start();
+}
+
+void Application::StopGame()
+{
+	gameRunning = false;
+	gameTimer.Start();
+	gameTimer.Stop();
+}
+
+void Application::PauseGame()
+{
+	gamePaused = true;
+	gameTimer.Stop();
+}
+
+void Application::ResumeGame()
+{
+	gamePaused = false;
+	gameTimer.Resume();
+}
+
+bool Application::IsGameRunning()
+{
+	return gameRunning;
+}
+
+bool Application::IsGamePaused()
+{
+	return gamePaused;
+}
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
 	lastSecFrameCount++;
 	dt = (float)msTimer.Read() / 1000.0f;
 	msTimer.Start();
-
 }
 
 // ---------------------------------------------
