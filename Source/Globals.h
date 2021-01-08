@@ -13,12 +13,14 @@
 #define ASSETS_MESHES "Assets/Meshes/"
 #define ASSETS_SHADERS "Assets/Shaders/"
 #define ASSETS_SCENES "Assets/Scenes/"
+#define ASSETS_SCRIPTS "Assets/Scripts/"
 #define LIBRARY_PATH "Library/"
 #define MESHES_PATH "Library/Meshes/"
 #define TEXTURES_PATH "Library/Textures/"
 #define MODELS_PATH "Library/Models/"
 #define SCENES_PATH "Library/Scenes/"
 #define SHADERS_PATH "Library/Shaders/"
+#define ASSETS_SCRIPTS "Library/Scripts/"
 #define TEMP_PATH "Temp/"
 
 #define LOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);

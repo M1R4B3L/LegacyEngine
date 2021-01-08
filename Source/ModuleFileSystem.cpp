@@ -92,6 +92,7 @@ void ModuleFileSystem::CreateAssetsDirectories()
 	CreateDir(ASSETS_TEXTURES);
 	CreateDir(ASSETS_SHADERS);
 	CreateDir(ASSETS_SCENES);
+	CreateDir(ASSETS_SCRIPTS);
 }
 
 bool ModuleFileSystem::FileExists(const char* file)
