@@ -5,7 +5,11 @@ Legacy Engine is a 3D Graphics Engine created by Jordi Bach and Adrián Mirabel 
 ## Team Members
 
 ### Jordi Bach
+![photo1]()
+
 Github Account: [bottzo](https://github.com/bottzo)
+
+Linkedin: [Jordi Bach]()
 
   - Shaders
   - Importers/Drag&Drop
@@ -18,7 +22,11 @@ Github Account: [bottzo](https://github.com/bottzo)
   - Scripting (Component&Resource)
   
 ### Adrián Mirabel
+![photo2]()
+
 Github Account: [M1R4B3L](https://github.com/M1R4B3L)
+
+Linkedin: [Adrián Mirabel](https://www.linkedin.com/in/adri%C3%A1nmm/)
 
   - Engine Configuration
   - UI (ImGui)
