@@ -99,7 +99,7 @@ public:
 
 	//Text Editor
 	void TextEditorInit();
-	void TextEditorWindow();
+	void TextEditorWindow(const char* name);
 
 private:
 

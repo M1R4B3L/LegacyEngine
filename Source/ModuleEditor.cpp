@@ -96,8 +96,8 @@ update_status ModuleEditor::Update(float dt)
 	WindowResourcesCount();
 	WindowLoadScene();
 	WindowDemo();
-
-	TextEditorWindow();
+	
+	TextEditorWindow(scriptFile.c_str());
 
 	ImGui::Render();
 	ImGuiIO& io = ImGui::GetIO();
@@ -1525,6 +1525,14 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 						go->AddComponent(component);
 					}
 				}
+				else if (extension == "cpp")
+				{
+					std::string pathCPP = ASSETS_SCRIPTS;
+					pathCPP += fileName;
+					pathCPP += ".cpp";
+					scriptFile = pathCPP;
+					editorWindow = true;
+				}
 			}
 		}
 		//ImGui::SameLine();
@@ -2009,7 +2017,11 @@ void ModuleEditor::TextEditorInit()
 	//bpts.insert(47);
 	//editor.SetBreakpoints(bpts);
 
-	scriptFile = "../Source/Timer.cpp";
+}
+
+void ModuleEditor::TextEditorWindow(const char* name)
+{
+	scriptFile = name;
 
 	//	static const char* fileToEdit = "test.cpp";
 
@@ -2021,10 +2033,7 @@ void ModuleEditor::TextEditorInit()
 			editor.SetText(str);
 		}
 	}
-}
 
-void ModuleEditor::TextEditorWindow()
-{
 	auto cpos = editor.GetCursorPosition();
 
 	if (editorWindow)
