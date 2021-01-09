@@ -227,7 +227,7 @@ void ModuleEditor::MenuBar()
 			if (ImGui::BeginMenu("Script"))
 			{
 				if (ImGui::MenuItem("Default Script")) {
-					
+					menuAction = "Script";
 					LOG("A Script has been created");
 				}
 				ImGui::EndMenu();
@@ -298,6 +298,7 @@ void ModuleEditor::MenuBar()
 	}
 
 	if(menuAction == "New") ImGui::OpenPopup("CreateNewScene");
+	if (menuAction == "Script") ImGui::OpenPopup("CreateNewScript");
 
 	if (ImGui::BeginPopupModal("CreateNewScene"))
 	{
@@ -314,6 +315,31 @@ void ModuleEditor::MenuBar()
 		{
 			ImGui::CloseCurrentPopup();
 		}
+		ImGui::EndPopup();
+	}
+
+	if (ImGui::BeginPopupModal("CreateNewScript"))
+	{
+		static char scriptName[64] = "";
+		ImGui::InputText("Change", scriptName, 64);	
+		ImGui::Text("Script Name:");
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0, 1, 0, 1), scriptName);
+		ImGui::Spacing();
+		if(ImGui::Button("Create"))
+		{
+			if (scriptName == "")
+			{
+			
+			}
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+		{
+			ImGui::CloseCurrentPopup();
+		}
+		
+		//TODO scriptName already exist in the folder
 		ImGui::EndPopup();
 	}
 }
