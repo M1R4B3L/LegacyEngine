@@ -852,10 +852,11 @@ void ModuleEditor::WindowInspector()
 
 					for (std::vector<std::string>::const_iterator it2 = files.begin(); it2 != files.end(); ++it2)
 					{
-
+						
 						if (ImGui::Selectable((*it2).c_str()))
 						{
 							//TODO ADD SCRIPT FUNCIONALITY
+							LOG("Hi");
 						}
 
 					}

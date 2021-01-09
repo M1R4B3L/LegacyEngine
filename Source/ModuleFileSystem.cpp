@@ -82,6 +82,7 @@ void ModuleFileSystem::CreateLibraryDirectories()
 	CreateDir(SHADERS_PATH);
 	CreateDir(SCENES_PATH);
 	CreateDir(TEMP_PATH);
+	CreateDir(SCRIPTS_PATH);
 }
 
 void ModuleFileSystem::CreateAssetsDirectories()

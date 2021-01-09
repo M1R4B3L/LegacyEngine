@@ -16,6 +16,8 @@
 Application::Application() : title("Legacy Engine"),
 closeApp(false)
 {
+	gameTimer.Stop();
+
 	fileSystem = new ModuleFileSystem(this);
 	window = new ModuleWindow(this);
 	input = new ModuleInput(this);
@@ -45,7 +47,6 @@ closeApp(false)
 
 	compiler = new Compiler();
 
-	gameTimer.Stop();
 	gameRunning = false;
 	gamePaused = false;
 }
