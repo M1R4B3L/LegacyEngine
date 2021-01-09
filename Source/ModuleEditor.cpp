@@ -224,6 +224,14 @@ void ModuleEditor::MenuBar()
 				}
 				ImGui::EndMenu();
 			}
+			if (ImGui::BeginMenu("Script"))
+			{
+				if (ImGui::MenuItem("Default Script")) {
+					
+					LOG("A Script has been created");
+				}
+				ImGui::EndMenu();
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Window"))
