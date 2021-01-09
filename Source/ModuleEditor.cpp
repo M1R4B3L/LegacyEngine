@@ -70,7 +70,7 @@ bool ModuleEditor::Init()
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
 	ImGui_ImplOpenGL3_Init("#version 460"); //TODO: glsl version �?�?
 
-	TextEditorInit();
+	TextEditorInit(scriptFile.c_str());
 
 	//Start Timers
 	return true;
@@ -97,7 +97,7 @@ update_status ModuleEditor::Update(float dt)
 	WindowLoadScene();
 	WindowDemo();
 	
-	TextEditorWindow(scriptFile.c_str());
+	TextEditorWindow();
 
 	ImGui::Render();
 	ImGuiIO& io = ImGui::GetIO();
@@ -1531,6 +1531,9 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 					pathCPP += fileName;
 					pathCPP += ".cpp";
 					scriptFile = pathCPP;
+
+					TextEditorInit(scriptFile.c_str());
+
 					editorWindow = true;
 				}
 			}
@@ -1952,7 +1955,7 @@ void ModuleEditor::ImGuizmoUpdate()
 	}
 }
 
-void ModuleEditor::TextEditorInit()
+void ModuleEditor::TextEditorInit(const char* name)
 {
 
 	auto lang = TextEditor::LanguageDefinition::CPlusPlus();
@@ -2017,10 +2020,6 @@ void ModuleEditor::TextEditorInit()
 	//bpts.insert(47);
 	//editor.SetBreakpoints(bpts);
 
-}
-
-void ModuleEditor::TextEditorWindow(const char* name)
-{
 	scriptFile = name;
 
 	//	static const char* fileToEdit = "test.cpp";
@@ -2033,6 +2032,11 @@ void ModuleEditor::TextEditorWindow(const char* name)
 			editor.SetText(str);
 		}
 	}
+
+}
+
+void ModuleEditor::TextEditorWindow()
+{
 
 	auto cpos = editor.GetCursorPosition();
 
@@ -2066,6 +2070,15 @@ void ModuleEditor::TextEditorWindow(const char* name)
 				if (ImGui::MenuItem("Paste", "Ctrl-V", nullptr, !ro && ImGui::GetClipboardText() != nullptr))
 					editor.Paste();
 
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("Save", "Ctrl-S", nullptr))
+				{
+					//TODO Save the current 
+					std::string changedScript = editor.GetText();
+					App->fileSystem->Remove(scriptFile.c_str());
+					App->fileSystem->Save(scriptFile.c_str(), changedScript.c_str(), editor.GetText().size());
+				}
 				ImGui::Separator();
 
 				if (ImGui::MenuItem("Select all", nullptr, nullptr))
