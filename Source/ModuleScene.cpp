@@ -117,7 +117,6 @@ void ModuleScene::GenerateScene(const char* name)
 
 void ModuleScene::StartGame()
 {
-	//TODO: kuan s'acabi el game time returnar a la primera scena
 	root->Start();
 }
 
@@ -270,6 +269,7 @@ void ModuleScene::LoadSceneFrom(const char* path)
 {
 	selectedObject = nullptr;
 	resource->LoadResourceFrom(path);
+	root = resource->root;
 }
 
 void ModuleScene::SaveScene()

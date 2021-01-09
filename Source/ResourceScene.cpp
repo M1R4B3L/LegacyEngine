@@ -149,8 +149,6 @@ bool ResourceScene::SaveResourceAt(const char* path)
 
 bool ResourceScene::LoadResourceFrom(const char* path)
 {
-	if (root != nullptr)
-		delete root;
 
 	char* buffer = nullptr;
 	App->fileSystem->Load(path, std::to_string(uid).c_str(), &buffer);
@@ -179,6 +177,12 @@ bool ResourceScene::LoadResourceFrom(const char* path)
 		json_value_free(rootValue);
 		delete[] buffer;
 		return false;
+	}
+
+	if (root != nullptr)
+	{
+		App->scene->DeleteGameObject(root);
+		root = nullptr;
 	}
 
 	App->scene->SetSceneName(json_object_get_string(node, "SceneName"));
