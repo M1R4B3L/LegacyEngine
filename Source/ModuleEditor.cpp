@@ -818,7 +818,6 @@ void ModuleEditor::WindowInspector()
 							}
 							break;
 						}
-						//TODO COMPONENT SCRIPT 
 
 					}
 				}
@@ -831,9 +830,40 @@ void ModuleEditor::WindowInspector()
 				{
 					AddTextureWindow(ASSETS_TEXTURES);
 				}
+				ImGui::Spacing();
+				ImGui::Separator();
+				if (ImGui::Button("Add Script"))
+				{
+					ImGui::OpenPopup("Script");
+				}
+				if (ImGui::BeginPopup("Script"))
+				{
+					std::vector<std::string> files;
+					std::vector<std::string> dirs;
 
+					std::string dir = ASSETS_SCRIPTS;
+					dir += "/";
+
+					std::vector<std::string>::const_iterator it;
+
+					App->fileSystem->DiscoverFiles(dir.c_str(), files, dirs);
+
+					std::sort(files.begin(), files.end());
+
+					for (std::vector<std::string>::const_iterator it2 = files.begin(); it2 != files.end(); ++it2)
+					{
+						
+						if (ImGui::Selectable((*it2).c_str()))
+						{
+							//TODO ADD SCRIPT FUNCIONALITY
+							LOG("Hi");
+						}
+
+					}
+					ImGui::EndPopup();
+				}
 			}
-
+	
 		}
 		ImGui::End();
 	}
@@ -1143,16 +1173,15 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 		if (gameObject != App->scene->GetRootObject()) {
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
 				ImGui::OpenPopup("Delete");
-
 			}
 			if (ImGui::BeginPopup("Delete"))
 			{
 				if (ImGui::Selectable("Delete"))
 				{
-					const char* temp = gameObject->GetName();
 					//Deleteame esto
+					LOG("Succesfully deleted %s", gameObject->GetName());
 					App->scene->DeleteGameObject(gameObject);
-					LOG("Succesfully deleted %s", temp);
+					
 				}
 				if (ImGui::Selectable("Create Child"))
 				{

@@ -121,7 +121,7 @@ GameObject* Importer::Models::ParseFbxNode(aiNode* node, const aiScene* scene, c
 	float3 scale(scaling.x, scaling.y, scaling.z);
 	Quat rot(aiRotation.x, aiRotation.y, aiRotation.z, aiRotation.w);
 	Quat tempRotation;
-	float3 scale1 = { 1, 1, 1 };
+	//float3 scale1 = { 1, 1, 1 };
 
 	while (strstr(node->mName.C_Str(), "_$AssimpFbx$_") != nullptr && node->mNumChildren == 1)
 	{
