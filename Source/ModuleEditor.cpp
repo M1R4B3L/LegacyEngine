@@ -427,6 +427,36 @@ void ModuleEditor::WindowAbout()
 			if (ImGui::Button("MathGeoLib")) {
 				ShellExecuteA(NULL, "open", "https://github.com/juj/MathGeoLib", NULL, NULL, 3);
 			}
+			ImGui::Spacing();
+			ImGui::Text("JSON Parson v1.1.0");
+			ImGui::SameLine();
+			if (ImGui::Button("JSON Parson")) {
+				ShellExecuteA(NULL, "open", "https://github.com/kgabis/parson", NULL, NULL, 3);
+			}
+			ImGui::Spacing();
+			ImGui::Text("PHYSFS v3.0.2");
+			ImGui::SameLine();
+			if (ImGui::Button("PHYSFS")) {
+				ShellExecuteA(NULL, "open", "https://icculus.org/physfs/", NULL, NULL, 3);
+			}
+			ImGui::Spacing();
+			ImGui::Text("ImGuizmo");
+			ImGui::SameLine();
+			if (ImGui::Button("ImGuizmo")) {
+				ShellExecuteA(NULL, "open", "https://github.com/CedricGuillemet/ImGuizmo", NULL, NULL, 3);
+			}
+			ImGui::Spacing();
+			ImGui::Text("ImGuiColorTextEdit");
+			ImGui::SameLine();
+			if (ImGui::Button("ImGuiColorTextEdit")) {
+				ShellExecuteA(NULL, "open", "https://github.com/BalazsJako/ImGuiColorTextEdit", NULL, NULL, 3);
+			}
+			ImGui::Spacing();
+			ImGui::Text("RCC++");
+			ImGui::SameLine();
+			if (ImGui::Button("RCC++")) {
+				ShellExecuteA(NULL, "open", "https://github.com/RuntimeCompiledCPlusPlus/RuntimeCompiledCPlusPlus", NULL, NULL, 3);
+			}
 			if (ImGui::CollapsingHeader("License"))
 			{
 				ImGui::Text("MIT License\n"
