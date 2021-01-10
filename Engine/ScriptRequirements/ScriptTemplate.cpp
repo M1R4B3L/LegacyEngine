@@ -1,13 +1,13 @@
 #include "Engine.h"
 
-void Start(GameObject* object) {
+extern "C" __declspec(dllexport) void Start(GameObject* object) {
+	ConsoleLog("Hi Scripter");
+}
+
+extern "C" __declspec(dllexport) void Update(GameObject* object) {
 
 }
 
-void Update(GameObject* object) {
-
-}
-
-const char* GetName() {
+extern "C" __declspec(dllexport) const char* GetName() {
 	return "ScriptName";
 }

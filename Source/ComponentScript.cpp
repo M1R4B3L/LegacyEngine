@@ -3,11 +3,11 @@
 #include "ModuleResources.h"
 #include "ResourceScript.h"
 
-/*ComponentScript::ComponentScript() : Component(ComponentType::Script), resourceID(0), resource(nullptr)
+ComponentScript::ComponentScript() : Component(ComponentType::Script), resourceID(0), resource(nullptr)
 {
-}*/
+}
 
-ComponentScript::ComponentScript(unsigned int resourceID) : Component(ComponentType::Script), resourceID(0), resource((ResourceScript*)App->resources->RequestResource(resourceID,Resource::Type::SCRIPT))
+ComponentScript::ComponentScript(unsigned int resourceID) : Component(ComponentType::Script), resourceID(resourceID), resource((ResourceScript*)App->resources->RequestResource(resourceID,Resource::Type::SCRIPT))
 {
 }
 

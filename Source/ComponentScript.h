@@ -6,7 +6,7 @@ class ResourceScript;
 class __declspec(dllexport) ComponentScript : public Component
 {
 public:
-    //ComponentScript();
+    ComponentScript();
     ComponentScript(unsigned int resourceID);
     ~ComponentScript();
 

@@ -153,6 +153,7 @@ Resource* ModuleResources::RequestResource(unsigned int uid, Resource::Type type
 			case Resource::Type::MODEL: it->second = new ResourceModel(it->first); break;
 			case Resource::Type::TEXTURE: it->second = new ResourceTexture(it->first); break;
 			case Resource::Type::SCENE: it->second = new ResourceScene(it->first); break;
+			case Resource::Type::SCRIPT: it->second = new ResourceScript(it->first); break;
 			}
 
 			it->second->LoadInMemory();
@@ -266,15 +267,17 @@ void ModuleResources::CreateScriptResource(const char* scriptName)
 	std::string engineLib = "Engine.lib"; std::vector<std::string>linkLibs;
 	linkLibs.push_back(engineLib);
 	//linkLibs.push_back(std::string("MathGeoLib.lib"));
-	std::string tempPath = TEMP_PATH;
-	tempPath += std::to_string(uid) + ".dll";
+	/*std::string tempPath = TEMP_PATH;
+	tempPath += std::to_string(uid) + ".dll";*/
+	std::string libPath = SCRIPTS_PATH;
+	libPath += std::to_string(uid) + ".dll";
 	CompilerOptions options;
 	options.includeDirList.push_back(SCRIPT_HELPER_PATH);
 	options.libraryDirList.push_back(SCRIPT_HELPER_PATH);
 	options.intermediatePath = TEMP_PATH;
-	App->compiler->RunCompile(toCompile, options, linkLibs, tempPath);
+	App->compiler->RunCompile(toCompile, options, linkLibs, libPath);
 
-	std::string libPath = SCRIPTS_PATH;
+	/*std::string libPath = SCRIPTS_PATH;
 	libPath += std::to_string(uid) + ".dll";
-	App->fileSystem->DuplicateFile(tempPath.c_str(), libPath.c_str());
+	App->fileSystem->DuplicateFile(tempPath.c_str(), libPath.c_str());*/
 }

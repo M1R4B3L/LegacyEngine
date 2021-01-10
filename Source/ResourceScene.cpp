@@ -9,6 +9,7 @@
 #include "ComponentMaterial.h"
 #include "ComponentMesh.h"
 #include "Modulescene.h"
+#include "ComponentScript.h"
 
 ResourceScene::ResourceScene(unsigned int id) : Resource(id, Resource::Type::SCENE)
 {
@@ -93,6 +94,13 @@ bool ResourceScene::LoadInMemory()
 				ComponentMaterial* newComponentMaterial = new ComponentMaterial();
 				newComponentMaterial->Load(compObj);
 				currGO->AddComponent((Component*)newComponentMaterial);
+				break;
+			}
+			case ComponentType::Script:
+			{
+				ComponentScript* newComponentScript = new ComponentScript();
+				newComponentScript->Load(compObj);
+				currGO->AddComponent((Component*)newComponentScript);
 				break;
 			}
 			}
@@ -220,6 +228,13 @@ bool ResourceScene::LoadResourceFrom(const char* path)
 				ComponentMaterial* newComponentMaterial = new ComponentMaterial();
 				newComponentMaterial->Load(compObj);
 				currGO->AddComponent((Component*)newComponentMaterial);
+				break;
+			}
+			case ComponentType::Script:
+			{
+				ComponentScript* newComponentScript = new ComponentScript();
+				newComponentScript->Load(compObj);
+				currGO->AddComponent((Component*)newComponentScript);
 				break;
 			}
 			}
