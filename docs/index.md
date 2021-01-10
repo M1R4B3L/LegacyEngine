@@ -57,10 +57,14 @@ Hierarchy situated at the left of the Engine & Inspector at the right
 
 ### Scripting
 
+![](https://github.com/M1R4B3L/LegacyEngine/blob/master/docs/images/seceneSave.gif?raw=true)
+
+![](https://github.com/M1R4B3L/LegacyEngine/blob/master/docs/images/scriptWorking.gif?raw=true)
+
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](http://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE "Video Title")
 
 ## Latest Release
-
+[Release:](https://github.com/M1R4B3L/LegacyEngine/releases/tag/3.1)
 ## License
 
 [MIT License](https://github.com/git/git-scm.com/blob/master/MIT-LICENSE.txt)
