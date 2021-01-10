@@ -115,7 +115,7 @@ uint Application::GetFramerate()
 	}
 }
 
-int Application::GetGameDt() const
+float Application::GetGameDt() const
 {
 	if (gameRunning && !gamePaused)
 	{

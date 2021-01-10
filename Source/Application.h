@@ -73,7 +73,7 @@ public:
 	void CapFramerate(int fps);
 	uint GetFramerate();
 
-	int GetGameDt() const;
+	float GetGameDt() const;
 	float GetGameTime();
 	bool IsGameRunning();
 	bool IsGamePaused();

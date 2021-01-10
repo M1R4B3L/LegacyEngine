@@ -22,26 +22,27 @@ extern "C" __declspec(dllexport) void Update(GameObject * object) {
 
 		if (input.GetKeyRepeat(SDL_SCANCODE_UP)) {
 		
-			velocity += speed*GetGameTime();	
+			velocity += speed *GetGameTime() * 1000.0f;	
 			//ConsoleLog("%f", translation.z);
 			transform->SetLocalTransform(forward * velocity, scale, rotation);
+			ConsoleLog(std::to_string(GetGameTime()).c_str());
 			ConsoleLog("Moving Up!");
 		}
 		if (input.GetKeyRepeat(SDL_SCANCODE_DOWN)) {
 		
-			velocity -= speed * GetGameTime();
+			velocity -= speed *GetGameTime() * 1000.0f;
 			transform->SetLocalTransform(forward * velocity, scale, rotation);
 			ConsoleLog("Moving Down!");
 		}
 		if (input.GetKeyRepeat(SDL_SCANCODE_RIGHT)) {
 			
-			angle -= speed * GetGameTime();
+			angle -= speed * GetGameTime() * 1000.0f;
 			transform->SetLocalTransform(translation, scale, Quat::FromEulerXYX(0, angle * 0.01745329252, 0));
 			ConsoleLog("Moving Right!");
 		}
 		if (input.GetKeyRepeat(SDL_SCANCODE_LEFT)) {
 		
-			angle += speed * GetGameTime();
+			angle += speed * GetGameTime() * 1000.0f;
 			transform->SetLocalTransform(translation, scale, Quat::FromEulerXYX(0, angle * 0.01745329252, 0));
 			ConsoleLog("Moving Left!");	
 		}
