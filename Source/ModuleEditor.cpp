@@ -923,29 +923,30 @@ void ModuleEditor::WindowInspector()
 
 					for (std::vector<std::string>::const_iterator it2 = files.begin(); it2 != files.end(); ++it2)
 					{
-						
-						if (ImGui::Selectable((*it2).c_str()))
+						if (strstr((*it2).c_str(), ".meta") == nullptr)
 						{
-							//TODO ADD SCRIPT FUNCIONALITY
-							std::string metaPath;
-							std::string fileName;
-							std::string extension;
-							App->fileSystem->SplitFilePath((*it2).c_str(), &metaPath, &fileName, &extension);
-							metaPath += ASSETS_SCRIPTS + fileName + ".meta";
-							char* buffer = nullptr;
-							App->fileSystem->Load(metaPath.c_str(), &buffer);
-							JSON_Value* rootValue = json_parse_string(buffer);
-							JSON_Object* node = json_value_get_object(rootValue);
-							unsigned int uid = json_object_get_number(node, "LIBUID");
-							GameObject* object = App->scene->GetSelectedObject();
-							if (object != nullptr) 
+							if (ImGui::Selectable((*it2).c_str()))
 							{
-								Component* scriptComponent = new ComponentScript(uid);
-								object->AddComponent(scriptComponent);
+								//TODO ADD SCRIPT FUNCIONALITY
+								std::string metaPath;
+								std::string fileName;
+								std::string extension;
+								App->fileSystem->SplitFilePath((*it2).c_str(), &metaPath, &fileName, &extension);
+								metaPath += ASSETS_SCRIPTS + fileName + ".meta";
+								char* buffer = nullptr;
+								App->fileSystem->Load(metaPath.c_str(), &buffer);
+								JSON_Value* rootValue = json_parse_string(buffer);
+								JSON_Object* node = json_value_get_object(rootValue);
+								unsigned int uid = json_object_get_number(node, "LIBUID");
+								GameObject* object = App->scene->GetSelectedObject();
+								if (object != nullptr)
+								{
+									Component* scriptComponent = new ComponentScript(uid);
+									object->AddComponent(scriptComponent);
+								}
+
 							}
-
 						}
-
 					}
 					ImGui::EndPopup();
 				}
@@ -1015,7 +1016,7 @@ void ModuleEditor::InspectorComponents(GameObject* selectedGameObject)
 				} break;
 				case ComponentType::Script: 
 				{
-					InspectorShowScript();
+					InspectorShowScript((ComponentScript*)currentComponent);
 				} break;
 			}
 
@@ -1218,13 +1219,22 @@ void ModuleEditor::InspectorShowCamera(ComponentCamera* componentCamera)
 	}
 }
 
-void ModuleEditor::InspectorShowScript(/*ComponentScript* componentScript*/)
+void ModuleEditor::InspectorShowScript(ComponentScript* componentScript)
 {
 	if (ImGui::CollapsingHeader("Script", &removeScript, ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Text(scriptFile.c_str());
+		ImGui::Text("Script:");
+		ImGui::TextColored(ImVec4(0,1,0,1),componentScript->GetName());
+		ImGui::Spacing();
 		if (ImGui::Button("Edit Script"))
 		{
+			std::string pathCPP = ASSETS_SCRIPTS;
+			pathCPP += componentScript->GetName();
+			pathCPP += ".cpp";
+			scriptFile = pathCPP;
+
+			TextEditorInit(scriptFile.c_str());
+
 			editorWindow = true;
 		}
 	}

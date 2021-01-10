@@ -91,7 +91,11 @@ update_status ModuleCamera3D::Update(float dt)
 
 	if ((App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) && (App->scene->GetSelectedObject() != nullptr))
 	{
-		Focus(App->scene->GetSelectedObject());
+		if (App->scene->GetSelectedObject()->HasComponent(ComponentType::Transform))
+		{
+			Focus(App->scene->GetSelectedObject());
+		}
+		
 	}
 
 	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && !App->input->GetImGuiUseMouse())

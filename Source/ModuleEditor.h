@@ -13,6 +13,7 @@ class ComponentTransform;
 class ComponentMesh;
 class ComponentMaterial;
 class ComponentCamera;
+class ComponentScript;
 
 struct Hardware {
 
@@ -90,7 +91,7 @@ public:
 	void InspectorShowMesh(ComponentMesh* componentMesh);
 	void InspectorShowMaterial(ComponentMaterial* componentMaterial);
 	void InspectorShowCamera(ComponentCamera* componentCamera);
-	void InspectorShowScript(/*ComponentScript* componentScript*/);
+	void InspectorShowScript(ComponentScript* componentScript);
 
 	void DrawAssetDirectory(const char* directory);
 	void ShowDirFiles(const char* directory);
