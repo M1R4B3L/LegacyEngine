@@ -38,8 +38,35 @@ bool ModuleResources::Start()
 		App->fileSystem->SplitFilePath((*cit2).c_str(), &path, &name, &extension);
 		if (extension == "dll") {
 			resources[uid] = nullptr;
-			std::string assetsPath = ASSETS_SCRIPTS + name + ".cpp";
-			App->fileSystem->AddScriptWatch(assetsPath.c_str());
+			std::vector<std::string> metaFiles;
+			std::vector<std::string> dirs;
+			App->fileSystem->DiscoverFiles(ASSETS_SCRIPTS, metaFiles, dirs);
+			std::vector<std::string>::const_iterator cit3 = metaFiles.begin();
+			for (cit3; cit3 != metaFiles.end(); ++cit3) {
+				App->fileSystem->SplitFilePath((*cit3).c_str(), &path, &name, &extension);
+				if (extension == "meta") {
+					bool found = false;
+					char* metaBuffer = nullptr;
+					std::string thisPath; thisPath += ASSETS_SCRIPTS;
+					thisPath += ((*cit3).c_str());
+					App->fileSystem->Load(thisPath.c_str(), &metaBuffer);
+					JSON_Value* rootValue = json_parse_string(metaBuffer);
+					JSON_Object* object = json_value_get_object(rootValue);
+					int id = json_object_get_number(object, "LIBUID");
+					if (id == uid) 
+					{
+						std::string sourceFile = json_object_get_string(object, "SourceFile");
+						std::string sourcePath = ASSETS_SCRIPTS + sourceFile + ".cpp";
+						App->fileSystem->AddScriptWatch(sourcePath.c_str());
+						found = true;
+					}
+					json_value_free(rootValue);
+					delete[] metaBuffer;
+					metaBuffer = nullptr;
+					if (found)
+						break;
+				}
+			}
 		}
 	}
 	return true;
@@ -47,6 +74,20 @@ bool ModuleResources::Start()
 
 update_status ModuleResources::Update(float dt)
 {
+	if (compilingDll) {
+		if (App->compiler->GetIsComplete()) {
+			std::string libPath = SCRIPTS_PATH;
+			libPath += std::to_string(scriptCompiling->GetUID()) + ".dll";
+			/*std::string libPath = SCRIPTS_PATH;
+			libPath += std::to_string(uid) + ".dll";*/
+			//App->fileSystem->Remove(libPath.c_str());
+			//std::string pdbFile = SCRIPTS_PATH + std::to_string(scriptCompiling->GetUID()) + ".pdb";
+			//App->fileSystem->Remove(pdbFile.c_str());
+			scriptCompiling->LoadInMemory();
+			compilingDll = false;
+			scriptCompiling = nullptr;
+		}
+	}
 	return update_status::UPDATE_CONTINUE;
 }
 
@@ -266,7 +307,7 @@ void ModuleResources::CreateScriptResource(const char* scriptName)
 	char* metaBuffer;
 	JSON_Value* rootValue = json_value_init_object();
 	JSON_Object* node = json_value_get_object(rootValue);
-	json_object_set_number(node, "LIBUID", resource->GetUID());
+	json_object_set_number(node, "LIBUID", uid);
 	json_object_set_string(node, "SourceFile", scriptName);
 	std::string assetsPath = ASSETS_SCRIPTS;
 	assetsPath += scriptName;
@@ -301,14 +342,14 @@ void ModuleResources::CreateScriptResource(const char* scriptName)
 	options.intermediatePath = TEMP_PATH;
 	App->compiler->RunCompile(toCompile, options, linkLibs, libPath);
 
-	if (App->compiler->GetIsComplete()) 
-		App->fileSystem->AddScriptWatch(assetsPath.c_str());
+	//if (App->compiler->GetIsComplete()) 
+	App->fileSystem->AddScriptWatch(assetsPath.c_str());
 	
 }
 
 void ModuleResources::HotReloadDll(int resourceID, const char* sourceFile)
 {
-	ResourceScript* resource = (ResourceScript*)resources[resourceID];
-	if (resource != nullptr && resource->dllAvailable)
+	ResourceScript* resource = (ResourceScript*)RequestResource(resourceID, Resource::Type::SCRIPT);
+	if (resource != nullptr)
 		resource->HotReload(sourceFile);
 }

@@ -56,7 +56,7 @@ public:
 	bool CleanUp();
 private:
 	float currentWatchTime;
-	float watchTime = 5.0f;
+	float watchTime = 10.0f;
 	std::vector<std::string> watchFiles;
 };
 

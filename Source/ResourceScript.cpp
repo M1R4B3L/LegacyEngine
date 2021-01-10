@@ -4,6 +4,7 @@
 #include "GameObjects.h"
 #include "Compiler.h"
 #include "ModuleFileSystem.h"
+#include "ModuleResources.h"
 
 ResourceScript::ResourceScript(unsigned int id): Resource(id, Resource::Type::SCRIPT) {}
 
@@ -36,6 +37,10 @@ void ResourceScript::HotReload(const char* sourceFile)
 	if (dllHandle != NULL)
 		FreeLibrary(dllHandle);
 
+	functions.GetScriptName = nullptr;
+	functions.Start = nullptr;
+	functions.Update = nullptr;
+
 	std::vector<std::string>toCompile;
 	toCompile.push_back(sourceFile);
 	std::string engineLib = "Engine.lib"; std::vector<std::string>linkLibs;
@@ -45,16 +50,14 @@ void ResourceScript::HotReload(const char* sourceFile)
 	libPath += std::to_string(uid) + ".dll";
 	/*std::string libPath = SCRIPTS_PATH;
 	libPath += std::to_string(uid) + ".dll";*/
-	App->fileSystem->Remove(libPath.c_str());
-	std::string pdbFile = SCRIPTS_PATH + std::to_string(uid) + ".pdb";
-	App->fileSystem->Remove(pdbFile.c_str());
 	CompilerOptions options;
 	options.includeDirList.push_back(SCRIPT_HELPER_PATH);
 	options.libraryDirList.push_back(SCRIPT_HELPER_PATH);
 	options.intermediatePath = TEMP_PATH;
 	App->compiler->RunCompile(toCompile, options, linkLibs, libPath);
 
-	LoadInMemory();
+	App->resources->compilingDll = true;
+	App->resources->scriptCompiling = this;
 }
 
 ResourceScript::~ResourceScript()

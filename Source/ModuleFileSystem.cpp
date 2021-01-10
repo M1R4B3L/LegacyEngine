@@ -259,10 +259,10 @@ update_status ModuleFileSystem::Update(float dt)
 			JSON_Object* node = json_value_get_object(rootValue);
 			unsigned int metaModification = json_object_get_number(node, "LastModification");
 			int lastModification = LastModificationTime((*it).c_str());
-			if (metaModification != lastModification && lastModification != -1) 
+			if (metaModification != lastModification) 
 			{
 				int resourceID = json_object_get_number(node, "LIBUID");
-				if (App->resources->GetResourceCount(resourceID) > 0) 
+				if (App->resources->GetResourceCount(resourceID) >= 0) 
 				{
 					App->resources->HotReloadDll(resourceID,(*it).c_str());
 					reloaded = true;
