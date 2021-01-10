@@ -18,12 +18,29 @@ bool ModuleResources::Start()
 	App->fileSystem->DiscoverFiles(SCENES_PATH, files, directories);
 	App->fileSystem->DiscoverFiles(TEXTURES_PATH, files, directories);
 	App->fileSystem->DiscoverFiles(MODELS_PATH, files, directories);
-	App->fileSystem->DiscoverFiles(SCRIPTS_PATH, files, directories);
 	
 	std::vector<std::string>::const_iterator cit = files.cbegin();
 	for (cit; cit != files.cend(); ++cit) {
 		unsigned int uid = std::stoi((*cit));
 		resources[uid] = nullptr;
+	}
+	files.clear();
+	directories.clear();
+
+	//load scripts
+	App->fileSystem->DiscoverFiles(SCRIPTS_PATH, files, directories);
+	std::vector<std::string>::const_iterator cit2 = files.begin();
+	for (cit2; cit2 != files.end(); ++cit2) {
+		unsigned int uid = std::stoi((*cit2));
+		std::string path;
+		std::string name;
+		std::string extension;
+		App->fileSystem->SplitFilePath((*cit2).c_str(), &path, &name, &extension);
+		if (extension == "dll") {
+			resources[uid] = nullptr;
+			std::string assetsPath = ASSETS_SCRIPTS + name + ".cpp";
+			App->fileSystem->AddScriptWatch(assetsPath.c_str());
+		}
 	}
 	return true;
 }
@@ -245,11 +262,17 @@ void ModuleResources::CreateScriptResource(const char* scriptName)
 	std::string metaPath = ASSETS_SCRIPTS;
 	metaPath += scriptName;
 	metaPath += ".meta";
+
 	char* metaBuffer;
 	JSON_Value* rootValue = json_value_init_object();
 	JSON_Object* node = json_value_get_object(rootValue);
 	json_object_set_number(node, "LIBUID", resource->GetUID());
 	json_object_set_string(node, "SourceFile", scriptName);
+	std::string assetsPath = ASSETS_SCRIPTS;
+	assetsPath += scriptName;
+	assetsPath += ".cpp";
+	int lastModification = App->fileSystem->LastModificationTime(assetsPath.c_str());
+	json_object_set_number(node, "LastModification", lastModification);
 	int metaSize = json_serialization_size_pretty(rootValue);
 	metaBuffer = new char[metaSize];
 	json_serialize_to_buffer_pretty(rootValue, metaBuffer, metaSize);
@@ -259,9 +282,9 @@ void ModuleResources::CreateScriptResource(const char* scriptName)
 
 	std::string templatePath = SCRIPT_HELPER_PATH;
 	templatePath += "ScriptTemplate.cpp";
-	std::string assetsPath = ASSETS_SCRIPTS;
+	/*std::string assetsPath = ASSETS_SCRIPTS;
 	assetsPath += scriptName;
-	assetsPath += ".cpp";
+	assetsPath += ".cpp";*/
 	App->fileSystem->DuplicateFile(templatePath.c_str(), assetsPath.c_str());
 	std::vector<std::string>toCompile;
 	toCompile.push_back(assetsPath);
@@ -278,7 +301,14 @@ void ModuleResources::CreateScriptResource(const char* scriptName)
 	options.intermediatePath = TEMP_PATH;
 	App->compiler->RunCompile(toCompile, options, linkLibs, libPath);
 
-	/*std::string libPath = SCRIPTS_PATH;
-	libPath += std::to_string(uid) + ".dll";
-	App->fileSystem->DuplicateFile(tempPath.c_str(), libPath.c_str());*/
+	if (App->compiler->GetIsComplete()) 
+		App->fileSystem->AddScriptWatch(assetsPath.c_str());
+	
+}
+
+void ModuleResources::HotReloadDll(int resourceID, const char* sourceFile)
+{
+	ResourceScript* resource = (ResourceScript*)resources[resourceID];
+	if (resource != nullptr && resource->dllAvailable)
+		resource->HotReload(sourceFile);
 }

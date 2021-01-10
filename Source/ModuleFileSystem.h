@@ -21,12 +21,14 @@ public:
 	bool Exists(const char* file) const;
 	bool CreateDir(const char* dir);
 	bool IsDirectory(const char* file) const;
+	int LastModificationTime(const char* file)const;
 	void DiscoverFiles(const char* directory, std::vector<std::string>& file_list, std::vector<std::string>& dir_list) const;
 	bool FileExists(const char* file);
 	void SplitFilePath(const char* full_path, std::string* path, std::string* file = nullptr, std::string* extension = nullptr) const;
 	std::string NormalizePath(const char* path);
 	bool DuplicateFile(const char* file, const char* dstFolder, std::string& relativePath);
 	bool DuplicateFile(const char* srcFile, const char* dstFile);
+	void AddScriptWatch(const char* path);
 
 	//For the RuntimeCompiler
 	inline void ToLowerInPlace(std::string& inout_str)
@@ -52,6 +54,10 @@ public:
 	bool Start();
 	update_status Update(float dt);
 	bool CleanUp();
+private:
+	float currentWatchTime;
+	float watchTime = 5.0f;
+	std::vector<std::string> watchFiles;
 };
 
 

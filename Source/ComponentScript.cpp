@@ -29,23 +29,29 @@ const ResourceScript* ComponentScript::GetResource() const
 
 void ComponentScript::Start()
 {
-	if (resource->functions.Start != NULL)
-		resource->functions.Start(&GetGameObject());
+	if (resource != nullptr) {
+		if (resource->functions.Start != NULL)
+			resource->functions.Start(&GetGameObject());
+	}
 }
 
 void ComponentScript::Update(float dt)
 {
-	if (resource->functions.Update != NULL)
-		resource->functions.Update(&GetGameObject());
+	if (resource != nullptr) {
+		if (resource->functions.Update != NULL)
+			resource->functions.Update(&GetGameObject());
+	}
 }
 
 const char* ComponentScript::GetName()
 {
-	if (resource->functions.GetScriptName != NULL)
-		return resource->functions.GetScriptName();
-	else {
-		std::string name = "script" + std::to_string(resourceID);
-		return name.c_str();
+	if (resource != nullptr) {
+		if (resource->functions.GetScriptName != NULL)
+			return resource->functions.GetScriptName();
+		else {
+			std::string name = "script" + std::to_string(resourceID);
+			return name.c_str();
+		}
 	}
 }
 

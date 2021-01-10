@@ -15,6 +15,7 @@ public:
 	~ResourceScript();
 
 	bool LoadInMemory() override;
+	void HotReload(const char* sourceFile);
 
 	ScriptFunctions functions;
 	bool dllAvailable = false;

@@ -5,6 +5,9 @@
 #include <vector>
 #include <algorithm>
 #include <fstream>
+#include "parson.h"
+#include "Application.h"
+#include "ModuleResources.h"
 
 
 ModuleFileSystem::ModuleFileSystem(bool startEnable) : Module(startEnable)
@@ -71,6 +74,14 @@ bool ModuleFileSystem::IsDirectory(const char * file) const {
 	if (!PHYSFS_stat(file, &stat))
 		LOG("Error obtaining file/dir stat: %s", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 	return (stat.filetype == PHYSFS_FileType::PHYSFS_FILETYPE_DIRECTORY);
+}
+
+int ModuleFileSystem::LastModificationTime(const char* file) const
+{
+	PHYSFS_Stat stat;
+	if (!PHYSFS_stat(file, &stat))
+		LOG("Error obtaining file/dir stat: %s", PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
+	return stat.modtime;
 }
 
 void ModuleFileSystem::CreateLibraryDirectories()
@@ -195,14 +206,15 @@ bool ModuleFileSystem::Remove(const char* file)
 			for (uint i = 0; i < rootDirectory.children.size(); ++i)
 				Remove(rootDirectory.children[i].path.c_str());
 		}*/
-
-		if (PHYSFS_delete(file) != 0)
-		{
-			LOG("File deleted: [%s]", file);
-			ret = true;
+		if (Exists(file)) {
+			if (PHYSFS_delete(file) != 0)
+			{
+				LOG("File deleted: [%s]", file);
+				ret = true;
+			}
+			else
+				LOG("File System error while trying to delete [%s]: %s", file, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 		}
-		else
-			LOG("File System error while trying to delete [%s]: %s", file, PHYSFS_getErrorByCode(PHYSFS_getLastErrorCode()));
 	}
 
 	return ret;
@@ -231,6 +243,46 @@ bool ModuleFileSystem::Start()
 
 update_status ModuleFileSystem::Update(float dt)
 {
+	currentWatchTime -= dt;
+	if (currentWatchTime <= 0) {
+		bool reloaded = false;
+		for (std::vector<std::string>::iterator it = watchFiles.begin(); it != watchFiles.end(); ++it) 
+		{
+			std::string path;
+			std::string name;
+			std::string extension;
+			SplitFilePath((*it).c_str(), &path, &name, &extension);
+			char* buffer = nullptr;
+			std::string metaPath = path + name + ".meta";
+			Load(metaPath.c_str(), &buffer);
+			JSON_Value* rootValue = json_parse_string(buffer);
+			JSON_Object* node = json_value_get_object(rootValue);
+			unsigned int metaModification = json_object_get_number(node, "LastModification");
+			int lastModification = LastModificationTime((*it).c_str());
+			if (metaModification != lastModification && lastModification != -1) 
+			{
+				int resourceID = json_object_get_number(node, "LIBUID");
+				if (App->resources->GetResourceCount(resourceID) > 0) 
+				{
+					App->resources->HotReloadDll(resourceID,(*it).c_str());
+					reloaded = true;
+				}
+				
+				json_object_set_number(node, "LastModification", LastModificationTime((*it).c_str()));
+				size_t size = json_serialization_size_pretty(rootValue);
+				char* secondBuffer = new char[size];
+				json_serialize_to_buffer_pretty(rootValue, secondBuffer, size);
+				App->fileSystem->Save(metaPath.c_str(), secondBuffer, size);
+				delete[] secondBuffer; secondBuffer = nullptr;
+			}
+			json_value_free(rootValue);
+			delete[] buffer;
+			buffer = nullptr;
+			if (reloaded)
+				break;
+		}
+		currentWatchTime = watchTime;
+	}
 	return update_status::UPDATE_CONTINUE;
 }
 
@@ -316,6 +368,11 @@ bool ModuleFileSystem::DuplicateFile(const char* srcFile, const char* dstFile)
 		LOG("[error] File could not be duplicated");
 		return false;
 	}
+}
+
+void ModuleFileSystem::AddScriptWatch(const char* path)
+{
+	watchFiles.push_back(path);
 }
 
 void ModuleFileSystem::DiscoverFiles(const char* directory, std::vector<std::string>& file_list, std::vector<std::string>& dir_list) const
