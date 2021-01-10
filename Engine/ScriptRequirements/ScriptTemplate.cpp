@@ -2,7 +2,7 @@
 
 Input input;
 
-float speed = 3.0f;
+float speed = 50.0f;
 float angle = 0.0f;
 float velocity = 0.0f;
 
@@ -22,7 +22,7 @@ extern "C" __declspec(dllexport) void Update(GameObject * object) {
 
 		if (input.GetKeyRepeat(SDL_SCANCODE_UP)) {
 		
-			velocity += speed *GetGameTime() * 1000.0f;	
+			velocity -= speed *GetGameTime();	
 			//ConsoleLog("%f", translation.z);
 			transform->SetLocalTransform(forward * velocity, scale, rotation);
 			ConsoleLog(std::to_string(GetGameTime()).c_str());
@@ -30,19 +30,19 @@ extern "C" __declspec(dllexport) void Update(GameObject * object) {
 		}
 		if (input.GetKeyRepeat(SDL_SCANCODE_DOWN)) {
 		
-			velocity -= speed *GetGameTime() * 1000.0f;
+			velocity += speed * GetGameTime();
 			transform->SetLocalTransform(forward * velocity, scale, rotation);
 			ConsoleLog("Moving Down!");
 		}
 		if (input.GetKeyRepeat(SDL_SCANCODE_RIGHT)) {
 			
-			angle -= speed * GetGameTime() * 1000.0f;
+			angle -= speed * GetGameTime();
 			transform->SetLocalTransform(translation, scale, Quat::FromEulerXYX(0, angle * 0.01745329252, 0));
 			ConsoleLog("Moving Right!");
 		}
 		if (input.GetKeyRepeat(SDL_SCANCODE_LEFT)) {
 		
-			angle += speed * GetGameTime() * 1000.0f;
+			angle += speed * GetGameTime();
 			transform->SetLocalTransform(translation, scale, Quat::FromEulerXYX(0, angle * 0.01745329252, 0));
 			ConsoleLog("Moving Left!");	
 		}
