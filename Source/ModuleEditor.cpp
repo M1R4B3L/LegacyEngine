@@ -70,7 +70,7 @@ bool ModuleEditor::Init()
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
 	ImGui_ImplOpenGL3_Init("#version 460"); //TODO: glsl version �?�?
 
-	TextEditorInit();
+	TextEditorInit(scriptFile.c_str());
 
 	//Start Timers
 	return true;
@@ -96,7 +96,7 @@ update_status ModuleEditor::Update(float dt)
 	WindowResourcesCount();
 	WindowLoadScene();
 	WindowDemo();
-
+	
 	TextEditorWindow();
 
 	ImGui::Render();
@@ -1531,6 +1531,17 @@ void ModuleEditor::ShowDirFiles(const char* directory)
 						go->AddComponent(component);
 					}
 				}
+				else if (extension == "cpp")
+				{
+					std::string pathCPP = ASSETS_SCRIPTS;
+					pathCPP += fileName;
+					pathCPP += ".cpp";
+					scriptFile = pathCPP;
+
+					TextEditorInit(scriptFile.c_str());
+
+					editorWindow = true;
+				}
 			}
 		}
 		//ImGui::SameLine();
@@ -1950,7 +1961,7 @@ void ModuleEditor::ImGuizmoUpdate()
 	}
 }
 
-void ModuleEditor::TextEditorInit()
+void ModuleEditor::TextEditorInit(const char* name)
 {
 
 	auto lang = TextEditor::LanguageDefinition::CPlusPlus();
@@ -2015,7 +2026,7 @@ void ModuleEditor::TextEditorInit()
 	//bpts.insert(47);
 	//editor.SetBreakpoints(bpts);
 
-	scriptFile = "../Source/Timer.cpp";
+	scriptFile = name;
 
 	//	static const char* fileToEdit = "test.cpp";
 
@@ -2027,10 +2038,12 @@ void ModuleEditor::TextEditorInit()
 			editor.SetText(str);
 		}
 	}
+
 }
 
 void ModuleEditor::TextEditorWindow()
 {
+
 	auto cpos = editor.GetCursorPosition();
 
 	if (editorWindow)
@@ -2063,6 +2076,15 @@ void ModuleEditor::TextEditorWindow()
 				if (ImGui::MenuItem("Paste", "Ctrl-V", nullptr, !ro && ImGui::GetClipboardText() != nullptr))
 					editor.Paste();
 
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("Save", "Ctrl-S", nullptr))
+				{
+					//TODO Save the current 
+					std::string changedScript = editor.GetText();
+					App->fileSystem->Remove(scriptFile.c_str());
+					App->fileSystem->Save(scriptFile.c_str(), changedScript.c_str(), editor.GetText().size());
+				}
 				ImGui::Separator();
 
 				if (ImGui::MenuItem("Select all", nullptr, nullptr))

@@ -98,7 +98,7 @@ public:
 	void ImGuizmoUpdate();
 
 	//Text Editor
-	void TextEditorInit();
+	void TextEditorInit(const char* name);
 	void TextEditorWindow();
 
 private:
