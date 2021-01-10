@@ -5,11 +5,9 @@ Legacy Engine is a 3D Graphics Engine created by Jordi Bach and Adrián Mirabel 
 ## Team Members
 
 ### Jordi Bach
-![photo1]()
+![photo1](https://github.com/M1R4B3L/LegacyEngine/blob/master/docs/images/jordi.PNG?raw=true)
 
 Github Account: [bottzo](https://github.com/bottzo)
-
-Linkedin: [Jordi Bach]()
 
   - Shaders
   - Importers/Drag&Drop
@@ -19,14 +17,12 @@ Linkedin: [Jordi Bach]()
   - Mouse Picking & Object Selection
   - Guizmos
   - Resource Manager
-  - Scripting (Component&Resource)
+  - Scripting 
   
 ### Adrián Mirabel
-![photo2]()
+![photo2](https://github.com/M1R4B3L/LegacyEngine/blob/master/docs/images/adrian.PNG?raw=true)
 
 Github Account: [M1R4B3L](https://github.com/M1R4B3L)
-
-Linkedin: [Adrián Mirabel](https://www.linkedin.com/in/adri%C3%A1nmm/)
 
   - Engine Configuration
   - UI (ImGui)
@@ -37,6 +33,7 @@ Linkedin: [Adrián Mirabel](https://www.linkedin.com/in/adri%C3%A1nmm/)
     - Text Editor
   - Camera Functionality/AABB&OBB
   - Time Management
+  - Scripting 
 
 ## Main Core Sub-systems
 - Game Objects & Components: 
@@ -49,15 +46,12 @@ Creating game objects can be done from Assets Window (at the bottom) or Menu Bar
 
 Hierarchy situated at the left of the Engine & Inspector at the right 
 
-![Hierarchy&Inspector]()
+<img src="https://github.com/M1R4B3L/LegacyEngine/blob/master/docs/images/inspector.png?raw=true" width="400" />
 
 - Mouse Picking 
 
 ![MousePicking](https://github.com/M1R4B3L/LegacyEngine/blob/master/docs/images/mousePicking.gif?raw=true)
 
-- Time Management 
-
-![TimeManagement]()
 
 ## Last Assigment Sub-systems
 
