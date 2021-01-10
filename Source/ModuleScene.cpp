@@ -139,7 +139,7 @@ update_status ModuleScene::Update(float dt)
 
 	UpdateAllGameObjects(dt);
 
-	if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_UP) 
+	/*if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_UP) 
 	{
 		std::vector<std::string>compileFiles;
 		std::vector<std::string>linkLibraries;
@@ -149,7 +149,7 @@ update_status ModuleScene::Update(float dt)
 		//compileFiles.push_back(Hello);
 		compileFiles.push_back(hellocpp);
 		App->compiler->RunCompile(compileFiles, options, linkLibraries, "hi");
-	}
+	}*/
 
 	return UPDATE_CONTINUE;
 }

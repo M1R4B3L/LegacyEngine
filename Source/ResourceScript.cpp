@@ -1,4 +1,5 @@
 #include "ResourceScript.h"
+#include "Globals.h"
 
 ResourceScript::ResourceScript(unsigned int id): Resource(id, Resource::Type::SCRIPT) {}
 
@@ -15,6 +16,7 @@ bool ResourceScript::LoadInMemory()
 	else 
 	{
 		dllAvailable = false;
+		LOG("Could not open script dll file");
 	}
 
 	return dllAvailable;

@@ -81,6 +81,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\ScriptingHeaders\Engine.h" />
     <ClInclude Include="Source/Application.h" />
     <ClInclude Include="Source/Color.h" />
     <ClInclude Include="Source/Globals.h" />
@@ -174,6 +175,8 @@
     <ClInclude Include="Source\Dependencies\MathGeolib\Math\vec2d.h" />
     <ClInclude Include="Source\Dependencies\MathGeolib\Time\Clock.h" />
     <ClInclude Include="Source\Dependencies\parson\include\parson.h" />
+    <ClInclude Include="Source\Input.h" />
+    <ClInclude Include="Source\Math.h" />
     <ClInclude Include="Source\ModuleResources.h" />
     <ClInclude Include="Source\ModuleFileSystem.h" />
     <ClInclude Include="Source\ModuleScene.h" />
@@ -203,6 +206,7 @@
     <ClInclude Include="Source\ResourceScript.h" />
     <ClInclude Include="Source\ResourceTexture.h" />
     <ClInclude Include="Source\Shader.h" />
+    <ClInclude Include="Source\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source/Application.cpp" />
@@ -263,6 +267,8 @@
     <ClCompile Include="Source\Dependencies\MathGeolib\Math\TransformOps.cpp" />
     <ClCompile Include="Source\Dependencies\MathGeolib\Time\Clock.cpp" />
     <ClCompile Include="Source\Dependencies\parson\src\parson.c" />
+    <ClCompile Include="Source\Input.cpp" />
+    <ClCompile Include="Source\Math.cpp" />
     <ClCompile Include="Source\ModuleFileSystem.cpp" />
     <ClCompile Include="Source\ModuleResources.cpp" />
     <ClCompile Include="Source\ModuleScene.cpp" />
@@ -290,6 +296,7 @@
     <ClCompile Include="Source\ResourceTexture.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ResourceMesh.cpp" />
+    <ClCompile Include="Source\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Dependencies\MathGeolib\Geometry\KDTree.inl" />

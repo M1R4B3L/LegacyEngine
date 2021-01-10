@@ -55,6 +55,9 @@
     <Filter Include="Sources\Tools\Compiler">
       <UniqueIdentifier>{52e4aeb1-d390-4a0c-93c5-524846f6bc33}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\ScriptHelpers">
+      <UniqueIdentifier>{0e17ec03-8b29-4767-b96f-ed79b9bddfc4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Dependencies\imgui\imconfig.h">
@@ -372,9 +375,6 @@
     <ClInclude Include="Source\Dependencies\ImGuizmo-master\ImZoomSlider.h">
       <Filter>Deps\ImGuizmos</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ModuleResources.h">
-      <Filter>Sources\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Dependencies\parson\include\parson.h">
       <Filter>Deps\Parson</Filter>
     </ClInclude>
@@ -421,6 +421,21 @@
       <Filter>Sources\Tools\Compiler</Filter>
     </ClInclude>
     <ClInclude Include="Source\ModuleScene.h">
+      <Filter>Sources\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Input.h">
+      <Filter>Sources\ScriptHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ScriptingHeaders\Engine.h">
+      <Filter>Sources\ScriptHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utils.h">
+      <Filter>Sources\ScriptHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math.h">
+      <Filter>Sources\ScriptHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ModuleResources.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
   </ItemGroup>
@@ -635,9 +650,6 @@
     <ClCompile Include="Source\Dependencies\ImGuizmo-master\ImSequencer.cpp">
       <Filter>Deps\ImGuizmos</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ModuleResources.cpp">
-      <Filter>Sources\Resources</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Dependencies\parson\src\parson.c">
       <Filter>Deps\Parson</Filter>
     </ClCompile>
@@ -679,6 +691,18 @@
     </ClCompile>
     <ClCompile Include="Source\Compiler_PlatformWindows.cpp">
       <Filter>Sources\Tools\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Input.cpp">
+      <Filter>Sources\ScriptHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils.cpp">
+      <Filter>Sources\ScriptHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math.cpp">
+      <Filter>Sources\ScriptHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ModuleResources.cpp">
+      <Filter>Sources\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

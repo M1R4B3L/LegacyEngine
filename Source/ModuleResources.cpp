@@ -7,6 +7,8 @@
 #include "ModuleScene.h"
 #include "ResourceModel.h"
 #include "ResourceScene.h"
+#include "ResourceScript.h"
+#include "Compiler.h"
 
 bool ModuleResources::Start()
 {
@@ -16,6 +18,7 @@ bool ModuleResources::Start()
 	App->fileSystem->DiscoverFiles(SCENES_PATH, files, directories);
 	App->fileSystem->DiscoverFiles(TEXTURES_PATH, files, directories);
 	App->fileSystem->DiscoverFiles(MODELS_PATH, files, directories);
+	App->fileSystem->DiscoverFiles(SCRIPTS_PATH, files, directories);
 	
 	std::vector<std::string>::const_iterator cit = files.cbegin();
 	for (cit; cit != files.cend(); ++cit) {
@@ -229,4 +232,45 @@ void ModuleResources::AddMeshResource(unsigned int uid, Resource* resource)
 void ModuleResources::AddSceneResource(Resource* resource)
 {
 	resources[resource->GetUID()] = resource;
+}
+
+void ModuleResources::CreateScriptResource(const char* scriptName)
+{
+	int uid = GenerateNewUID();
+	ResourceScript* resource = new ResourceScript(uid);
+	resources[uid] = resource;
+	UnrequestResource(uid);
+
+	std::string metaPath = ASSETS_SCRIPTS;
+	metaPath += scriptName;
+	metaPath += ".meta";
+	char* metaBuffer;
+	JSON_Value* rootValue = json_value_init_object();
+	JSON_Object* node = json_value_get_object(rootValue);
+	json_object_set_number(node, "LIBUID", resource->GetUID());
+	int metaSize = json_serialization_size_pretty(rootValue);
+	metaBuffer = new char[metaSize];
+	json_serialize_to_buffer_pretty(rootValue, metaBuffer, metaSize);
+	json_value_free(rootValue);
+	App->fileSystem->Save(metaPath.c_str(), metaBuffer, metaSize);
+	delete[] metaBuffer;
+
+	std::string templatePath = SCRIPT_HELPER_PATH;
+	templatePath += "ScriptTemplate.cpp";
+	std::string assetsPath = ASSETS_SCRIPTS;
+	assetsPath += scriptName;
+	assetsPath += ".cpp";
+	App->fileSystem->DuplicateFile(templatePath.c_str(), assetsPath.c_str());
+	std::vector<std::string>toCompile;
+	toCompile.push_back(assetsPath);
+	std::string engineLib = "Engine.lib"; std::vector<std::string>linkLibs;
+	linkLibs.push_back(engineLib);
+	//linkLibs.push_back(std::string("MathGeoLib.lib"));
+	std::string libPath = SCRIPTS_PATH;
+	libPath += std::to_string(uid) + ".dll";
+	CompilerOptions options;
+	options.includeDirList.push_back(SCRIPT_HELPER_PATH);
+	options.libraryDirList.push_back(SCRIPT_HELPER_PATH);
+	options.intermediatePath = TEMP_PATH;
+	App->compiler->RunCompile(toCompile, options, linkLibs, libPath);
 }

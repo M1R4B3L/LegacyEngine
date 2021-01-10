@@ -226,7 +226,7 @@ void ModuleEditor::MenuBar()
 			}
 			if (ImGui::BeginMenu("Script"))
 			{
-				if (ImGui::MenuItem("Default Script")) {
+				if (ImGui::MenuItem("New Script")) {
 					menuAction = "Script";
 					LOG("A Script has been created");
 				}
@@ -330,8 +330,14 @@ void ModuleEditor::MenuBar()
 		{
 			if (scriptName == "")
 			{
-			
+				LOG("Need an Script name");
 			}
+			else
+			{
+				//std::string name = scriptName;
+				App->resources->CreateScriptResource(scriptName);
+			}
+			ImGui::CloseCurrentPopup();
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Cancel"))

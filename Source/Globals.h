@@ -22,6 +22,7 @@
 #define SHADERS_PATH "Library/Shaders/"
 #define SCRIPTS_PATH "Library/Scripts/"
 #define TEMP_PATH "Temp/"
+#define SCRIPT_HELPER_PATH "ScriptRequirements/"
 
 #define LOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
 
