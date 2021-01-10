@@ -266,11 +266,15 @@ void ModuleResources::CreateScriptResource(const char* scriptName)
 	std::string engineLib = "Engine.lib"; std::vector<std::string>linkLibs;
 	linkLibs.push_back(engineLib);
 	//linkLibs.push_back(std::string("MathGeoLib.lib"));
-	std::string libPath = SCRIPTS_PATH;
-	libPath += std::to_string(uid) + ".dll";
+	std::string tempPath = TEMP_PATH;
+	tempPath += std::to_string(uid) + ".dll";
 	CompilerOptions options;
 	options.includeDirList.push_back(SCRIPT_HELPER_PATH);
 	options.libraryDirList.push_back(SCRIPT_HELPER_PATH);
 	options.intermediatePath = TEMP_PATH;
-	App->compiler->RunCompile(toCompile, options, linkLibs, libPath);
+	App->compiler->RunCompile(toCompile, options, linkLibs, tempPath);
+
+	std::string libPath = SCRIPTS_PATH;
+	libPath += std::to_string(uid) + ".dll";
+	App->fileSystem->DuplicateFile(tempPath.c_str(), libPath.c_str());
 }
