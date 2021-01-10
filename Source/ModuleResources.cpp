@@ -249,6 +249,7 @@ void ModuleResources::CreateScriptResource(const char* scriptName)
 	JSON_Value* rootValue = json_value_init_object();
 	JSON_Object* node = json_value_get_object(rootValue);
 	json_object_set_number(node, "LIBUID", resource->GetUID());
+	json_object_set_string(node, "SourceFile", scriptName);
 	int metaSize = json_serialization_size_pretty(rootValue);
 	metaBuffer = new char[metaSize];
 	json_serialize_to_buffer_pretty(rootValue, metaBuffer, metaSize);
