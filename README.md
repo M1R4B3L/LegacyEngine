@@ -26,6 +26,9 @@ This is our Engine
 - LShift + Movement Action: Multiplies the speed. (No zoom or rotation)
 - Left Alt + LeftDrag: Rotates around reference.
 
+### Keyboard 
+- F: Focus on the selected game object
+
 ### Engine Info/Controls
 - The Main Menu bar at the top 
 	- File 
@@ -45,13 +48,24 @@ This is our Engine
 	- Mesh
 	- Material (texture)
 	- Camera
+	- Script 
 
 - Assets (List with all the assests save in the assets folder)
+	- Meshes
+	- Models
+	- Scenes
+	- Scripts
+	- Shaders
+	- Textures
 
 - Console (Shows debug information)
 
 ### Special information
-
-- City_building_10/City_building_16/City_building_17 we don't handle 2 meshes 
+- You can create objects from 0 if you start from an Empty object in the Main Menu
+- We can only import meshes to the scene if you want to import scripts or textures you will need a mesh or a game object.
+- To import meshes to the scene just press the buttons in the Assets Folder.
+!!!If the root is selected the mesh will not be imported.
+- City_building_10/City_building_16/City_building_17 we don't handle 2 meshes
+- We don't handle materials  
 
 
