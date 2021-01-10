@@ -1,6 +1,6 @@
 #pragma once
 //#include "SDL_scancode.h"
-#include "..\..\Source\Dependencies\SDL2\include\SDL_scancode.h"
+#include "SDL/SDL.h"
 
 
 class __declspec(dllexport) Input {
