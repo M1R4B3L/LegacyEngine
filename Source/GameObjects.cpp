@@ -176,7 +176,7 @@ bool GameObject::IsActive() const
 	return activeGameObject;
 }
 
-const Component* GameObject::GetComponent(ComponentType type) const
+Component* GameObject::GetComponent(ComponentType type)
 {
 	std::vector<Component*>::const_iterator it = components.cbegin();
 	for (it; it != components.cend(); ++it) {

@@ -30,7 +30,7 @@ public:
 	void SetParent(GameObject* newParent);
 	bool IsActive() const;
 
-	const Component* GetComponent(ComponentType type) const;
+	Component* GetComponent(ComponentType type);
 	bool HasComponent(ComponentType type) const;
 
 	const char* GetName() const;

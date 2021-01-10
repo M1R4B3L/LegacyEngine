@@ -1,6 +1,7 @@
 #pragma once
 //#include "SDL_scancode.h"
-enum SDL_Scancode;
+#include "..\..\Source\Dependencies\SDL2\include\SDL_scancode.h"
+
 
 class __declspec(dllexport) Input {
 public:
@@ -18,9 +19,9 @@ public:
 		MOUSE_RIGHT_BUTTON = 3,
 	};
 
-	bool GetKeyDown(SDL_Scancode& key);
-	bool GetKeyUp(SDL_Scancode& key);
-	bool GetKeyRepeat(SDL_Scancode& key);
+	bool GetKeyDown(const SDL_Scancode& key);
+	bool GetKeyUp(const SDL_Scancode& key);
+	bool GetKeyRepeat(const SDL_Scancode& key);
 
 	int GetMouseX();
 	int GetMouseY();

@@ -2,17 +2,17 @@
 #include "Application.h"
 #include "ModuleInput.h"
 
-bool Input::GetKeyDown(SDL_Scancode& key)
+bool Input::GetKeyDown(const SDL_Scancode& key)
 {
 	return (App->input->GetKey(key) == KEY_STATE::KEY_DOWN);
 }
 
-bool Input::GetKeyUp(SDL_Scancode& key)
+bool Input::GetKeyUp(const SDL_Scancode& key)
 {
 	return (App->input->GetKey(key) == KEY_STATE::KEY_UP);
 }
 
-bool Input::GetKeyRepeat(SDL_Scancode& key)
+bool Input::GetKeyRepeat(const SDL_Scancode& key)
 {
 	return (App->input->GetKey(key) == KEY_STATE::KEY_REPEAT);
 }

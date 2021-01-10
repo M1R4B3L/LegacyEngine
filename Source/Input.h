@@ -17,9 +17,9 @@ public:
 		MOUSE_RIGHT_BUTTON = 3,
 	};
 
-	bool GetKeyDown(SDL_Scancode& key);
-	bool GetKeyUp(SDL_Scancode& key);
-	bool GetKeyRepeat(SDL_Scancode& key);
+	bool GetKeyDown(const SDL_Scancode& key);
+	bool GetKeyUp(const SDL_Scancode& key);
+	bool GetKeyRepeat(const SDL_Scancode& key);
 
 	int GetMouseX();
 	int GetMouseY();
