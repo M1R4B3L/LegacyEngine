@@ -61,7 +61,9 @@ Hierarchy situated at the left of the Engine & Inspector at the right
 
 ![](https://github.com/M1R4B3L/LegacyEngine/blob/master/docs/images/scriptWorking.gif?raw=true)
 
-[![](http://img.youtube.com/vi/https://youtu.be/oPvT5-52CiA/0.jpg)](https://youtu.be/oPvT5-52CiA "Assigment3 High-level System")
+## Video 
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/oPvT5-52CiA/0.jpg)](https://www.youtube.com/watch?v=oPvT5-52CiA)
 
 ## Latest Release
 [Release:](https://github.com/M1R4B3L/LegacyEngine/releases/tag/3.1)
