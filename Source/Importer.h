@@ -4,9 +4,9 @@
 
 struct Mesh;
 class GameObject;
-class aiNode;
-class aiScene;
-class aiMesh;
+struct aiNode;
+struct aiScene;
+struct aiMesh;
 class ResourceTexture;
 class ResourceModel;
 class ResourceScene;

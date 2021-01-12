@@ -76,7 +76,7 @@ bool ModuleFileSystem::IsDirectory(const char * file) const {
 	return (stat.filetype == PHYSFS_FileType::PHYSFS_FILETYPE_DIRECTORY);
 }
 
-int ModuleFileSystem::LastModificationTime(const char* file) const
+signed long long ModuleFileSystem::LastModificationTime(const char* file) const
 {
 	PHYSFS_Stat stat;
 	if (!PHYSFS_stat(file, &stat))

@@ -84,7 +84,7 @@ bool MathBreakOnAssume();
 
 /// Breaks to debugger if math break-on-assume flag
 /// Returns the current state of the math break-on-assume flag.
-bool AssumeFailed();
+bool __declspec(dllexport) AssumeFailed();
 
 template<typename T>
 inline StringT ObjToString(const T &obj)
