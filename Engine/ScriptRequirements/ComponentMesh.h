@@ -3,7 +3,7 @@
 
 class ResourceMesh;
 
-class __declspec(dllexport) ComponentMesh : public Component
+class __declspec(dllimport) ComponentMesh : public Component
 {
 public:
     ComponentMesh();

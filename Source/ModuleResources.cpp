@@ -74,19 +74,10 @@ bool ModuleResources::Start()
 
 update_status ModuleResources::Update(float dt)
 {
-	if (compilingDll) {
-		if (App->compiler->GetIsComplete()) {
-			std::string libPath = SCRIPTS_PATH;
-			libPath += std::to_string(scriptCompiling->GetUID()) + ".dll";
-			/*std::string libPath = SCRIPTS_PATH;
-			libPath += std::to_string(uid) + ".dll";*/
-			//App->fileSystem->Remove(libPath.c_str());
-			//std::string pdbFile = SCRIPTS_PATH + std::to_string(scriptCompiling->GetUID()) + ".pdb";
-			//App->fileSystem->Remove(pdbFile.c_str());
-			scriptCompiling->LoadInMemory();
-			compilingDll = false;
-			scriptCompiling = nullptr;
-		}
+	if (compilingDll && App->compiler->GetIsComplete()) {
+		scriptCompiling->LoadInMemory();
+		compilingDll = false;
+		scriptCompiling = nullptr;
 	}
 	return update_status::UPDATE_CONTINUE;
 }
@@ -299,6 +290,7 @@ void ModuleResources::CreateScriptResource(const char* scriptName)
 	ResourceScript* resource = new ResourceScript(uid);
 	resources[uid] = resource;
 	UnrequestResource(uid);
+	resource = nullptr;
 
 	std::string metaPath = ASSETS_SCRIPTS;
 	metaPath += scriptName;
@@ -312,6 +304,17 @@ void ModuleResources::CreateScriptResource(const char* scriptName)
 	std::string assetsPath = ASSETS_SCRIPTS;
 	assetsPath += scriptName;
 	assetsPath += ".cpp";
+
+	std::string templatePath = SCRIPT_HELPER_PATH;
+	templatePath += "ScriptTemplate.cpp";
+	App->fileSystem->DuplicateFile(templatePath.c_str(), assetsPath.c_str());
+
+	//Adding the name of the script function to the script
+	std::string appendScript = "\n\n//Don't modify this function\nextern \"C\" __declspec(dllexport) const char* GetScriptName() {\n\treturn \"";
+	appendScript += scriptName;
+	appendScript += "\";\n}";
+	App->fileSystem->Save(assetsPath.c_str(), appendScript.c_str(), appendScript.size(), true);
+
 	int lastModification = App->fileSystem->LastModificationTime(assetsPath.c_str());
 	json_object_set_number(node, "LastModification", lastModification);
 	int metaSize = json_serialization_size_pretty(rootValue);
@@ -321,19 +324,10 @@ void ModuleResources::CreateScriptResource(const char* scriptName)
 	App->fileSystem->Save(metaPath.c_str(), metaBuffer, metaSize);
 	delete[] metaBuffer;
 
-	std::string templatePath = SCRIPT_HELPER_PATH;
-	templatePath += "ScriptTemplate.cpp";
-	/*std::string assetsPath = ASSETS_SCRIPTS;
-	assetsPath += scriptName;
-	assetsPath += ".cpp";*/
-	App->fileSystem->DuplicateFile(templatePath.c_str(), assetsPath.c_str());
 	std::vector<std::string>toCompile;
 	toCompile.push_back(assetsPath);
 	std::string engineLib = "Engine.lib"; std::vector<std::string>linkLibs;
 	linkLibs.push_back(engineLib);
-	//linkLibs.push_back(std::string("MathGeoLib.lib"));
-	/*std::string tempPath = TEMP_PATH;
-	tempPath += std::to_string(uid) + ".dll";*/
 	std::string libPath = SCRIPTS_PATH;
 	libPath += std::to_string(uid) + ".dll";
 	CompilerOptions options;
@@ -341,15 +335,17 @@ void ModuleResources::CreateScriptResource(const char* scriptName)
 	options.libraryDirList.push_back(SCRIPT_HELPER_PATH);
 	options.intermediatePath = TEMP_PATH;
 	App->compiler->RunCompile(toCompile, options, linkLibs, libPath);
-
-	//if (App->compiler->GetIsComplete()) 
-	App->fileSystem->AddScriptWatch(assetsPath.c_str());
 	
+	App->fileSystem->AddScriptWatch(assetsPath.c_str());
 }
 
 void ModuleResources::HotReloadDll(int resourceID, const char* sourceFile)
 {
 	ResourceScript* resource = (ResourceScript*)RequestResource(resourceID, Resource::Type::SCRIPT);
-	if (resource != nullptr)
+	if (resource != nullptr) {
 		resource->HotReload(sourceFile);
+		compilingDll = true;
+		scriptCompiling = resource;
+		UnrequestResource(resourceID);
+	}
 }

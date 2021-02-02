@@ -3,7 +3,7 @@
 
 class ResourceScript;
 
-class __declspec(dllexport) ComponentScript : public Component
+class __declspec(dllimport) ComponentScript : public Component
 {
 public:
     //ComponentScript();

@@ -33,6 +33,4 @@ namespace Importer {
     namespace Scenes {
         void Import(const char* scenePath, char** libBuffer, unsigned int& libSize, char** metaBuffer, unsigned int& metaSize, ResourceScene* resource);
     }
-
 }
-

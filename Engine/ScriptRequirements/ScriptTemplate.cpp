@@ -9,7 +9,6 @@ float velocity = 0.0f;
 
 extern "C" __declspec(dllexport) void Start(GameObject* object) {
 	ConsoleLog("Hi Scripter");
-	
 }
 
 extern "C" __declspec(dllexport) void Update(GameObject * object) {
@@ -57,8 +56,4 @@ extern "C" __declspec(dllexport) void Update(GameObject * object) {
 
 		transform->SetLocalTransform(forward*velocity, scale, rotation);
 	}
-}
-
-extern "C" __declspec(dllexport) const char* GetName() {
-	return "Move";
 }

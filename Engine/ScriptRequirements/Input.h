@@ -3,7 +3,7 @@
 #include "SDL/SDL.h"
 
 
-class __declspec(dllexport) Input {
+class __declspec(dllimport) Input {
 public:
 
 	enum KEY_STATE {

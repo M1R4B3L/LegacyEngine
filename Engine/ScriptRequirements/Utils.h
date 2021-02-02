@@ -1,4 +1,4 @@
 #pragma once
 
-float __declspec(dllexport) GetGameTime();
-void __declspec(dllexport) ConsoleLog(const char* message);
+float __declspec(dllimport) GetGameTime();
+void __declspec(dllimport) ConsoleLog(const char* message);

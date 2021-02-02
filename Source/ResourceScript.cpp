@@ -16,7 +16,7 @@ bool ResourceScript::LoadInMemory()
 	{
 		functions.Start = (void(*)(GameObject*))GetProcAddress(dllHandle, "Start");
 		functions.Update = (void(*)(GameObject*))GetProcAddress(dllHandle, "Update");
-		functions.GetScriptName = (const char*(*)())GetProcAddress(dllHandle, "GetName");
+		functions.GetScriptName = (const char*(*)())GetProcAddress(dllHandle, "GetScriptName");
 		dllAvailable = true;
 	}
 	else 
@@ -55,9 +55,6 @@ void ResourceScript::HotReload(const char* sourceFile)
 	options.libraryDirList.push_back(SCRIPT_HELPER_PATH);
 	options.intermediatePath = TEMP_PATH;
 	App->compiler->RunCompile(toCompile, options, linkLibs, libPath);
-
-	App->resources->compilingDll = true;
-	App->resources->scriptCompiling = this;
 }
 
 ResourceScript::~ResourceScript()

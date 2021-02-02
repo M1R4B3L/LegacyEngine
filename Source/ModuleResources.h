@@ -26,12 +26,12 @@ public:
 	void AddSceneResource(Resource* resource);
 	void CreateScriptResource(const char* scriptName);
 	void HotReloadDll(int resourceID, const char* sourceFile);
-	bool compilingDll = false;
-	Resource* scriptCompiling = nullptr;
 private:
 	Resource* CreateNewResource(const char* assetsPath, Resource::Type type,std::string* libPath = nullptr, std::string* metaPath = nullptr);
 	void UnloadResource(unsigned int uid);
 
 private:
+	bool compilingDll = false;
+	Resource* scriptCompiling = nullptr;
 	std::map<unsigned int, Resource*> resources;
 };

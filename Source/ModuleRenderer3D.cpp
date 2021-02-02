@@ -201,7 +201,7 @@ void ModuleRenderer3D::Draw(float4x4 modelMatrix, uint VAO, uint indices, uint t
 	if (outline) 
 	{
 		glEnable(GL_STENCIL_TEST);
-		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glStencilMask(0xFF);

@@ -2,7 +2,7 @@
 #include "Component.h"
 #include "MathGeolib/MathGeoLib.h"
 
-class __declspec(dllexport) ComponentTransform : public Component
+class __declspec(dllimport) ComponentTransform : public Component
 {
 public:
 	ComponentTransform(GameObject* go);
