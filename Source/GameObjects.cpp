@@ -4,6 +4,7 @@
 #include "ComponentMesh.h"
 #include "ComponentTransform.h"
 #include "ComponentCamera.h"
+#include "ComponentScript.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
 #include "Globals.h"
@@ -203,6 +204,19 @@ bool GameObject::HasComponent(ComponentType type) const
 			return true;
 	}
 
+	return false;
+}
+
+bool GameObject::HasScript(const char* name) const
+{
+	std::string scriptName = name;
+	std::vector<Component*>::const_iterator it = components.cbegin();
+	for (it; it != components.cend(); ++it) {
+		if ((*it)->GetType() == ComponentType::Script) {
+			if(scriptName == ((ComponentScript*)(*it))->GetName())
+				return true;
+		}
+	}
 	return false;
 }
 

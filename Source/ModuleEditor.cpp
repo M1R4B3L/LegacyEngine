@@ -927,26 +927,29 @@ void ModuleEditor::WindowInspector()
 						{
 							if (ImGui::Selectable((*it2).c_str()))
 							{
-								//TODO ADD SCRIPT FUNCIONALITY
 								std::string metaPath;
 								std::string fileName;
 								std::string extension;
 								App->fileSystem->SplitFilePath((*it2).c_str(), &metaPath, &fileName, &extension);
-								metaPath += ASSETS_SCRIPTS + fileName + ".meta";
-								char* buffer = nullptr;
-								App->fileSystem->Load(metaPath.c_str(), &buffer);
-								JSON_Value* rootValue = json_parse_string(buffer);
-								JSON_Object* node = json_value_get_object(rootValue);
-								unsigned int uid = json_object_get_number(node, "LIBUID");
-								delete[] buffer; buffer = nullptr;
-								json_value_free(rootValue);
 								GameObject* object = App->scene->GetSelectedObject();
-								if (object != nullptr)
+								if (object != nullptr && !object->HasScript(fileName.c_str()))
 								{
-									Component* scriptComponent = new ComponentScript(uid);
-									object->AddComponent(scriptComponent);
-								}
+										metaPath += ASSETS_SCRIPTS + fileName + ".meta";
+										char* buffer = nullptr;
+										App->fileSystem->Load(metaPath.c_str(), &buffer);
+										JSON_Value* rootValue = json_parse_string(buffer);
+										JSON_Object* node = json_value_get_object(rootValue);
+										unsigned int uid = json_object_get_number(node, "LIBUID");
+										delete[] buffer; buffer = nullptr;
+										json_value_free(rootValue);
 
+
+										Component* scriptComponent = new ComponentScript(uid);
+										object->AddComponent(scriptComponent);
+								}
+								else {
+									LOG("Error adding script: Game Object already has this script")
+								}
 							}
 						}
 					}

@@ -53,6 +53,7 @@ const char* ComponentScript::GetName()
 			return name.c_str();
 		}
 	}
+	return "No Name";
 }
 
 void ComponentScript::Save(JSON_Array* componentsArry) const

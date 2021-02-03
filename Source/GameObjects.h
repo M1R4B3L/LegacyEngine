@@ -32,6 +32,7 @@ public:
 
 	Component* GetComponent(ComponentType type);
 	bool HasComponent(ComponentType type) const;
+	bool HasScript(const char* name) const;
 
 	const char* GetName() const;
 	void SetName(char* newName);
