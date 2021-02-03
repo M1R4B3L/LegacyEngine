@@ -947,9 +947,9 @@ void ModuleEditor::WindowInspector()
 										Component* scriptComponent = new ComponentScript(uid);
 										object->AddComponent(scriptComponent);
 								}
-								else {
+								else 
 									LOG("Error adding script: Game Object already has this script")
-								}
+
 							}
 						}
 					}
