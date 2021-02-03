@@ -949,7 +949,6 @@ void ModuleEditor::WindowInspector()
 								}
 								else 
 									LOG("Error adding script: Game Object already has this script")
-
 							}
 						}
 					}
