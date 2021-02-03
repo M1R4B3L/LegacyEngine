@@ -31,7 +31,7 @@ public:
 	const GameObject& GetGameObject() const;
 	const ComponentType GetType() const;
 	void SetGameObject(GameObject& go);
-	void RemoveGameObjectComponent(GameObject& go, ComponentType type);
+	//void RemoveGameObjectComponent(GameObject& go, ComponentType type);
 
 private:
 	GameObject* gameObject;

@@ -938,6 +938,8 @@ void ModuleEditor::WindowInspector()
 								JSON_Value* rootValue = json_parse_string(buffer);
 								JSON_Object* node = json_value_get_object(rootValue);
 								unsigned int uid = json_object_get_number(node, "LIBUID");
+								delete[] buffer; buffer = nullptr;
+								json_value_free(rootValue);
 								GameObject* object = App->scene->GetSelectedObject();
 								if (object != nullptr)
 								{
@@ -1237,6 +1239,30 @@ void ModuleEditor::InspectorShowScript(ComponentScript* componentScript)
 
 			editorWindow = true;
 		}
+	}
+
+	if (removeScript == false)
+	{
+		ImGui::OpenPopup("Are you sure?");
+
+		if (ImGui::BeginPopupModal("Are you sure?"))
+		{
+			if (ImGui::Button("Delete", ImVec2(80, 0)))
+			{
+
+				App->scene->GetSelectedObject()->RemoveComponent(componentScript);
+				LOG("Removed Component Script");
+				removeScript = true;
+			}
+
+			if (ImGui::Button("Cancel", ImVec2(80, 0)))
+			{
+				ImGui::CloseCurrentPopup();
+				removeScript = true;
+			}
+			ImGui::EndPopup();
+		}
+
 	}
 }
 

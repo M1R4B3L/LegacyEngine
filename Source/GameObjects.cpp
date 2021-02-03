@@ -48,9 +48,17 @@ void GameObject::AddComponent(Component* c)
 
 bool GameObject::RemoveComponent(Component* c)
 {
-	bool succes = false;
-	c->RemoveGameObjectComponent(*this, c->GetType());
-	return succes;
+	std::vector<Component*>::iterator it = components.begin();
+	for (it; it != components.end(); ++it)
+	{
+		if ((*it) == c)
+		{
+			components.erase(it);
+			delete (c); c = nullptr;
+			return true;
+		}
+	}
+	return false;
 }
 
 /*void GameObject::Start()
