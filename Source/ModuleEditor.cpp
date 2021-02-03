@@ -943,7 +943,6 @@ void ModuleEditor::WindowInspector()
 										delete[] buffer; buffer = nullptr;
 										json_value_free(rootValue);
 
-
 										Component* scriptComponent = new ComponentScript(uid);
 										object->AddComponent(scriptComponent);
 								}
@@ -1043,10 +1042,9 @@ void ModuleEditor::InspectorShowTransform(ComponentTransform* componentTransform
 
 		componentTransform->GetLocalTransform(translation, scale, rotation);
 
-		if (ImGui::DragFloat3("Position", (float*)&translation, 0.01f, 0.0f, 0.0f, "%.3f")) {
-
+		if (ImGui::DragFloat3("Position", (float*)&translation, 0.01f, 0.0f, 0.0f, "%.3f")) 
 			componentTransform->SetLocalTransform(translation, scale, rotation);
-		}
+
 
 		float3 eulerRotation = rotation.ToEulerXYZ();
 		eulerRotation *= (180 / pi);
@@ -1061,19 +1059,12 @@ void ModuleEditor::InspectorShowTransform(ComponentTransform* componentTransform
 
 			//TODO: Assert Scale < 0.01f
 			if (scale.x < 0.01f)
-			{
 				scale.x = 0.01f;
-			}
 			if (scale.y < 0.01f)
-			{
 				scale.y = 0.01f;
-			}	
 			if (scale.z < 0.01f)
-			{
 				scale.z = 0.01f;
-			}
 			componentTransform->SetLocalTransform(translation, scale, rotation);
-			
 		}
 	
 	}
@@ -1102,9 +1093,8 @@ void ModuleEditor::InspectorShowMesh(ComponentMesh* componentMesh)
 		ImGui::Separator();
 
 		if (ImGui::Button("Change Mesh")) 
-		{
 			changeMesh = true;
-		}
+
 
 		ChangeMeshWindow(ASSETS_MESHES, componentMesh);
 	}
@@ -1143,9 +1133,7 @@ void ModuleEditor::InspectorShowMaterial(ComponentMaterial* componentMaterial)
 		//ImGui::TextColored(ImVec4(0, 255, 0, 255), "%u x %u");
 
 		if (ImGui::ImageButton((ImTextureID)componentMaterial->GetResource()->gpuID, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0)))
-		{
 			changeTexture = true;
-		}
 
 		ChangeTextureWindow(ASSETS_TEXTURES, componentMaterial);
 	}
@@ -1181,21 +1169,15 @@ void ModuleEditor::InspectorShowCamera(ComponentCamera* componentCamera)
 	{
 		float nearPlane = componentCamera->GetNearPlaneDistance();
 		if (ImGui::DragFloat("Near Plane", &nearPlane, 1.0f,0.1f,componentCamera->GetFarPlaneDistance(),"%.2f"))
-		{
 			componentCamera->SetNearPlaneDistance(nearPlane);
-		}
 	
 		float farPlane = componentCamera->GetFarPlaneDistance();
 		if (ImGui::DragFloat("Far Plane", &farPlane, 1.0f, componentCamera->GetNearPlaneDistance(), 10000.0f, "%.2f"))
-		{
 			componentCamera->SetFarPlaneDistance(farPlane);
-		}
 	
 		float fov = componentCamera->GetHoritzontalFOV();
 		if (ImGui::DragFloat("FOV", &fov, 1.0f, 0.0f))
-		{
 			componentCamera->SetHoritzontalFOV(fov);
-		}
 
 	}
 
@@ -1251,7 +1233,6 @@ void ModuleEditor::InspectorShowScript(ComponentScript* componentScript)
 		{
 			if (ImGui::Button("Delete", ImVec2(80, 0)))
 			{
-
 				App->scene->GetSelectedObject()->RemoveComponent(componentScript);
 				LOG("Removed Component Script");
 				removeScript = true;
@@ -1276,17 +1257,11 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 	ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_DefaultOpen;
 
 	if (gameObject == App->scene->GetRootObject())
-	{
 		treeFlags |= ImGuiTreeNodeFlags_DefaultOpen;
-	}
 	if (gameObject->children.empty())
-	{
 		treeFlags |= ImGuiTreeNodeFlags_Leaf;	//Only applyied to the nodes without childrens (Usually the last one)
-	}
 	if (gameObject == App->scene->GetSelectedObject())
-	{
 		treeFlags |= ImGuiTreeNodeFlags_Selected;
-	}
 
 	if (ImGui::TreeNodeEx(name, treeFlags)) {
 
@@ -1296,9 +1271,9 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 		}
 		//std::string item = "";
 		if (gameObject != App->scene->GetRootObject()) {
-			if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+			if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 				ImGui::OpenPopup("Delete");
-			}
+
 			if (ImGui::BeginPopup("Delete"))
 			{
 				if (ImGui::Selectable("Delete"))
@@ -1309,9 +1284,7 @@ void ModuleEditor::HierarchyNodes(GameObject* gameObject)
 					
 				}
 				if (ImGui::Selectable("Create Child"))
-				{
 					App->scene->CreateGameObject("GameObject 1", gameObject);
-				}
 
 				ImGui::EndPopup();
 			}
@@ -1389,20 +1362,18 @@ void ModuleEditor::WindowProject()
 		if (ImGui::Begin("Assets", &projectWindow))
 		{
 			ImVec2 smallWindow = {ImGui::GetWindowWidth()*1.0f/3.0f, ImGui::GetWindowHeight()*0.85f};
-			ImVec2 bigWindow = {ImGui::GetWindowWidth()*1.90f/3.0f, ImGui::GetWindowHeight()*0.85f};
+			ImVec2 bigWindow = {ImGui::GetWindowWidth()*1.9f/3.0f, ImGui::GetWindowHeight()*0.85f};
 			
-			if (ImGui::BeginChild("##AssetsTree", smallWindow, true))
-			{			
+			if (ImGui::BeginChild("##AssetsTree", smallWindow, true))		
 				DrawAssetDirectory(ASSETS_PATH);
-			}
+
 			ImGui::EndChild();
 
 			ImGui::SameLine();
 
 			if (ImGui::BeginChild("##Assets", bigWindow, true))
-			{
 				ShowDirFiles(selectedFolder.c_str());
-			}
+
 			ImGui::EndChild();
 
 		}
@@ -1422,21 +1393,25 @@ void ModuleEditor::DrawAssetDirectory(const char* directory)
 	ImGuiDockNodeFlags treeFlags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
 
 	if (dirs.empty())
-	{
 		treeFlags |= ImGuiTreeNodeFlags_Leaf;
-	}
 
 	if (ImGui::TreeNodeEx(dir.c_str(), treeFlags))
 	{
 		if (ImGui::IsItemClicked())
-		{
 			selectedFolder = dir;
+
+		treeFlags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_Leaf;
+		for (std::vector<std::string>::const_iterator it = dirs.cbegin(); it != dirs.cend(); ++it) {
+			
+			if (ImGui::TreeNodeEx((*it).c_str(), treeFlags))
+			{
+				if (ImGui::IsItemClicked())
+					selectedFolder = (*it);
+
+				ImGui::TreePop();
+			}
 		}
 
-		for (std::vector<std::string>::const_iterator it = dirs.begin(); it != dirs.end(); ++it)
-		{
-			DrawAssetDirectory((*it).c_str());
-		}
 		ImGui::TreePop();
 	}
 
